@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="${context}/static/lab.css" type="text/css">
+		<title>Europeana R&D - Workbench for alternative aggregation mechanisms for Europeana</title>
+	</head>
+<body>
+<#include "../banner.include.html">
+
+<div class="breadcrumbs">&gt; <a href="${context}">Home</a></div>
+
+<h2>Registered datasets</h2>
+
+<table style="padding-bottom:10px">
+	<tr><td colspan="2" class="form_title">Datasets status</td></tr>
+	<#if message??>
+		<tr><td class="validation_message">${message}</td></tr>
+	</#if>
+	<tr>
+		<td class="field_value">${title}<br />${organization}<br />
+		${type}
+  <#list typeInformation as field>
+  		<br />${field.key}: ${field.value} 
+  </#list>	
+		</td>
+	</tr>
+		<td  class="field_operations">
+			<a href="${context}/harvester/harvest-start?dataset=${localId}">Initiate harvest</a>
+			<br/>
+			<a href="${context}/harvester/publish-dataset-data?dataset=${localId}">Publish</a>
+			<br/>
+			<a href="${context}/harvester/profile-dataset?dataset=${localId}">Profile</a>
+			<br/>
+			<a href="${context}/harvester/clear-dataset-data?dataset=${localId}">Clear</a>
+			<br/>
+			<a href="${context}/harvester/remove-dataset?dataset=${localId}">Remove</a>
+			<#if ds.published>
+				<br/>
+				<a href="${context}/${publicationUrl}">Download export</a>
+			</#if>
+			<#if ds.profiled>
+				<br/>
+				<a href="${contextName}/${profileUrl}">See profile</a>
+			</#if>
+		</td>
+	</tr>
+</table>
+
+<#include "../footer.include.html">
+</body>
+</html>

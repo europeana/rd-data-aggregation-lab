@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="refresh" content="10" >
+		<link rel="stylesheet" href="${context}/static/lab.css" type="text/css">
+		<title>Europeana R&D - Workbench for alternative aggregation mechanisms for Europeana</title>
+	</head>
+<body>
+<#include "../banner.include.html">
+<div class="breadcrumbs">&gt; <a href="${context}">Home</a></div>
+<br /><br />
+<table style="padding-bottom:10px">
+	<tr><td colspan="2" class="form_title">Registered datasets</td></tr>
+	<#if message??>
+		<tr><td colspan="2" class="validation_message">${message}</td></tr>
+	</#if>
+  <#list datasetsViews as ds>
+		<tr>
+			<td class="field_value">${ds.title}<br />${ds.organization}<br />
+			${ds.type}
+			</td>
+			<td  class="field_operations">
+			    <a href="${context}/harvester/dataset-detail?dataset=${ds.localId}">more details...</a>
+			</td>
+		</tr>
+  </#list>	
+	<tr><td colspan="2" class="field_value">&nbsp;</td></tr>
+	<#if running??>
+		<tr><td class="field_value_odd"  colspan="2"><b>Tasks in execution:</b><br />
+		${running}</td></tr>
+	</#if>
+</table>
+
+<#include "../footer.include.html">
+</body>
+</html>

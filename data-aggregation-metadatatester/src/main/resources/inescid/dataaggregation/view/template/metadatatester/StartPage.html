@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="${context}/static/lab.css" type="text/css">
+		<title>Europeana Metadata Testing Tool - R&D Prototype</title>
+	</head>
+<body>
+<#include "../banner.include.html">
+<h2>About the prototype</h2>
+<p>This prototype is a work in progress. It aims to support data providers of Europeana in checking the compliance of their implementation 
+of solutions for delivering data to Europeana.</p> 
+
+<p>This tool supports checking of the following:</p>
+<ul>
+	<li><a href="${context}/check_wikidata">Wikidata entity about a cultural heritage object</a></li>
+	<li><a href="${context}/check_schemaorg">Schema.org included in a webpage (as used for Internet search engines)</a></li>
+	<li><a href="${context}/check_iiif_manifest">IIIF manifest with structured metadata in Schema.org or EDM (seeAlso references)</a></li> 
+	<li><a href="${context}/check_sitemap">sitemap.xml and robots.txt of a website</a></li>
+	<li><a href="${context}/check_europeana">Evaluate data quality of a record at Europeana</a></li>
+</ul>
+
+<p>For using the tool, follow the link for the type of solution to be tested.</p>
+
+
+<#include "../footer.include.html">
+
+</body>
+</html>

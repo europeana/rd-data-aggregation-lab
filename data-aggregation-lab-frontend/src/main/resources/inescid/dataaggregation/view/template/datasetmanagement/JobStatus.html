@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="${context}/static/lab.css" type="text/css">
+		<title>Europeana R&D - Workbench for alternative aggregation mechanisms for Europeana</title>
+	</head>
+<body>
+<#include "../banner.include.html">
+
+<div class="breadcrumbs">&gt; <a href="${context}">Home</a> &gt; <a href="${context}/harvester">Datasets</a></div>
+
+<h2>Dataset Status</h2>
+
+<table style="padding-bottom:10px">
+	<tr><td colspan="2" class="form_title">${datasetTitle}</td></tr>
+	<#if message??>
+		<tr><td colspan="2" class="field_value_odd">${message}</td></tr>
+	</#if>
+		<tr><td class="field_value" colspan="2" style="text-align:center">
+			<a href="${context}/harvester" class="button">return to list of datasets</a> &nbsp;
+			<#if datasetLocalId??>
+				<a href="${context}/harvester/dataset-detail?dataset=${datasetLocalId}" class="button">return to dataset</a>
+			</#if>
+		</td></tr>
+</table>
+
+<#include "../footer.include.html">
+</body>
+</html>
