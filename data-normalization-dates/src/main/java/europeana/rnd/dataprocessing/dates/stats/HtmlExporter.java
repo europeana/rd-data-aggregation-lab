@@ -31,11 +31,27 @@ public class HtmlExporter {
 		htmlFile=new File(outFolder, "MatchesByCollection.html");
 		writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
 		writeStart(writer);
-		writeStatsByCollection(writer, stats.statsByCollection);
+		writeStatsByCollection(writer, stats.statsByCollection, "collection");
 		writeEnd(writer);	
 		writer.close();
 		
-//		htmlFile=new File(outFolder, "MatchesGlobal.html");
+		htmlFile=new File(outFolder, "MatchesByClass.html");
+		writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+		writeStart(writer);
+		writeStatsByCollection(writer, stats.statsByClass,"class");
+		writeEnd(writer);	
+		writer.close();
+		
+		htmlFile=new File(outFolder, "MatchesByClassAndProperty.html");
+		writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+		writeStart(writer);
+		writeStatsByCollection(writer, stats.statsByClassAndProperty,"class/property");
+		writeEnd(writer);	
+		writer.close();
+		
+
+		
+		//		htmlFile=new File(outFolder, "MatchesGlobal.html");
 //		writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
 //		writeStart(writer);
 //		writeStatsGlobal(writer, stats.statsGlobal);
@@ -59,14 +75,14 @@ public class HtmlExporter {
 //		writer.append("</table>\n");
 //	}
 	
-	private static void writeStatsByCollection(Appendable writer, MapOfMaps<String, MatchId, Examples> statsByCollection) throws IOException {
+	private static void writeStatsByCollection(Appendable writer, MapOfMaps<String, MatchId, Examples> statsByCollection, String label) throws IOException {
 		ArrayList<String> cols=new ArrayList<String>(statsByCollection.keySet());
 		Collections.sort(cols);
-		writer.append("<h2>Date normalization: occurrence of date patterns by collection</h2>\n");
+		writer.append("<h2>Date normalization: occurrence of date patterns by "+label+"</h2>\n");
 		
 		writer.append("<table id=\"top\">\r\n"
 				+ "<tr>\r\n"
-				+ "<td><b>Collection</b></td><td>Pattern</td><td><b>Count</b></td><td></td></tr>\n");
+				+ "<td><b>"+label+"</b></td><td>Pattern</td><td><b>Count</b></td><td></td></tr>\n");
 		
 		for(String col: cols) {
 			Map<MatchId, Examples> matchStats = statsByCollection.get(col);
@@ -101,7 +117,7 @@ public class HtmlExporter {
 
 		writer.append("<br />\n");
 		for(String col: cols) {
-			writer.append("<hr /><h2>Examples from collection '"+col+"'</h2>");			
+			writer.append("<hr /><h2>Examples from "+label+" '"+col+"'</h2>");			
 			Map<MatchId, Examples> matchStats = statsByCollection.get(col);
 			boolean first=true;
 			ArrayList<MatchId> matchIds=new ArrayList<MatchId>(matchStats.keySet());
@@ -123,7 +139,7 @@ public class HtmlExporter {
 						writer.append(", ");		
 					writer.append("\'"+StringEscapeUtils.escapeHtml4(example)+"\'\n");
 				}
-				writer.append("<br /><a href=\"#"+col+"\">back to collection</a><br />\n");
+				writer.append("<br /><a href=\"#"+col+"\">back to "+label+"</a><br />\n");
 				writer.append("</p>");
 			}
 		}		

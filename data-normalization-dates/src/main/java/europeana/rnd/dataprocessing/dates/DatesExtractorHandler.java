@@ -61,8 +61,8 @@ public class DatesExtractorHandler {
 		add(new PatternNumericDateExtractorWithMissingPartsAndXx());
 		add(new PatternNumericDateRangeExtractorWithMissingParts());
 		add(new PatternNumericDateRangeExtractorWithMissingPartsAndXx());
-		add(new PatternIso8601Date(false));
-		add(new PatternIso8601DateRange(false));
+//		add(new PatternIso8601Date(false));
+//		add(new PatternIso8601DateRange(false));
 		add(new PatternBcAd());
 	}};
 	
@@ -182,11 +182,7 @@ public class DatesExtractorHandler {
 		try {
 			for(Writer a: writers.values()) 
 				a.close();
-			File outGlobalStats=new File(outputFolder, "stats-global.csv");
-			File outGlobalCleanStats=new File(outputFolder, "stats-global-clean.csv");
-			File outColStats=new File(outputFolder, "stats-collections.csv");
-			File outMatchStats=new File(outputFolder, "stats-matches.csv");
-			stats.save(outGlobalStats, outGlobalCleanStats, outColStats, outMatchStats);
+			stats.save(outputFolder);
 			
 			HtmlExporter.export(stats, outputFolder);
 			

@@ -24,6 +24,8 @@ import inescid.util.datastruct.MapOfSets;
 
 public class DateExtractionStatistics {
 	MapOfMaps<String, MatchId, Examples> statsByCollection;
+	MapOfMaps<String, MatchId, Examples> statsByClass;
+	MapOfMaps<String, MatchId, Examples> statsByClassAndProperty;
 	Map<MatchId, Examples> statsByMatch;
 	
 //	MapOfMapsOfInts<String, MatchId> statsByProperty;
@@ -34,6 +36,8 @@ public class DateExtractionStatistics {
 
 	public DateExtractionStatistics() {
 		statsByCollection=new MapOfMaps<String, MatchId, Examples>();
+		statsByClass=new MapOfMaps<String, MatchId, Examples>();
+		statsByClassAndProperty=new MapOfMaps<String, MatchId, Examples>();
 		statsByMatch=new HashMap<MatchId, Examples>();
 //		statsByProperty=new MapOfMapsOfInts<String, MatchId>();
 //		statsByClass=new MapOfMapsOfInts<String, MatchId>();
@@ -53,6 +57,20 @@ public class DateExtractionStatistics {
 		}
 		examples.add(match.match.getInput());
 		
+		examples = statsByClass.get(match.className, match.match.getMatchId());
+		if(examples==null) {
+			examples=new Examples();
+			statsByClass.put(match.className, match.match.getMatchId(), examples);
+		}
+		examples.add(match.match.getInput());
+		
+		examples = statsByClassAndProperty.get(match.className+","+match.property, match.match.getMatchId());
+		if(examples==null) {
+			examples=new Examples();
+			statsByClassAndProperty.put(match.className+","+match.property, match.match.getMatchId(), examples);
+		}
+		examples.add(match.match.getInput());
+		
 		examples = statsByMatch.get(match.match.getMatchId());
 		if(examples==null) {
 			examples=new Examples(500);
@@ -65,7 +83,14 @@ public class DateExtractionStatistics {
 			statsGlobalClean.incrementTo(match.match.getCleanOperation());
 	}
 	
-	public void save(File globalToFile, File globalCleanToFile, File collectionsToFile, File matchToFile) throws IOException {
+	public void save(File toFolder) throws IOException {
+		File globalToFile=new File(toFolder, "stats-global.csv");
+		File globalCleanToFile=new File(toFolder, "stats-global-clean.csv");
+		File collectionsToFile=new File(toFolder, "stats-collections.csv");
+		File matchToFile=new File(toFolder, "stats-matches.csv");
+		File classesToFile=new File(toFolder, "stats-class.csv");
+		File classesAndPropertiesToFile=new File(toFolder, "stats-class_and_property.csv");
+		
 		FileWriterWithEncoding writer=new FileWriterWithEncoding(globalToFile, StandardCharsets.UTF_8);
 		MapOfInts.writeCsv(statsGlobal, writer);
 		writer.close();
@@ -76,6 +101,14 @@ public class DateExtractionStatistics {
 		
 		writer=new FileWriterWithEncoding(collectionsToFile, StandardCharsets.UTF_8);
 		writeMapCsv(statsByCollection, writer);
+		writer.close();
+		
+		writer=new FileWriterWithEncoding(classesToFile, StandardCharsets.UTF_8);
+		writeMapCsv(statsByClass, writer);
+		writer.close();
+		
+		writer=new FileWriterWithEncoding(classesAndPropertiesToFile, StandardCharsets.UTF_8);
+		writeMapCsv(statsByClassAndProperty, writer);
 		writer.close();
 
 		writer=new FileWriterWithEncoding(matchToFile, StandardCharsets.UTF_8);
