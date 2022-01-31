@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="${context}/static/lab.css" type="text/css">
+		<title>Europeana Metadata Testing Tool - R&D Prototype</title>
+	</head>
+<body>
+<#include "../banner.include.html">
+
+<div class="breadcrumbs">&gt; <a href="${context}">Home</a></div>
+
+<h2>Test date normalization on individual values</h2>
+
+<form action="${context}/normalize_value" method="get">
+
+<p>Date value: 
+	<input type="text" name="value" value="${match.input!}" style="width:650px"/> <input type="submit" name="operation" value="Check Value"/>
+<br />
+</p>
+<br />
+<table style="padding-bottom:10px">
+	<#if message??>
+		<tr><td colspan="2" class="form_title">Result <#if match.input?has_content>for '${match.input!}'</#if></td></tr>
+		<tr><td colspan="2" class="validation_message">${message}</td></tr>
+	</#if>
+	
+	<#if ! message?? && match.input?has_content>
+		<tr><td colspan="2" class="form_title" width="600">Result for '${match.input!}'</td></tr>
+		<tr><td colspan="2">
+				&nbsp;&nbsp; <B>Pattern matched:</B> <#if match.matchId == "NO_MATCH">No<#else>Yes</#if>
+				<br />
+				&nbsp;&nbsp; <B>Normalized value in EDTF:</B> ${match.extracted!}
+		</td></tr>
+	<#else>
+		<tr><td colspan="2">
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		</td></tr>
+	</#if>
+</table>
+
+</form>
+
+
+<#include "../footer.include.html">
+</body>
+</html>

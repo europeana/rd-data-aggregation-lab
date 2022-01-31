@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="${context}/static/lab.css" type="text/css">
+		<title>Europeana Metadata Testing Tool - R&D Prototype</title>
+	</head>
+<body>
+<#include "../banner.include.html">
+
+<div class="breadcrumbs">&gt; <a href="${context}">Home</a></div>
+
+<h2>Test date normalization on a record in Europeana</h2>
+
+<form action="${context}/check_europeana" method="get">
+
+<p>Europeana record ID or URI: 
+	<input type="text" name="europeanaID" value="${uri!}" style="width:650px"/> <input type="submit" name="operation" value="Check Record"/>
+<br />
+</p>
+<br />
+<table style="padding-bottom:10px">
+	<#if message??>
+		<tr><td colspan="2" class="form_title">Result <#if uriChecked>for ${uri!}</#if></td></tr>
+		<tr><td colspan="2" class="validation_message">${message}</td></tr>
+	</#if>
+	
+	<#if uriChecked && ! message??>
+		<tr><td colspan="2" class="form_title">Result <#if uriChecked>for ${uri!}</#if></td></tr>
+		<tr><td colspan="2">
+			<table style="margin-top:0px">
+	    	<#if normalizationResult.classesWithDates?has_content>  	
+				<tr><td class="field_value"> &nbsp;&nbsp; <B>Class</B></td><td class="field_value"> &nbsp;&nbsp; <B>Property</B></td>
+				<td class="field_value"> &nbsp;&nbsp; <B>Value</B></td><td class="field_value"> &nbsp;&nbsp; <B>Pattern matched</B></td>
+				<td class="field_value"> &nbsp;&nbsp; <B>Normalized value in EDTF</B></td>
+				</tr>
+	    		<#list normalizationResult.classesWithDates as cls>
+					<#assign row = 1> 
+					<#list cls.properties as prop>
+						<#list prop.values as val>
+							<tr>
+							<td class="field_value"> &nbsp;&nbsp;
+							<#if row == 1>${cls.name}</#if> 
+							</td>
+							<td class="field_value"> &nbsp;&nbsp; ${prop.name} </td>
+							<td class="field_value"> &nbsp;&nbsp; ${val.input} </td>
+							<td class="field_value"> &nbsp;&nbsp; 
+							<#if val.matchId == "NO_MATCH">No<#else>Yes</#if></td>
+							<td class="field_value"> &nbsp;&nbsp; 
+								<#if val.matchId == "NO_MATCH"><#else>${val.extracted}</#if></td>
+							</tr>
+							<#assign row++> 
+						</#list>
+					</#list>				
+				</#list>
+	    	<#else>
+ 					<tr><td class="field_value"> &nbsp;&nbsp; No properties with values exist</td><td class="field_value"></td></tr>
+			</#if>
+					
+			</table>
+		</td></tr>
+	<#else>
+		<tr><td colspan="2">
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		<br />
+		</td></tr>
+	</#if>
+</table>
+
+</form>
+
+
+<#include "../footer.include.html">
+</body>
+</html>
