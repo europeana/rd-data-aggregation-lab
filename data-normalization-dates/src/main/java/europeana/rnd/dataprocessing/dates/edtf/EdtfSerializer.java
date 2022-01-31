@@ -2,13 +2,13 @@ package europeana.rnd.dataprocessing.dates.edtf;
 
 public class EdtfSerializer {
 
-	public String serialize(TemporalEntity edtf) {
+	public static String serialize(TemporalEntity edtf) {
 		if(edtf instanceof Instant)
 			return serializeInstant((Instant) edtf);
 	    return serializeInstant(((Interval) edtf).getStart())+"/"+serializeInstant(((Interval) edtf).getEnd());
 	}
 
-	private String serializeInstant(Instant edtf) {
+	private static String serializeInstant(Instant edtf) {
 		StringBuffer buf=new StringBuffer();
 		if(edtf.getDate()!=null) {
 			if(edtf.getDate().isUnkown())
@@ -19,9 +19,9 @@ public class EdtfSerializer {
 				buf.append(serializeYear(edtf.getDate()));
 				if(edtf.getDate().getYear()<-9999 || edtf.getDate().getYear()>9999)
 					return buf.toString();
-				if (edtf.getDate().getMonth()!=null) {
+				if (edtf.getDate().getMonth()!=null && edtf.getDate().getMonth()>0) {
 					buf.append("-").append(padInt(edtf.getDate().getMonth(), 2));
-					if (edtf.getDate().getDay()!=null) {
+					if (edtf.getDate().getDay()!=null && edtf.getDate().getDay()>0) {
 						buf.append("-").append(padInt(edtf.getDate().getDay(), 2));
 					}
 				}
@@ -48,7 +48,7 @@ public class EdtfSerializer {
 		return buf.toString();
 	}
 
-	private String serializeYear(Date date) {
+	private static String serializeYear(Date date) {
 		if(date.getYear()<-9999 || date.getYear()>9999)
 			return "Y"+date.getYear();		
 		String yearStr=padInt(Math.abs(date.getYear()), 4);
@@ -56,11 +56,11 @@ public class EdtfSerializer {
 		if(date.getYearPrecision()!=null) {
 			switch (date.getYearPrecision()) {
 			case MILLENIUM:
-				return prefix+yearStr.substring(0,1)+"XXX";
+				return prefix+yearStr.substring(3,4)+"XXX";
 			case CENTURY:
-				return prefix+yearStr.substring(0,2)+"XX";
+				return prefix+yearStr.substring(2,4)+"XX";
 			case DECADE:
-				return prefix+yearStr.substring(0,3)+"X";
+				return prefix+yearStr.substring(1,4)+"X";
 			case YEAR:
 				return prefix+yearStr;
 			} 

@@ -1,4 +1,4 @@
-package europeana.rnd.dataprocessing.dates;
+package europeana.rnd.dataprocessing.dates.stats;
 
 import java.io.File;
 import java.io.IOException;

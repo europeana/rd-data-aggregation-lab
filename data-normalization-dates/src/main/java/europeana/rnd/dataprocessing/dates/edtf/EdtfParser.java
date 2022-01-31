@@ -8,10 +8,14 @@ import java.text.ParseException;
 
 public class EdtfParser {
 	
-	private static final Pattern DATE_PATTERN=Pattern.compile("((?<year1>\\d{4})-(?<month1>\\d{2})-(?<day1>\\d{2})|(?<year2>\\d{4})-(?<month2>\\d{2})|(?<year3>\\d{4}))(?<modifier>[\\?%~]?)");
+	private static final Pattern DATE_PATTERN=Pattern.compile("((?<year1>\\d{4})-(?<month1>\\d{2})-(?<day1>\\d{2})|"
+			+ "(?<year2>\\d{4})-(?<month2>\\d{2})|"
+			+ "(?<year3>\\-?\\d{4})"
+			+ ")(?<modifier>[\\?%~]?)");
 	private static final Pattern TIME_PATTERN=Pattern.compile("((?<hour1>\\d{2}):(?<minute1>\\d{2}):(?<second1>\\d{2})|"+
 			"(?<hour2>\\d{2}):(?<minute2>\\d{2})|"+
-			"(?<hour3>\\d{2}))");
+			"(?<hour3>\\d{2})|"+
+			"(?<hour4>\\d{2}):(?<minute4>\\d{2}):(?<second4>\\d{2})(\\.(?<millis>\\d{1,3}))?(Z|[\\+\\-]\\d{2}:?\\d{0,2})?)");
 //TODO:millis  (\\.\\n{3})?
 //TODO:timezone			+ "(?<year>\\n{4})-(?<month>\\n{2})|(?<year>\\n{4}))(?<modifier>[\\?%~]?)");
 
@@ -50,10 +54,14 @@ public class EdtfParser {
 		}else if(!StringUtils.isEmpty(m.group("hour2"))) {
 			t.setHour(Integer.parseInt(m.group("hour2")));
 			t.setMinute(Integer.parseInt(m.group("minute2")));
-		}else {//if(!StringUtils.isEmpty(m.group("hour1"))) {
+		}else if(!StringUtils.isEmpty(m.group("hour1"))) {
 			t.setHour(Integer.parseInt(m.group("hour1")));
 			t.setMinute(Integer.parseInt(m.group("minute1")));
 			t.setSecond(Integer.parseInt(m.group("second1")));
+		}else {//if(!StringUtils.isEmpty(m.group("hour4"))) {
+			t.setHour(Integer.parseInt(m.group("hour4")));
+			t.setMinute(Integer.parseInt(m.group("minute4")));
+			t.setSecond(Integer.parseInt(m.group("second4")));
 		}
 		return t;
 	}

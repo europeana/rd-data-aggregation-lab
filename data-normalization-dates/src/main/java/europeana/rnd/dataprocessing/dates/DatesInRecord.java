@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -20,6 +21,19 @@ import europeana.rnd.dataprocessing.dates.extraction.Match;
 import inescid.util.datastruct.MapOfLists;
 
 public class DatesInRecord {
+	
+	public static class DateValue {
+		public String className;
+		public String property;
+		public Match match;
+		public DateValue(String className, String property, Match match) {
+			super();
+			this.className = className;
+			this.property = property;
+			this.match = match;
+		}
+	}
+	
 	private static final String FIELD_PROVIDER_PROXY="inProviderProxy";
 	private static final String FIELD_EUROPEANA_PROXY="inEuropeanaProxy";
 	private static final String FIELD_WEB_RESOURCES="inWebResources";
@@ -149,6 +163,30 @@ public class DatesInRecord {
 			valuesByFieldInWebResources, valuesByFieldInAgents, valuesByFieldInTimeSpans}) {
 			vals.addAll(inResource.valuesOfAllLists());
 		}
+		return vals;
+	}
+	public List<DateValue> getAllValuesDetailed() {
+		ArrayList<DateValue> vals=new ArrayList<DateValue>();
+		for(Entry<String, ArrayList<Match>> fieldResults : valuesByFieldInProviderProxy.entrySet()) {
+			for(Match match: fieldResults.getValue()) 
+				vals.add(new DateValue("ProxyProvider", fieldResults.getKey(), match));
+		}
+		for(Entry<String, ArrayList<Match>> fieldResults : valuesByFieldInEuropeanaProxy.entrySet()) {
+			for(Match match: fieldResults.getValue()) 
+				vals.add(new DateValue("ProxyEuropeana", fieldResults.getKey(), match));
+		}
+		for(Entry<String, ArrayList<Match>> fieldResults : valuesByFieldInAgents.entrySet()) {
+			for(Match match: fieldResults.getValue()) 
+				vals.add(new DateValue("Agent", fieldResults.getKey(), match));
+		}
+		for(Entry<String, ArrayList<Match>> fieldResults : valuesByFieldInTimeSpans.entrySet()) {
+			for(Match match: fieldResults.getValue()) 
+				vals.add(new DateValue("TimeSpan", fieldResults.getKey(), match));
+		}		
+		for(Entry<String, ArrayList<Match>> fieldResults : valuesByFieldInWebResources.entrySet()) {
+			for(Match match: fieldResults.getValue()) 
+				vals.add(new DateValue("WebResource", fieldResults.getKey(), match));
+		}		
 		return vals;
 	}
 	

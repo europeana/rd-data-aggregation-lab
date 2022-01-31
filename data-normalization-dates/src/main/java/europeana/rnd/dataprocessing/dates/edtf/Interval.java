@@ -26,6 +26,6 @@ public class Interval extends TemporalEntity {
 	public void setEnd(Instant end) {
 		this.end = end;
 	}
-	
+
 	
 }

@@ -38,9 +38,30 @@ public class MonthMultilingual {
 		}
 		return ret;
 	}
+
+	public Set<String> getMonthStrings(Month month) {
+		Set<String> ret=new HashSet<String>();
+		HashMap<Language, HashSet<String>> monthValues=monthStringsByLanguage.get(month);
+		for(Language l: Language.values()) {
+			ret.addAll(monthValues.get(l));
+		}
+		return ret;
+	}
+
 	
 	public static void main(String[] args) throws Exception {
 		new MonthMultilingual();
+	}
+
+	public Integer parse(String monthName) {
+		for(Month month: Month.values()) {
+			HashMap<Language, HashSet<String>> monthValues=monthStringsByLanguage.get(month);
+			for(Language l: Language.values()) {
+				if (monthValues.get(l).contains(monthName))
+					return month.getValue();
+			}
+		}
+		return null;
 	}
 	
 }

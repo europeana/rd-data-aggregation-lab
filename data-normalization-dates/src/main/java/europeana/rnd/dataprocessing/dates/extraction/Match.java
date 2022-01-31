@@ -1,19 +1,21 @@
 package europeana.rnd.dataprocessing.dates.extraction;
 
+import europeana.rnd.dataprocessing.dates.edtf.TemporalEntity;
+
 public class Match {
 	
 	MatchId matchId;
 	CleanId cleanOperation;
 	String input;
-	String extracted;
+	TemporalEntity extracted;
 	
-	public Match(MatchId matchId, String input, String extracted) {
+	public Match(MatchId matchId, String input, TemporalEntity extracted) {
 		super();
 		this.matchId = matchId;
 		this.input = input;
 		this.extracted = extracted;
 	}
-	public Match(MatchId matchId, CleanId cleanOperation, String input, String extracted) {
+	public Match(MatchId matchId, CleanId cleanOperation, String input, TemporalEntity extracted) {
 		super();
 		this.matchId = matchId;
 		this.cleanOperation = cleanOperation;
@@ -31,7 +33,7 @@ public class Match {
 	public String getInput() {
 		return input;
 	}
-	public String getExtracted() {
+	public TemporalEntity getExtracted() {
 		return extracted;
 	}
 
@@ -43,7 +45,7 @@ public class Match {
 		this.input = input;
 	}
 
-	public void setExtracted(String extracted) {
+	public void setExtracted(TemporalEntity extracted) {
 		this.extracted = extracted;
 	}
 
@@ -60,5 +62,12 @@ public class Match {
 	public void setCleanOperation(CleanId cleanOperation) {
 		this.cleanOperation = cleanOperation;
 	}
+	@Override
+	public String toString() {
+		return "Match [matchId=" + matchId + ", cleanOperation=" + cleanOperation + ", input=" + input + ", extracted="
+				+ extracted + "]";
+	}
+	
+	
 	
 }

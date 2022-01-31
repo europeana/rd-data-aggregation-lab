@@ -5,6 +5,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.joda.time.format.ISODateTimeFormat;
 
+import europeana.rnd.dataprocessing.dates.edtf.Instant;
+import europeana.rnd.dataprocessing.dates.edtf.Interval;
+
 public class DcmiPeriodExtractor implements DateExtractor {
 	  private static final Pattern DCMI_PERIOD = Pattern.compile("(start|end|name)\\s*=\\s*(.*?)(?:;|\\s*$)");
 	  private static final Pattern DCMI_PERIOD_SCHEME = Pattern.compile("scheme\\s*=\\s*(.*?)(?:;|\\s*$)");
@@ -70,7 +73,21 @@ public class DcmiPeriodExtractor implements DateExtractor {
 			DcmiPeriod decoded = decodePeriod(inputValue);
 			if (decoded==null)
 				return null;
-			return new Match(MatchId.DCMIPeriod, inputValue, inputValue);
+			
+			Instant edtfStart;
+			Instant edtfEnd;
+			if(decoded.hasStart()) {
+				edtfStart=new Instant(decoded.getStart());
+			}else
+				edtfStart=new Instant(europeana.rnd.dataprocessing.dates.edtf.Date.UNSPECIFIED);
+			if(decoded.hasEnd()) {
+				edtfEnd=new Instant(decoded.getEnd());
+			}else
+				edtfEnd=new Instant(europeana.rnd.dataprocessing.dates.edtf.Date.UNSPECIFIED);
+			
+			Interval edtf=new Interval(edtfStart, edtfEnd);
+			
+			return new Match(MatchId.DCMIPeriod, inputValue, edtf);
 		} catch (IllegalStateException e) {
 			//a parsing error occoured
 			return null;

@@ -1,4 +1,4 @@
-package europeana.rnd.dataprocessing.dates;
+package europeana.rnd.dataprocessing.dates.stats;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfMapsOfInts;
 import inescid.util.datastruct.MapOfSets;
 
-public class DateExtractionStatistics {
+public class DateExtractionStatisticsSimple_NotUsed {
 	MapOfMapsOfInts<String, MatchId> statsByCollection;
 //	MapOfMapsOfInts<String, MatchId> statsByProperty;
 //	MapOfMapsOfInts<String, MatchId> statsByClass;
@@ -23,7 +23,7 @@ public class DateExtractionStatistics {
 	MapOfInts<MatchId> statsGlobal;
 	MapOfInts<CleanId> statsGlobalClean;
 
-	public DateExtractionStatistics() {
+	public DateExtractionStatisticsSimple_NotUsed() {
 		statsByCollection=new MapOfMapsOfInts<String, MatchId>();
 //		statsByProperty=new MapOfMapsOfInts<String, MatchId>();
 //		statsByClass=new MapOfMapsOfInts<String, MatchId>();
@@ -57,12 +57,12 @@ public class DateExtractionStatistics {
 	
 	
 	public static void main(String[] args) throws Exception {
-		DateExtractionStatistics des=new DateExtractionStatistics();
+		DateExtractionStatisticsSimple_NotUsed des=new DateExtractionStatisticsSimple_NotUsed();
 		
 		for(int i=0; i<10; i++) {
 			for(int j=0; j<10; j++) {
-				des.add("http://data.europeana.eu/item/"+i+"/"+j, new Match(MatchId.Century_Numeric, CleanId.INITIAL_TEXT, "", "") );
-				des.add("http://data.europeana.eu/item/"+i+"/"+j, new Match(MatchId.YYYY, "", "") );
+				des.add("http://data.europeana.eu/item/"+i+"/"+j, new Match(MatchId.Century_Numeric, CleanId.INITIAL_TEXT, "", null) );
+				des.add("http://data.europeana.eu/item/"+i+"/"+j, new Match(MatchId.YYYY, "", null) );
 			}
 		}
 		File outputFolder=new File("target");

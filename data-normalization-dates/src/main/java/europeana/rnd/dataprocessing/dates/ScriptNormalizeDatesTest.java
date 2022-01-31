@@ -14,9 +14,9 @@ import javax.json.stream.JsonParser;
 public class ScriptNormalizeDatesTest {
 
 	File folder;
-	DatesExtractorHandlerViability handler;
+	DatesExtractorHandler handler;
 	
-	public ScriptNormalizeDatesTest(File folder, DatesExtractorHandlerViability handler) {
+	public ScriptNormalizeDatesTest(File folder, DatesExtractorHandler handler) {
 		super();
 		this.folder = folder;
 		this.handler = handler;
@@ -62,7 +62,7 @@ public class ScriptNormalizeDatesTest {
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
 		
-		ScriptNormalizeDatesTest processor=new ScriptNormalizeDatesTest(new File(sourceFolder), new DatesExtractorHandlerViability(outFolder));
+		ScriptNormalizeDatesTest processor=new ScriptNormalizeDatesTest(new File(sourceFolder), new DatesExtractorHandler(outFolder));
 		processor.process();
 	}
 }

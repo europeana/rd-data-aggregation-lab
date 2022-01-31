@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
+import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
 import europeana.rnd.dataprocessing.dates.extraction.Cleaner;
 import europeana.rnd.dataprocessing.dates.extraction.DateExtractor;
 import europeana.rnd.dataprocessing.dates.extraction.DcmiPeriodExtractor;
@@ -18,12 +19,9 @@ import europeana.rnd.dataprocessing.dates.extraction.Match;
 import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 import europeana.rnd.dataprocessing.dates.extraction.PatternBcAd;
 import europeana.rnd.dataprocessing.dates.extraction.PatternCentury;
-import europeana.rnd.dataprocessing.dates.extraction.PatternDateExtractorDdMmYyyy;
-import europeana.rnd.dataprocessing.dates.extraction.PatternDateExtractorYyyy;
-import europeana.rnd.dataprocessing.dates.extraction.PatternDateExtractorYyyyMm;
 import europeana.rnd.dataprocessing.dates.extraction.PatternDateExtractorYyyyMmDdSpaces;
-import europeana.rnd.dataprocessing.dates.extraction.PatternDateRangeExtractorYyyy;
 import europeana.rnd.dataprocessing.dates.extraction.PatternDecade;
+import europeana.rnd.dataprocessing.dates.extraction.PatternEdtf;
 import europeana.rnd.dataprocessing.dates.extraction.PatternFormatedFullDate;
 import europeana.rnd.dataprocessing.dates.extraction.PatternIso8601Date;
 import europeana.rnd.dataprocessing.dates.extraction.PatternIso8601DateRange;
@@ -33,8 +31,15 @@ import europeana.rnd.dataprocessing.dates.extraction.PatternNumericDateExtractor
 import europeana.rnd.dataprocessing.dates.extraction.PatternNumericDateRangeExtractorWithMissingParts;
 import europeana.rnd.dataprocessing.dates.extraction.PatternNumericDateRangeExtractorWithMissingPartsAndXx;
 import europeana.rnd.dataprocessing.dates.extraction.Cleaner.CleanResult;
+import europeana.rnd.dataprocessing.dates.extraction.trash.PatternDateExtractorDdMmYyyy;
+import europeana.rnd.dataprocessing.dates.extraction.trash.PatternDateExtractorYyyy;
+import europeana.rnd.dataprocessing.dates.extraction.trash.PatternDateExtractorYyyyMm;
+import europeana.rnd.dataprocessing.dates.extraction.trash.PatternDateRangeExtractorYyyy;
+import europeana.rnd.dataprocessing.dates.stats.DateExtractionStatistics;
+import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
+import europeana.rnd.dataprocessing.dates.stats.NoMatchSampling;
 
-public class DatesExtractorHandlerViability {
+public class DatesExtractorHandler {
 	File outputFolder;
 	DateExtractionStatistics stats=new DateExtractionStatistics();
 	NoMatchSampling noMatchSampling=new NoMatchSampling();
@@ -42,6 +47,7 @@ public class DatesExtractorHandlerViability {
 	
 	static ArrayList<DateExtractor> extractors=new ArrayList<DateExtractor>() {{
 //		add(new PatternDateExtractorYyyy());
+		add(new PatternEdtf());
 		add(new PatternDateExtractorYyyyMmDdSpaces());
 //		add(new PatternDateExtractorDdMmYyyy());
 //		add(new PatternDateRangeExtractorYyyy());
@@ -55,20 +61,29 @@ public class DatesExtractorHandlerViability {
 		add(new PatternNumericDateExtractorWithMissingPartsAndXx());
 		add(new PatternNumericDateRangeExtractorWithMissingParts());
 		add(new PatternNumericDateRangeExtractorWithMissingPartsAndXx());
-		add(new PatternIso8601Date());
-		add(new PatternIso8601DateRange());
+		add(new PatternIso8601Date(false));
+		add(new PatternIso8601DateRange(false));
 		add(new PatternBcAd());
 	}};
 	
-	public DatesExtractorHandlerViability(File outputFolder) {
-		super();
+	public DatesExtractorHandler(File outputFolder) {
 		this.outputFolder = outputFolder;
+	}
+
+	public DatesExtractorHandler() {
 	}
 	
 	public static void runDateNormalization(DatesInRecord rec) throws Exception {
 		for(Match val: rec.getAllValues()) {
-			Match extracted=runDateNormalization(val.getInput()); 
-			val.setResult(extracted);
+			try {
+				Match extracted=runDateNormalization(val.getInput()); 
+				val.setResult(extracted);
+			} catch (Exception e) {
+				System.err.println("Error in value: "+val.getInput());
+				e.printStackTrace();
+				
+				val.setResult(new Match(MatchId.NO_MATCH, val.getInput(), null));
+			}
 		}
 	}
 	public static Match runDateNormalization(String val) throws Exception {
@@ -119,24 +134,24 @@ public class DatesExtractorHandlerViability {
 	
 	public void handle(DatesInRecord rec) throws Exception {
 		runDateNormalization(rec);
-		for(Match match: rec.getAllValues()) {
+		for(DateValue match: rec.getAllValuesDetailed()) {
 			handleResult(rec.getChoUri(), match);			
 		}
 	}
 	
-	private void handleResult(String choUri, Match extracted) {
+	private void handleResult(String choUri, DateValue dateValue) {
 		try {
-			stats.add(choUri, extracted);
-			Writer wrt=getWriterForMatch(extracted.getMatchId());
-			wrt.write(escape(extracted.getInput()));
-			if(extracted.getExtracted()!=null) {
+			stats.add(choUri, dateValue);
+			Writer wrt=getWriterForMatch(dateValue.match.getMatchId());
+			wrt.write(escape(dateValue.match.getInput()));
+			if(dateValue.match.getExtracted()!=null) {
 				wrt.write(",");
-				wrt.write(escape(extracted.getExtracted()));
+				wrt.write(escape(dateValue.match.getExtracted().serialize()));
 			}
 			wrt.write("\n");	
 			
-			if(extracted.getMatchId()==MatchId.NO_MATCH)
-				noMatchSampling.add(extracted);
+			if(dateValue.match.getMatchId()==MatchId.NO_MATCH)
+				noMatchSampling.add(dateValue.match);
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}		
@@ -170,7 +185,10 @@ public class DatesExtractorHandlerViability {
 			File outGlobalStats=new File(outputFolder, "stats-global.csv");
 			File outGlobalCleanStats=new File(outputFolder, "stats-global-clean.csv");
 			File outColStats=new File(outputFolder, "stats-collections.csv");
-			stats.save(outGlobalStats, outGlobalCleanStats, outColStats);
+			File outMatchStats=new File(outputFolder, "stats-matches.csv");
+			stats.save(outGlobalStats, outGlobalCleanStats, outColStats, outMatchStats);
+			
+			HtmlExporter.export(stats, outputFolder);
 			
 			File outNoMatchSampling=new File(outputFolder, "no-match-samples.csv");
 			noMatchSampling.save(outNoMatchSampling);

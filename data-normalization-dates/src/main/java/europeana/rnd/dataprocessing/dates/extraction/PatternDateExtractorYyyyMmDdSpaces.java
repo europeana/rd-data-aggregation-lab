@@ -3,6 +3,9 @@ package europeana.rnd.dataprocessing.dates.extraction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import europeana.rnd.dataprocessing.dates.edtf.Date;
+import europeana.rnd.dataprocessing.dates.edtf.Instant;
+
 public class PatternDateExtractorYyyyMmDdSpaces implements DateExtractor {
 	Pattern patYyyyMmDd=Pattern.compile("\\s*(\\d{4}) (\\d{1,2}) (\\d{1,2})\\s*");
 //	Pattern patYyyyMmDdX=Pattern.compile("\\s*([\\[\\?]{0,2})(\\d\\d\\d\\d)[-/. ](\\d\\d?)[-/. ](\\d\\d?)[\\]\\?]{0,2}\\s*");
@@ -33,8 +36,13 @@ public class PatternDateExtractorYyyyMmDdSpaces implements DateExtractor {
 	
 	public Match extract(String inputValue) {
 		Matcher m=patYyyyMmDd.matcher(inputValue); 
-		if(m.matches())
-			return new Match(MatchId.YYYY_MM_DD_Spaces, inputValue, m.group(1)+"-"+m.group(2)+"-"+m.group(3));
+		if(m.matches()) {
+			Date d=new Date();
+			d.setYear(Integer.parseInt(m.group(1)));
+			d.setMonth(Integer.parseInt(m.group(2)));
+			d.setDay(Integer.parseInt(m.group(3)));
+			return new Match(MatchId.YYYY_MM_DD_Spaces, inputValue, new Instant(d));
+		}
 		return null;
 	}
 	

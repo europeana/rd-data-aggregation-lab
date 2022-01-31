@@ -30,7 +30,7 @@ import inescid.util.Handler;
 import inescid.util.RdfUtil;
 import inescid.util.datastruct.MapOfInts;
 
-public class ScriptProcessEuropeanaDatasetForDateAnalysis {
+public class ScriptSelectDatesFromEuropeanaDataset {
 
 	public static void main(String[] args) throws Exception {
 		String outputFolder = null;
@@ -53,7 +53,7 @@ public class ScriptProcessEuropeanaDatasetForDateAnalysis {
 		
 		// INIT OPERATIONS - END
 
-		final ProgressTrackerOnFile tracker=new ProgressTrackerOnFile(new File(outputFolder, ScriptProcessEuropeanaDatasetForDateAnalysis.class.getSimpleName()+"_progress.txt"));
+		final ProgressTrackerOnFile tracker=new ProgressTrackerOnFile(new File(outputFolder, ScriptSelectDatesFromEuropeanaDataset.class.getSimpleName()+"_progress.txt"));
 		final int offset=tracker.getTokenAsInt();
 		System.out.println("Starting at offset "+offset);
 		repository.setStartRecord(offset);
