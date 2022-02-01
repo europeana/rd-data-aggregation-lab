@@ -58,12 +58,12 @@ public class DatesHandler {
 		}
 		
 		public static DatesInRecord getDatesInRecord(Model edm) {
-			HashSet<Resource> processedResources=new HashSet<Resource>();
+			HashSet<String> processedResources=new HashSet<String>();
 			Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 			String choUri = choRes.getURI();
 			DatesInRecord res=new DatesInRecord(choUri);
 			for(Resource proxy:edm.listResourcesWithProperty(Rdf.type, Ore.Proxy).toList()) {
-				processedResources.add(proxy);
+				processedResources.add(RdfUtil.getUriOrId(proxy));
 				Statement europeanaProxySt = proxy.getProperty(Edm.europeanaProxy);
 				boolean isEuropeanaProxy=europeanaProxySt!=null && europeanaProxySt.getObject().asLiteral().getBoolean();
 				for(Statement st: proxy.listProperties().toList()) {
@@ -80,7 +80,7 @@ public class DatesHandler {
 				}
 			}
 			Resource aggRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Ore.Aggregation, null, null);
-			processedResources.add(aggRes);
+			processedResources.add(RdfUtil.getUriOrId(aggRes));
 			for(Statement st: aggRes.listProperties().toList()) {
 				if(st.getObject().isResource()) {
 					processInnerResource(res, st.getObject().asResource(), processedResources);
@@ -101,10 +101,10 @@ public class DatesHandler {
 			jsonWriter.close();
 		}
 
-		private static void processInnerResource(DatesInRecord res, Resource resource, HashSet<Resource> processedResources) {
-			if(processedResources.contains(resource))
+		private static void processInnerResource(DatesInRecord res, Resource resource, HashSet<String> processedResources) {
+			if(processedResources.contains(RdfUtil.getUriOrId(resource)))
 				return;
-			processedResources.add(resource);
+			processedResources.add(RdfUtil.getUriOrId(resource));
 			
 			List<Resource> types = RdfUtil.getTypes(resource);
 			if(types==null || types.isEmpty()) return;
