@@ -86,7 +86,8 @@ public class DatesHandler {
 					processInnerResource(res, st.getObject().asResource(), processedResources);
 				}else if(st.getObject().isLiteral()) {
 					//TODO: should properties in aggregation be processed?
-					System.out.println("WARNING: temporal prop in ore:Aggregation - "+st);
+					if(isTemporalProp(st.getPredicate())) 
+						System.out.println("WARNING: temporal prop in ore:Aggregation - "+st);
 				}
 			}
 			return res;
