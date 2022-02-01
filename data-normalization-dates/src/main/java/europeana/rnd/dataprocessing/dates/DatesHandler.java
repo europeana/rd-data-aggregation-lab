@@ -68,7 +68,7 @@ public class DatesHandler {
 				boolean isEuropeanaProxy=europeanaProxySt!=null && europeanaProxySt.getObject().asLiteral().getBoolean();
 				for(Statement st: proxy.listProperties().toList()) {
 					if(st.getObject().isResource()) {
-						processInnerResource(res, st.getObject().asResource(), isEuropeanaProxy, processedResources);
+						processInnerResource(res, st.getObject().asResource(), processedResources);
 					}else if(st.getObject().isLiteral()) {
 						if(isTemporalProp(st.getPredicate())) {
 							if(isEuropeanaProxy)
@@ -79,10 +79,18 @@ public class DatesHandler {
 					}
 				}
 			}
+			Resource aggRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Ore.Aggregation, null, null);
+			processedResources.add(aggRes);
+			for(Statement st: aggRes.listProperties().toList()) {
+				if(st.getObject().isResource()) {
+					processInnerResource(res, st.getObject().asResource(), processedResources);
+				}else if(st.getObject().isLiteral()) {
+					//TODO: should properties in aggregation be processed?
+					System.out.println("WARNING: temporal prop in ore:Aggregation - "+st);
+				}
+			}
 			return res;
 		}
-		
-		
 		
 		private static boolean isTemporalProp(Property predicate) {
 			return temporalProperties.contains(predicate);
@@ -92,7 +100,7 @@ public class DatesHandler {
 			jsonWriter.close();
 		}
 
-		private static void processInnerResource(DatesInRecord res, Resource resource, boolean isEuropeanaProxy, HashSet<Resource> processedResources) {
+		private static void processInnerResource(DatesInRecord res, Resource resource, HashSet<Resource> processedResources) {
 			if(processedResources.contains(resource))
 				return;
 			processedResources.add(resource);
@@ -110,7 +118,7 @@ public class DatesHandler {
 				return;
 			for(Statement st: resource.listProperties().toList()) {
 				if(st.getObject().isResource()) {
-					processInnerResource(res, st.getObject().asResource(), isEuropeanaProxy, processedResources);
+					processInnerResource(res, st.getObject().asResource(), processedResources);
 				}else if(st.getObject().isLiteral()) {
 					if(isTemporalProp(st.getPredicate())) {
 						if(type.equals(Edm.WebResource))

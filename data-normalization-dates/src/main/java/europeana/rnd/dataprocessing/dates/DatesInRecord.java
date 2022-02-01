@@ -32,6 +32,12 @@ public class DatesInRecord {
 			this.property = property;
 			this.match = match;
 		}
+		@Override
+		public String toString() {
+			return "DateValue [className=" + className + ", property=" + property + ", match=" + match + "]";
+		}
+		
+		
 	}
 	
 	private static final String FIELD_PROVIDER_PROXY="inProviderProxy";
