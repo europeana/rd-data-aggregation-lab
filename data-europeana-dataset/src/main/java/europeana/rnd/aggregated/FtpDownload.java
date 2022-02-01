@@ -24,9 +24,12 @@ public class FtpDownload {
 	
 	public static void main(String[] args) throws Exception {
 		String outputFolder = null;
+		String fileFormat = "XML";//XML|TTL
 
 		if (args != null && args.length >= 1) {
 				outputFolder = args[0];
+				if (args.length >= 2) 
+					fileFormat = args[1];
 		}else {
 			outputFolder = "c://users/nfrei/desktop/data/europeana_dataset";
 		}
@@ -53,8 +56,7 @@ public class FtpDownload {
                 System.out.println("LOGGED IN SERVER");
             }
             
-            String pathname = "/dataset/XML";
-//            String pathname = "/dataset/TTL";
+            String pathname = "/dataset/"+fileFormat;
 			ftpClient.changeWorkingDirectory(pathname);
             showServerReply(ftpClient);
 //            FTP.

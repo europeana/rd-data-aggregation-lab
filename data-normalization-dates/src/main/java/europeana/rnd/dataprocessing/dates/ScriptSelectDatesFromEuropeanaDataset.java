@@ -35,15 +35,18 @@ public class ScriptSelectDatesFromEuropeanaDataset {
 	public static void main(String[] args) throws Exception {
 		String outputFolder = null;
 		String inputFolder = null;
+		String fileFormat ="XML";
 
-		if (args != null && args.length >= 2) {
+		if (args != null && args.length >= 3) {
 				inputFolder = args[0];
 				outputFolder = args[1];
+				fileFormat = args[2];
 		}else {
 			inputFolder = "c://users/nfrei/desktop/data/europeana_dataset";
 			outputFolder = "c://users/nfrei/desktop/data/dates";
+			fileFormat ="XML";
 			europeana.rnd.dataprocessing.dates.DatesJsonWriter.maxFilesPerFolder=10;
-			europeana.rnd.dataprocessing.dates.DatesJsonWriter.maxRecsPerFile=20;
+			europeana.rnd.dataprocessing.dates.DatesJsonWriter.maxRecsPerFile=50;
 		}
 
 		RecordIterator repository=new RecordIterator(new File(inputFolder));
@@ -57,8 +60,10 @@ public class ScriptSelectDatesFromEuropeanaDataset {
 		final int offset=tracker.getTokenAsInt();
 		System.out.println("Starting at offset "+offset);
 		repository.setStartRecord(offset);
-//		repository.setLang(Lang.RDFXML);
-		repository.setLang(Lang.TURTLE);
+		if(fileFormat.equals("XML"))
+			repository.setLang(Lang.RDFXML);
+		else
+			repository.setLang(Lang.TURTLE);
 		
 		try {
 			repository.iterate(new Handler<Model, String>() {
