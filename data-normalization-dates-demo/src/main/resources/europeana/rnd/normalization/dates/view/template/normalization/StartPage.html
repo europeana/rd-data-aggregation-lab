@@ -8,20 +8,23 @@
 <body>
 <#include "../banner.include.html">
 <h2>About the prototype</h2>
-<p>This prototype is a work in progress. It aims to support the work at Europena on the normalization of date values in EDM.</p> 
+<p>This prototype is a work in progress. It aims to support the work at Europena on the normalisation of date values in EDM.
+<br />Currently, not all planned functionalities are implemented. The extraction of approximate, unknown and uncertain dates is only partially implemented.</p> 
 
 <p>This tool provides the following:</p>
 <ul>
-	<li><a href="${context}/check_europeana">Test date normalization on a record in Europeana</a></li>
-	<li><a href="${context}/normalize_value">Normalize a date value</a></li>
+	<li><a href="${context}/check_europeana">Test date normalisation on a record in Europeana</a></li>
+	<li><a href="${context}/normalize_value">Normalise a date value</a></li>
 </ul>
 
 <p>For using the tool, follow the link for the type of solution to be tested.</p>
 
 <p>The tool has been applied to the whole Europeana dataset. Some statistics regarding the matched date patterns may be accessed in the following links:</p>
 <ul>
-	<li><a href="${context}/static/MatchesByPattern.html">Occurrence of date patterns across the whole dataset</a></li>
-	<li><a href="${context}/static/MatchesByCollection.html">Occurrence of date patterns by collection</a></li>
+	<li><a href="${context}/static/MatchesByPattern.html">Occurrences across the whole dataset</a></li>
+	<li><a href="${context}/static/MatchesByCollection.html">Occurrences by collection</a></li>
+	<li><a href="${context}/static/MatchesByClass.html">Occurrence by class</a></li>
+	<li><a href="${context}/static/MatchesByClassAndProperty.html">Occurrence by class and property</a></li>
 </ul>
 
 <#include "../footer.include.html">
