@@ -67,13 +67,18 @@ public class RecordIterator {
 							zipFileInputStream.close();
 							return;
 						}
-					} catch (Throwable e) {
-						if(!handler.handleError(entry.getName() ,(Exception)e)) {
+					} catch (Exception e) {
+						if(!handler.handleError(entry.getName() ,e)) {
 							zip.closeEntry();
 							zip.close();
 							zipFileInputStream.close();
 							return;
 						}
+					} catch (Throwable e) {
+						zip.closeEntry();
+						zip.close();
+						zipFileInputStream.close();
+						throw e;
 					}
 				}
 				zip.closeEntry();
