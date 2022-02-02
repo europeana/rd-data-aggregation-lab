@@ -117,7 +117,7 @@ public class DateNormalizationForm extends UriForm {
 			if(idOrUri.contains(".europeana.eu/")) {
 				String[] split = idOrUri.split("/");
 				if(split.length>=3) 
-					idOrUri="http://data.europeana.eu/item"+split[split.length-2]+"/"+split[split.length-1];
+					idOrUri="http://data.europeana.eu/item/"+split[split.length-2]+"/"+split[split.length-1];
 			}
 		}
 		return idOrUri;
