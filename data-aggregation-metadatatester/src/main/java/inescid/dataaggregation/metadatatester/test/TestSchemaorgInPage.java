@@ -12,11 +12,11 @@ import org.apache.any23.extractor.rdfa.RDFa11ExtractorFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 
-import inescid.dataaggregation.crawl.http.HttpRequest;
 import inescid.dataaggregation.dataset.Global;
 import inescid.dataaggregation.metadatatester.view.JenaTripleHandler;
 import inescid.dataaggregation.metadatatester.view.ResourceView;
 import inescid.dataaggregation.metadatatester.view.ResourceView.DataModel;
+import inescid.http.HttpRequest;
 import inescid.util.RdfUtil;
 import inescid.util.RdfUtil.Jena;
 

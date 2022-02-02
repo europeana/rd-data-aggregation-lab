@@ -32,13 +32,13 @@ import org.apache.jena.util.SplitIRI;
 
 import crawlercommons.sitemaps.AbstractSiteMap;
 import crawlercommons.sitemaps.UnknownFormatException;
-import inescid.dataaggregation.crawl.http.HttpRequest;
-import inescid.dataaggregation.crawl.http.UrlRequest;
 import inescid.dataaggregation.crawl.sitemap.SitemapUtil;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.data.model.Schemaorg;
 import inescid.dataaggregation.dataset.Global;
 import inescid.dataaggregation.dataset.LodDataset;
+import inescid.dataaggregation.crawl.http.HttpRequest;
+import inescid.dataaggregation.crawl.http.UrlRequest;
 import inescid.util.AccessException;
 import inescid.util.HttpUtil;
 import inescid.util.RdfUtil;

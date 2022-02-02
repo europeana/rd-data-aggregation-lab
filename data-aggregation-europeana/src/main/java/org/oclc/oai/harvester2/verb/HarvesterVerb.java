@@ -58,8 +58,6 @@ import org.xml.sax.SAXException;
 
 import com.sun.org.apache.xpath.internal.XPathAPI;
 
-import inescid.oaipmh.HarvestException;
-
 /**
  * HarvesterVerb is the parent class for each of the OAI verbs.
  * 

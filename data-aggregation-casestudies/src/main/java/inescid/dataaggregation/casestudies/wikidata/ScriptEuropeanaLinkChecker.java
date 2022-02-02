@@ -13,13 +13,13 @@ import org.apache.jena.query.QuerySolution;
 import inescid.dataaggregation.wikidata.SparqlClientWikidata;
 
 import inescid.dataaggregation.crawl.http.CachedHttpRequestService;
-import inescid.dataaggregation.crawl.http.HttpRequest;
 import inescid.dataaggregation.dataset.Global;
 import inescid.util.AccessException;
 import inescid.util.HttpUtil;
 import inescid.util.SparqlClient.Handler;
 import inescid.dataaggregation.wikidata.RdfRegWikidata;
 import inescid.dataaggregation.wikidata.WikidataUtil;
+import inescid.dataaggregation.crawl.http.HttpRequest;
 
 public class ScriptEuropeanaLinkChecker {
 	public static void main(String[] args) throws Exception {

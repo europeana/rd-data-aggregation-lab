@@ -27,11 +27,11 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.util.SplitIRI;
 
-import inescid.dataaggregation.crawl.http.HttpRequest;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.data.model.Schemaorg;
 import inescid.dataaggregation.dataset.LodDataset;
 import inescid.dataaggregation.metadatatester.view.ResourceView.DataModel;
+import inescid.http.HttpRequest;
 import inescid.util.AccessException;
 import inescid.util.RdfUtil;
 import inescid.util.RdfUtil.Jena;

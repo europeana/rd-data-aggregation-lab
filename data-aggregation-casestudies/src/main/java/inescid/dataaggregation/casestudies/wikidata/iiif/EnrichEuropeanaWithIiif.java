@@ -21,8 +21,8 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.riot.Lang;
 
 import inescid.dataaggregation.wikidata.RdfRegWikidata;
-import inescid.dataaggregation.crawl.http.CachedHttpRequestService;
 import inescid.dataaggregation.crawl.http.HttpResponse;
+import inescid.dataaggregation.crawl.http.CachedHttpRequestService;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.data.model.Svcs;
 import inescid.dataaggregation.data.model.Edm;
@@ -180,7 +180,7 @@ public class EnrichEuropeanaWithIiif {
 													Statement property = agg.getProperty(Edm.datasetName);
 													europeanaCollection=RdfUtil.getUriOrLiteralValue(property.getObject());
 												}
-												Set<Resource> iiifWebResources=RdfUtil.findResourceWithProperties(rdfEdm, Rdf.type, Edm.WebResource, Svcs.has_service, null);
+												Set<Resource> iiifWebResources=RdfUtil.findResourcesWithProperties(rdfEdm, Rdf.type, Edm.WebResource, Svcs.has_service, null);
 												if(iiifWebResources.isEmpty()) {
 													rep.enrichements(europeanaCollection, europeanaObjectUri, wdUri, iiifManifests);
 													rep.profileEdm(europeanaCollection, rdfEdm);
@@ -302,7 +302,7 @@ public class EnrichEuropeanaWithIiif {
 												Statement property = agg.getProperty(Edm.datasetName);
 												europeanaCollection=RdfUtil.getUriOrLiteralValue(property.getObject());
 											}
-											Set<Resource> iiifWebResources=RdfUtil.findResourceWithProperties(rdfEdm, Rdf.type, Edm.WebResource, Svcs.has_service, null);
+											Set<Resource> iiifWebResources=RdfUtil.findResourcesWithProperties(rdfEdm, Rdf.type, Edm.WebResource, Svcs.has_service, null);
 											if(iiifWebResources.isEmpty()) {
 												rep.enrichementsByWikimedia(europeanaCollection, europeanaObjectUri, wdUri);
 												rep.profileEdm(europeanaCollection, rdfEdm);																								

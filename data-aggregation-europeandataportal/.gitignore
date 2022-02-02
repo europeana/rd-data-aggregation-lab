@@ -1,4 +1,7 @@
-/.settings/
 /target/
 /.classpath
 /.project
+/.settings/
+/dataaggregation.log.txt
+/sitemap-errors.txt
+/sitemap-progress.token

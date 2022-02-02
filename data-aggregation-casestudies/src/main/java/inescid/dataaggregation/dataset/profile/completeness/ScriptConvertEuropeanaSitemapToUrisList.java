@@ -10,12 +10,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import crawlercommons.sitemaps.SiteMapURL;
-import inescid.dataaggregation.crawl.http.HttpRequest;
-import inescid.dataaggregation.crawl.http.UrlRequest;
 import inescid.dataaggregation.crawl.sitemap.CrawlResourceHandler;
 import inescid.dataaggregation.crawl.sitemap.SitemapResourceCrawler;
 import inescid.dataaggregation.dataset.Global;
 import inescid.dataaggregation.dataset.observer.JobObserverStdout;
+import inescid.dataaggregation.crawl.http.HttpRequest;
+import inescid.dataaggregation.crawl.http.UrlRequest;
 
 public class ScriptConvertEuropeanaSitemapToUrisList {
 	private static Pattern recIdPattern = Pattern.compile("/record/(.*)\\.html$");

@@ -95,7 +95,12 @@ public class TestSchemaOrgApi {
 								return;
 							}
 							
-							Model schemaorg = RdfUtil.readRdf(rdfReq.getResponseContent(), Lang.JSONLD);
+							
+							System.out.println(rdfReq.getResponseContentAsString());
+//							String tmp=rdfReq.getResponseContentAsString().replaceFirst("\"http://schema.org\"", "\"https://schema.org/docs/jsonldcontext.json\"");
+							String tmp=rdfReq.getResponseContentAsString().replaceFirst("\"http://schema.org\"", "\"http://schema.org/\"");
+							Model schemaorg = RdfUtil.readRdf(tmp, Lang.JSONLD);
+//							Model schemaorg = RdfUtil.readRdf(rdfReq.getResponseContent(), Lang.JSONLD);
 							
 							List<String> errors = validator.validate(schemaorg);
 							if(!errors.isEmpty()) {

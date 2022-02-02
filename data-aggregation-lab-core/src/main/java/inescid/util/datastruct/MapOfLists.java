@@ -177,4 +177,8 @@ public class MapOfLists<K,O> implements Serializable{
 		public Set<Entry<K, ArrayList<O>>> entrySet() {
 			return hashtable.entrySet();
 		}
+
+		public boolean isEmpty() {
+			return hashtable.isEmpty();
+		}
 }

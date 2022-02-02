@@ -23,7 +23,7 @@ import eu.europeana.corelib.solr.entity.AgentImpl;
 import eu.europeana.corelib.solr.entity.ConceptImpl;
 import eu.europeana.corelib.solr.entity.PlaceImpl;
 import eu.europeana.corelib.solr.entity.TimespanImpl;
-import inescid.europeana.dataprocessing.ProgressTrackerOnFile;
+import europeana.rnd.dataprocessing.ProgressTrackerOnFile;
 import inescid.europeanarepository.EdmMongoServer;
 import inescid.europeanarepository.EdmMongoServer.Handler;
 import inescid.util.RdfUtil;

@@ -38,7 +38,6 @@ import inescid.dataaggregation.casestudies.wikidata.evaluation.Dqc10PointRatingC
 import inescid.dataaggregation.casestudies.wikidata.evaluation.EdmValidation;
 import inescid.dataaggregation.casestudies.wikidata.evaluation.ValidatorForNonPartners;
 import inescid.dataaggregation.crawl.http.CachedHttpRequestService;
-import inescid.dataaggregation.crawl.http.HttpResponse;
 import inescid.dataaggregation.data.ContentTypes;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.data.model.Edm;
@@ -56,6 +55,7 @@ import inescid.dataaggregation.dataset.profile.UsageProfiler;
 import inescid.dataaggregation.dataset.profile.completeness.Dqc10PointRatingCalculator;
 import inescid.dataaggregation.store.Repository;
 import inescid.europeanaapi.EuropeanaApiClient;
+import inescid.http.HttpResponse;
 import inescid.opaf.data.EdmUtil;
 import inescid.util.AccessException;
 import inescid.util.MapOfInts;

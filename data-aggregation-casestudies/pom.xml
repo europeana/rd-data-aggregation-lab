@@ -10,8 +10,6 @@
 	<packaging>jar</packaging>
 	<name>Data Agregation (experiments)</name>
 
-
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -59,6 +57,14 @@
 			<version>0.1</version>
 			<artifactId>data-aggregation-lab-core</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>eu.europeana</groupId>
+			<artifactId>tools-pf</artifactId>
+			<version>0.1</version>
+		</dependency> 
+		
+		
 		<dependency>
 			<groupId>org.apache.jena</groupId>
 			<artifactId>jena-core</artifactId>

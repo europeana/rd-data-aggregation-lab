@@ -6,12 +6,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
-import inescid.dataaggregation.crawl.http.HttpRequestService;
 import inescid.dataaggregation.data.validation.EdmXmlValidator;
 import inescid.dataaggregation.data.validation.EdmXmlValidator.Schema;
 import inescid.dataaggregation.dataset.Global;
 import inescid.dataaggregation.wikidata.WikidataEdmConverter;
 import inescid.dataaggregation.wikidata.WikidataUtil;
+import inescid.http.HttpRequestService;
 import inescid.util.AccessException;
 
 public class GlobalMetadataTester {

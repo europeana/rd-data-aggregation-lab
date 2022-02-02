@@ -2,10 +2,10 @@ package inescid.dataaggregation.tests;
 
 import org.apache.jena.rdf.model.Model;
 
-import inescid.dataaggregation.crawl.http.HttpRequestService;
 import inescid.dataaggregation.dataset.Global;
 import inescid.dataaggregation.dataset.profile.tiers.EpfTiersCalculator;
 import inescid.dataaggregation.dataset.profile.tiers.TiersCalculation;
+import inescid.http.HttpRequestService;
 import inescid.util.HttpUtil;
 import inescid.util.RdfUtil;
 

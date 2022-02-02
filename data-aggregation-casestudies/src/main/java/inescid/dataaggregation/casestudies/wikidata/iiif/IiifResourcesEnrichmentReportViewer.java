@@ -11,7 +11,6 @@ import java.util.List;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import eu.europeana.ld.edm.ORE;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.data.model.RdfReg;
 import inescid.dataaggregation.data.model.DcTerms;
@@ -104,24 +103,26 @@ public class IiifResourcesEnrichmentReportViewer {
 				sb.append("    <li><a href=\""+c+"_wikimedia.html\">"+c+"</a> ("+
 						rep.enrichementsByWikimedia.get(c).size()+" CHOs)\n"); 
 				sb.append("<br />(rights in Europeana: ");
-				PropertyProfiler propertyProfiler = rep.edmUsageProfilers.get(c).getUsageStats().getClassStats(ORE.Aggregation.getURI()).getPropertiesProfiles().get(Edm.rights.getURI());
-				if (propertyProfiler==null) {
-					sb.append("data unavailable");
-				} else {
-					List<ValueDistribution> rightsValDistribution = propertyProfiler.getProfileOfValueDistribution().getDistribution();
-
-					if (rightsValDistribution.size()==0) {
-						sb.append("data unavailable");
-					} else if (rightsValDistribution.size()==1) {
-						sb.append(rightsValDistribution.get(0).value);
-					} else {
-						for(ValueDistribution vd: rightsValDistribution) {
-							sb.append(String.format("%s - %.1f%% ; ", vd.value, vd.distribution*100));
-						}
-					}
-				}
-				sb.append(")");
-				sb.append(")</li>\n");
+				
+				throw new RuntimeException("Code is outdated");
+//				PropertyProfiler propertyProfiler = rep.edmUsageProfilers.get(c).getUsageStats().getClassStats(ORE.Aggregation.getURI()).getPropertiesProfiles().get(Edm.rights.getURI());
+//				if (propertyProfiler==null) {
+//					sb.append("data unavailable");
+//				} else {
+//					List<ValueDistribution> rightsValDistribution = propertyProfiler.getProfileOfValueDistribution().getDistribution();
+//
+//					if (rightsValDistribution.size()==0) {
+//						sb.append("data unavailable");
+//					} else if (rightsValDistribution.size()==1) {
+//						sb.append(rightsValDistribution.get(0).value);
+//					} else {
+//						for(ValueDistribution vd: rightsValDistribution) {
+//							sb.append(String.format("%s - %.1f%% ; ", vd.value, vd.distribution*100));
+//						}
+//					}
+//				}
+//				sb.append(")");
+//				sb.append(")</li>\n");
 			}
 				sb.append("	</ul>\n"+
 				"<br />\n" + 

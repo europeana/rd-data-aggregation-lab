@@ -536,7 +536,7 @@ public class RdfUtil {
 		return sb.toString();
 	}
 
-	public static Set<Resource> findResourceWithProperties(Model model, Property propA, RDFNode valuePropA,
+	public static Set<Resource> findResourcesWithProperties(Model model, Property propA, RDFNode valuePropA,
 			Property propB, RDFNode valuePropB) {
 		Set<Resource> matching=null;
 		StmtIterator stms = model.listStatements(null, propA, valuePropA);

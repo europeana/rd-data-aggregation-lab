@@ -21,8 +21,6 @@ import org.apache.jena.shacl.Shapes;
 import org.apache.jena.shacl.ValidationReport;
 import org.apache.jena.shacl.lib.ShLib;
 
-import eu.europeana.ld.jena.JenaUtils;
-import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.data.model.Skos;
 import inescid.util.RdfUtil;

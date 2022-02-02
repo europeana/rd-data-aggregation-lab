@@ -1,0 +1,95 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix adms: <http://www.w3.org/ns/adms#> .
+@prefix cc: <http://creativecommons.org/ns#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix lcon: <http://www.w3.org/ns/locn#> .
+@prefix org: <http://www.w3.org/ns/org#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix odrl: <http://www.w3.org/ns/odrl/2/> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix spdx: <http://spdx.org/rdf/terms#> .
+@prefix time: <http://www.w3.org/2006/time#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix dcatap: <http://data.europa.eu/r5r> .
+
+<http://www.europeana.eu/catalogue/aggregated-datasets>
+	a dcat:Catalogue  ;
+#	dcat:dataset ...
+	dct:title "Europeana Cultural Heritage Digital Objects Datasets"@en ;
+	dct:description "The catalogue of all cultural heritage datasets aggregated by Europeana"@en ;
+	dct:publisher <http://www.europeana.eu/agent/europeana_foundation> ;
+	dct:creator <http://www.europeana.eu/agent/europeana_foundation> ;
+	foaf:homepage <https://www.europeana.eu/> ;
+	dct:license <https://creativecommons.org/licenses/publicdomain/> ;
+#	dct:issued "2020-08-17"^^xsd:dateTime ; 
+#	dct:modified "2020-08-17T23:57:00"^^xsd:dateTime ; 
+	dct:language <http://publications.europa.eu/resource/authority/language/ENG> ;
+#	dct:language [
+#		a dct:LinguisticSystem;
+#		rdf:value: "en"^^xsd:language  .		
+#	] ;
+	dct:spatial <https://sws.geonames.org/6255148/> ;
+	dcat:dataset <http://www.europeana.eu/dataset/own> ;
+#	dcat:dataset <http://www.europeana.eu/dataset/provider_id> ;
+	dcat:themeTaxonomy <http://publications.europa.eu/resource/dataset/data-theme> .
+
+
+<https://creativecommons.org/licenses/publicdomain/> 
+		a dct:LicenseDocument;
+		dct:type: <http://purl.org/adms/licencetype/PublicDomain> .		
+
+
+<http://www.europeana.eu/agent/europeana_foundation>
+	a foaf:Agent ;
+	foaf:name "Europeana Foundation"@en ;
+	foaf:name "Stichting Europeana"@nl ;
+	dct:type <http://purl.org/adms/publishertype/NonProfitOrganisation>
+	.
+
+<https://creativecommons.org/licenses/publicdomain/> 
+	a dct:LicenseDocument .
+	
+<https://www.europeana.eu/>
+	a foaf:Document .
+		
+<https://sws.geonames.org/6255148/> 
+	a dct:Location;
+#	dcat:centroid 
+#	        <wgs84_pos:lat>48.69096</wgs84_pos:lat>
+#        <wgs84_pos:long>9.14062</wgs84_pos:long>
+.
+
+<http://www.europeana.eu/dataset/own>
+	a dcat:Dataset	
+	dct:description "A dataset containing metadata description of cultural heritage digital objects from, and about, europe. The dataset aggregates metadata from more than 3,700 cultural heritage institutions."@en;
+	dct:title "Europeana Aggregated Dataset of Cultural Heritage Digital Objects"@en; 
+	dct:publisher <http://www.europeana.eu/agent/europeana_foundation> ;
+	dct:creator <http://www.europeana.eu/agent/europeana_foundation> ;
+	dct:spatial <https://sws.geonames.org/6255148/> ;
+	dcat:accessService [
+		a dcat:DataService
+		dcat:endpointURL  <http://sparql.europeana.eu/>
+        dcterms:conformsTo <http://www.w3.org/TR/sparql11-query/>
+
+	] ;
+	dcat:distribution
+		dcat:accessUrl <https://pro.europeana.eu/page/sparql>
+	
+	EUROPEANA SPARQL API
+	
+	
+.
+	
+	
+	
+	
+	
+	

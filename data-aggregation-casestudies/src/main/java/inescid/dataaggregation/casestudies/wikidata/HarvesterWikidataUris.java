@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 
 import inescid.dataaggregation.crawl.http.CachedHttpRequestService;
-import inescid.dataaggregation.crawl.http.HttpResponse;
 import inescid.dataaggregation.dataset.Global;
 import inescid.util.AccessException;
 import inescid.util.SparqlClient.Handler;
 import inescid.dataaggregation.wikidata.SparqlClientWikidata;
+import inescid.dataaggregation.crawl.http.HttpResponse;
 
 public class HarvesterWikidataUris {
 

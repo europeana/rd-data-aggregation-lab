@@ -30,9 +30,9 @@ import org.h2.mvstore.MVStore;
 import inescid.dataaggregation.casestudies.providersstructureddata.ReportSchemaOrgOfEuropeanaProviders.ReportOfProvider;
 import inescid.dataaggregation.crawl.http.HttpRequest;
 import inescid.dataaggregation.crawl.http.HttpRequestService;
-import inescid.dataaggregation.crawl.http.UrlRequest;
 import inescid.dataaggregation.dataset.Global;
 import inescid.europeanaapi.clients.webresourcedata.ReportOfSchemaOrgInHtml;
+
 import inescid.util.RdfUtil.Jena;
 
 public class ScriptCheckSchemaOrgOfEuropeanaProviders {

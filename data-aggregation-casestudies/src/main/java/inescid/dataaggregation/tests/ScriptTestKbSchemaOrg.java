@@ -12,10 +12,10 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Resource;
 import org.w3c.dom.Document;
 
-import inescid.dataaggregation.crawl.http.HttpRequest;
 import inescid.dataaggregation.dataset.Global;
 import inescid.dataaggregation.dataset.convert.RdfDeserializer;
 import inescid.dataaggregation.dataset.convert.SchemaOrgToEdmDataConverter;
+import inescid.dataaggregation.crawl.http.HttpRequest;
 import inescid.util.HttpUtil;
 import inescid.util.RdfUtil;
 import inescid.util.XmlUtil;

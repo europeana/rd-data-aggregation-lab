@@ -26,9 +26,6 @@ import com.google.gson.stream.JsonToken;
 import eu.europeana.research.iiif.crawl.Collection;
 import eu.europeana.research.iiif.discovery.model.IiifSeeAlsoReference;
 import eu.europeana.research.iiif.discovery.model.OrderedCollection;
-import inescid.dataaggregation.crawl.http.HttpRequest;
-import inescid.dataaggregation.crawl.http.UrlRequest;
-import inescid.dataaggregation.crawl.http.UrlRequest.HttpMethod;
 import inescid.dataaggregation.data.ContentTypes;
 import inescid.dataaggregation.dataset.Dataset;
 import inescid.dataaggregation.dataset.Global;
@@ -40,6 +37,9 @@ import inescid.dataaggregation.dataset.detection.DataTypeResult;
 import inescid.dataaggregation.dataset.IiifDataset.IiifCrawlMethod;
 import inescid.dataaggregation.dataset.job.JobRunner;
 import inescid.dataaggregation.dataset.view.GlobalFrontend;
+import inescid.http.HttpRequest;
+import inescid.http.UrlRequest;
+import inescid.http.UrlRequest.HttpMethod;
 public class IiifForm extends DatasetForm {
 	private static org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(IiifForm.class);
 	

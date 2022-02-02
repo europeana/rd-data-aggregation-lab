@@ -18,7 +18,7 @@ import com.google.gson.JsonSyntaxException;
 import eu.europeana.research.iiif.profile.UsageCount;
 import eu.europeana.research.iiif.profile.model.Manifest;
 import eu.europeana.research.iiif.profile.model.SeeAlso;
-import inescid.dataaggregation.crawl.http.HttpRequest;
+import inescid.http.HttpRequest;
 import inescid.util.AccessException;
 import inescid.util.RdfUtil;
 import inescid.util.RdfUtil.Jena;

@@ -22,7 +22,6 @@ import eu.europeana.research.iiif.discovery.syncdb.InMemoryTimestampStore;
 import eu.europeana.research.iiif.discovery.syncdb.TimestampTracker;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
-import inescid.dataaggregation.crawl.http.HttpRequestService;
 import inescid.dataaggregation.dataset.Global;
 import inescid.dataaggregation.dataset.job.JobRunner;
 import inescid.dataaggregation.dataset.view.registry.RegistryServlet;
@@ -30,6 +29,7 @@ import inescid.dataaggregation.dataset.view.registry.View;
 import inescid.dataaggregation.store.DatasetRegistryRepository;
 import inescid.dataaggregation.store.PublicationRepository;
 import inescid.dataaggregation.store.Repository;
+import inescid.http.HttpRequestService;
 
 public class GlobalFrontend {
 //	public static Pattern urlPattern=Pattern.compile("^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");

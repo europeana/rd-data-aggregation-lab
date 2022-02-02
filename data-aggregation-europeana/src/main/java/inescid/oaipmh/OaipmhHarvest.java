@@ -348,24 +348,15 @@ public class OaipmhHarvest implements Iterator<OaiPmhRecord> {
                 movingCount = totalRetrievedRecords;
                 movingSteps++;
                 return listRecords;
-            } catch (SAXParseException e) {
+            } catch (SAXParseException | IllegalArgumentException | java.io.CharConversionException e) {
                 String recoveredResumptionToken = recoverResumptionToken(getRequestURL(baseURL, nextResumptionToken));
-                System.out.println("");
-                if(recoveredResumptionToken!=null && !recoveredResumptionToken.isEmpty())
+                if(recoveredResumptionToken!=null && !recoveredResumptionToken.isEmpty()) {
+                	log("WARN: unparsable XML moving to next resumptionToken: "+recoveredResumptionToken);
                     nextResumptionToken=recoveredResumptionToken;
-                else {
+                } else {
                     // cannot continue, because we can't find
                     // the next token => next token is null
-                    nextResumptionToken = null;
-                    throw e;
-                }
-            } catch (java.io.CharConversionException e) {
-                String recoveredResumptionToken = recoverResumptionToken(getRequestURL(baseURL, nextResumptionToken));
-                if(recoveredResumptionToken!=null && !recoveredResumptionToken.isEmpty())
-                    nextResumptionToken=recoveredResumptionToken;
-                else {
-                    // cannot continue, because we can't find
-                    // the next token => next token is null
+                	log("WARN: could not recover the resumptionToken: "+recoveredResumptionToken);
                     nextResumptionToken = null;
                     throw e;
                 }

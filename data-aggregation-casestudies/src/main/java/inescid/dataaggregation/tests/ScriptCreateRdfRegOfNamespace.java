@@ -17,14 +17,14 @@ public class ScriptCreateRdfRegOfNamespace {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		http://www.wikidata.org/entity.json
 		try { 
 			Global.init_developement();
 			String nsLocation = null;
 
-			String name="Ebucore";
-			String ns = "http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#";
-
+//			String name="Ebucore";
+//			String ns = "http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#";
+			String name="cc";
+			String ns = "http://creativecommons.org/ns#";
 			
 //			public static String NsDcmiType="http://purl.org/dc/dcmitype/";
 //			public static String NsCc="http://creativecommons.org/ns#";

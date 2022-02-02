@@ -5,9 +5,9 @@ import java.io.File;
 import org.h2.mvstore.MVMap;
 import org.h2.mvstore.MVStore;
 
-import inescid.europeana.dataprocessing.EdmMeasurementSet;
-import inescid.europeana.dataprocessing.ProcessRepositoryForEdmMeasurements;
-import inescid.europeana.dataprocessing.ProgressTrackerOnFile;
+import europeana.rnd.dataprocessing.EdmMeasurementSet;
+import europeana.rnd.dataprocessing.ProcessRepositoryForEdmMeasurements;
+import europeana.rnd.dataprocessing.ProgressTrackerOnFile;
 import inescid.europeanarepository.EdmMongoServer;
 import inescid.europeanarepository.EdmMongoServer.Handler;
 

@@ -14,10 +14,10 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.StmtIterator;
 
 import inescid.dataaggregation.crawl.http.CachedHttpRequestService;
-import inescid.dataaggregation.crawl.http.HttpRequestService;
-import inescid.dataaggregation.crawl.http.HttpResponse;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.dataset.Global;
+import inescid.dataaggregation.crawl.http.HttpRequestService;
+import inescid.dataaggregation.crawl.http.HttpResponse;
 import inescid.util.RdfUtil;
 
 public class ScriptTestCalculator {
