@@ -112,7 +112,8 @@ public class ScriptDebugNormalizeDates {
 				
 //				"1990-"
 //				"22.07.1971 (identification)"
-				"-2100/-1550"
+//				"-2100/-1550"
+				"187-?]"
 		}) {
 			System.out.println(test);
 			r = DatesExtractorHandler.runDateNormalization(test);

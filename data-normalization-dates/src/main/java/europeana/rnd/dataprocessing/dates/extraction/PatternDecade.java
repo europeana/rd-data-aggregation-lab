@@ -17,6 +17,9 @@ public class PatternDecade implements DateExtractor {
 		Date d=new Date();
 		d.setYearPrecision(YearPrecision.DECADE);
 		d.setYear(Integer.parseInt(m.group(1))*10);
+		String inputTrimmed = inputValue.trim();
+		if (inputTrimmed.length()==5)
+			d.setUncertain(true);
 		return new Match(MatchId.Decade, inputValue, new Instant(d));
 	}
 	

@@ -56,11 +56,11 @@ public class EdtfSerializer {
 		if(date.getYearPrecision()!=null) {
 			switch (date.getYearPrecision()) {
 			case MILLENIUM:
-				return prefix+yearStr.substring(3,4)+"XXX";
+				return prefix+yearStr.substring(0,1)+"XXX";
 			case CENTURY:
-				return prefix+yearStr.substring(2,4)+"XX";
+				return prefix+yearStr.substring(0,2)+"XX";
 			case DECADE:
-				return prefix+yearStr.substring(1,4)+"X";
+				return prefix+yearStr.substring(0,3)+"X";
 			case YEAR:
 				return prefix+yearStr;
 			} 
