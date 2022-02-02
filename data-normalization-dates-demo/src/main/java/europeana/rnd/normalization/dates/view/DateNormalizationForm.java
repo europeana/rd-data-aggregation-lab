@@ -109,7 +109,7 @@ public class DateNormalizationForm extends UriForm {
 	}
 
 	public static String convertToCanonical(String idOrUri) {
-		if(!idOrUri.startsWith("http://")) 
+		if(!idOrUri.startsWith("http://") && !idOrUri.startsWith("https://")) 
 			idOrUri="http://data.europeana.eu/item"+
 					(idOrUri.startsWith("/") ? "" : "/") +
 					idOrUri;
