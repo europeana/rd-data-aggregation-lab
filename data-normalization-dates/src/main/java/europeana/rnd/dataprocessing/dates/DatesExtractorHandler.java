@@ -141,7 +141,6 @@ public class DatesExtractorHandler {
 	
 	private void handleResult(String choUri, DateValue dateValue) {
 		try {
-			System.out.println(dateValue);
 			stats.add(choUri, dateValue);
 			Writer wrt=getWriterForMatch(dateValue.match.getMatchId());
 			wrt.write(escape(dateValue.match.getInput()));
