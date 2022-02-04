@@ -21,7 +21,7 @@ public class PatternFormatedFullDate implements DateExtractor {
 
 	//	2018-03-27 09:08:34
 	//year month day hour minute second
-	Pattern patFormatedDate3=Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})");
+	Pattern patFormatedDate3=Pattern.compile("(\\d{4})-(\\d{2})-(\\d{2}) (\\d{2}):(\\d{2}):(\\d{2})(\\.\\d{1,3})?");
 
 	public Match extract(String inputValue) {
 		Matcher m=patFormatedDate2.matcher(inputValue); 

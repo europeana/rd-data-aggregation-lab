@@ -114,20 +114,20 @@ public class RdfUtil {
 						);
 			return null;
 		}
-		private static RDFNode createLiteral(Node n) {
+		public static RDFNode createLiteral(Node n) {
 			if(n.getLiteralLanguage()!=null)
 				return createLiteral(n.getLiteralValue(), n.getLiteralLanguage());
 			if(n.getLiteralDatatype()!=null)
 				return createLiteral(n.getLiteralValue(), n.getLiteralDatatype());
 			return createLiteral(n.getLiteralValue()); 
 		}
-		private static RDFNode createLiteral(Object literalValue, String literalLanguage) {
+		public static RDFNode createLiteral(Object literalValue, String literalLanguage) {
 			return ResourceFactory.createLangLiteral(literalValue.toString(), literalLanguage);
 		}
-		private static RDFNode createLiteral(Object literalValue, RDFDatatype rdfDatatype) {
+		public static RDFNode createLiteral(Object literalValue, RDFDatatype rdfDatatype) {
 			return ResourceFactory.createTypedLiteral(literalValue.toString(), rdfDatatype);
 		}
-		private static RDFNode createLiteral(Object literalValue) {
+		public static RDFNode createLiteral(Object literalValue) {
 			return ResourceFactory.createPlainLiteral(literalValue.toString());
 		}
 	}

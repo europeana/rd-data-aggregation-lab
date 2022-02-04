@@ -1,6 +1,13 @@
 package europeana.rnd.dataprocessing.dates;
 
+import java.io.File;
+
 import europeana.rnd.dataprocessing.dates.extraction.Match;
+import europeana.rnd.dataprocessing.dates.stats.DateExtractionStatistics;
+import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
+import inescid.dataaggregation.data.model.Dc;
+import inescid.util.RdfUtil;
+import inescid.util.RdfUtil.Jena;
 
 public class ScriptDebugNormalizeDates {
 	public static void main(String[] args) throws Exception {
@@ -17,6 +24,7 @@ public class ScriptDebugNormalizeDates {
 
 		
 		
+		DateExtractionStatistics des=new DateExtractionStatistics();
 		Match r;
 		for(String test: new String[] {
 //				"XIV",
@@ -113,15 +121,21 @@ public class ScriptDebugNormalizeDates {
 //				"1990-"
 //				"22.07.1971 (identification)"
 //				"-2100/-1550"
-				"187-?]"
+//				"187-?]"
+				"21.1.1921",
+				"2014/15"
 		}) {
+			DatesInRecord datesInRec=new DatesInRecord("http://data.europeana.eu/item/00000/exampleCHO");
+			datesInRec.addToProviderProxy(Dc.date, Jena.createLiteral(test).asLiteral());
 			System.out.println(test);
 			r = DatesExtractorHandler.runDateNormalization(test);
+			DatesExtractorHandler.runDateNormalization(datesInRec);
 			System.out.println(r.getCleanOperation());
 			System.out.println(r.getMatchId());
 			System.out.println(r.getExtracted());
+			des.add(datesInRec.getChoUri(), datesInRec.getAllValuesDetailed().get(0));
 		}
-		
-
+//		des.save(new File("target"));	
+		HtmlExporter.export(des, new File("target"));
 	}
 }
