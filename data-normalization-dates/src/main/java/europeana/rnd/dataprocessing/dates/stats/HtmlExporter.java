@@ -119,7 +119,6 @@ public class HtmlExporter {
 		for(String col: cols) {
 			writer.append("<hr /><h2>Examples from "+label+" '"+col+"'</h2>");			
 			Map<MatchId, Examples> matchStats = statsByCollection.get(col);
-			boolean first=true;
 			ArrayList<MatchId> matchIds=new ArrayList<MatchId>(matchStats.keySet());
 			Collections.sort(matchIds, new Comparator<MatchId>() {
 				@Override

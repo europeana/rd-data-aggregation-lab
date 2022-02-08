@@ -133,4 +133,24 @@ public class EdmRdfUtil {
 		return new AccessException("HTTP-status:"+con.getResponseStatusCode() +" ; "+con.getUrl(), String.valueOf(con.getResponseStatusCode()), body);
 	}
 
+	public static Resource getProxyOfProvider(Model edm) {
+		ResIterator proxies = edm.listResourcesWithProperty(Rdf.type, Ore.Proxy);
+		for(Resource proxy: proxies.toList()) {
+			Statement isEuropeanaProxy = proxy.getProperty(Edm.europeanaProxy);
+			if(isEuropeanaProxy==null)
+				return proxy;
+		}
+		return null;
+	}
+
+	public static Resource getProxyOfEuropeana(Model edm) {
+		ResIterator proxies = edm.listResourcesWithProperty(Rdf.type, Ore.Proxy);
+		for(Resource proxy: proxies.toList()) {
+			Statement isEuropeanaProxy = proxy.getProperty(Edm.europeanaProxy);
+			if(isEuropeanaProxy!=null)
+				return proxy;
+		}
+		return null;
+	}
+
 }

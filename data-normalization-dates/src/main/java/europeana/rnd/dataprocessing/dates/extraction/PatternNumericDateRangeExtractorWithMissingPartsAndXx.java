@@ -26,40 +26,41 @@ public class PatternNumericDateRangeExtractorWithMissingPartsAndXx implements Da
 	public PatternNumericDateRangeExtractorWithMissingPartsAndXx() {
 		String dateSep="\\s*[\\/\\|]\\s*";
 		String componentSep="[\\-]";
-		String componentMissing="[\\d\\?Xu][\\d\\?Xu]";
+		String componentMissing="[\\?Xu]";
 		
-		String dateYmd="\\s*((?<year>\\d\\d"+componentMissing+"?)(?<month>"+componentSep+componentMissing+"?)?(?<day>"+componentSep+componentMissing+"?)?|(?<unspecified>\\?))\\s*";
-		String dateDmy="\\s*((?<day>"+componentMissing+"?"+componentSep+")?(?<month>"+componentMissing+"?"+componentSep+")?(?<year>\\d\\d"+componentMissing+"?)|(?<unspecified>\\?))\\s*";
+		String dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
+		String dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 		patterns.add(Pattern.compile(dateDmy+dateSep+dateDmy.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
+
 		componentSep="[\\.]";
-		componentMissing="[\\-\\d\\?Xu][\\-\\d\\?Xu]";
-		dateYmd="\\s*((?<year>\\d\\d"+componentMissing+"?)(?<month>"+componentSep+componentMissing+"?)?(?<day>"+componentSep+componentMissing+"?)?|(?<unspecified>\\?))\\s*";
-		dateDmy="\\s*((?<day>"+componentMissing+"?"+componentSep+")?(?<month>"+componentMissing+"?"+componentSep+")?(?<year>\\d\\d"+componentMissing+"?)|(?<unspecified>\\?))\\s*";
+		componentMissing="[\\-\\?Xu]";
+		dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
+		dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 		patterns.add(Pattern.compile(dateDmy+dateSep+dateDmy.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 
 		dateSep="\\s+[\\-\\|]\\s+";
 		componentSep="[\\./]";
-		componentMissing="[\\-\\d\\?Xu][\\-\\d\\?Xu]";
-		dateYmd="\\s*((?<year>\\d\\d"+componentMissing+"?)(?<month>"+componentSep+componentMissing+"?)?(?<day>"+componentSep+componentMissing+"?)?|(?<unspecified>\\?))\\s*";
-		dateDmy="\\s*((?<day>"+componentMissing+"?"+componentSep+")?(?<month>"+componentMissing+"?"+componentSep+")?(?<year>\\d\\d"+componentMissing+"?)|(?<unspecified>\\?))\\s*";
+		componentMissing="[\\-\\?Xu]";
+		dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
+		dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 		patterns.add(Pattern.compile(dateDmy+dateSep+dateDmy.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 
 		dateSep="\\s+-\\s+";
 		componentSep="[\\-]";
-		componentMissing="[\\d\\?Xu][\\d\\?Xu]";
-		dateYmd="\\s*((?<year>\\d\\d"+componentMissing+"?)(?<month>"+componentSep+componentMissing+"?)?(?<day>"+componentSep+componentMissing+"?)?|(?<unspecified>\\?))\\s*";
-		dateDmy="\\s*((?<day>"+componentMissing+"?"+componentSep+")?(?<month>"+componentMissing+"?"+componentSep+")?(?<year>\\d\\d"+componentMissing+"?)|(?<unspecified>\\?))\\s*";
+		componentMissing="[\\?Xu]";
+		dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
+		dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 		patterns.add(Pattern.compile(dateDmy+dateSep+dateDmy.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 		
 		dateSep="-";
 		componentSep="[\\./]";
-		componentMissing="[\\-\\d\\?Xu][\\-\\d\\?Xu]";
-		dateYmd="\\s*((?<year>\\d\\d"+componentMissing+"?)(?<month>"+componentSep+componentMissing+"?)?(?<day>"+componentSep+componentMissing+"?)?|(?<unspecified>\\?))\\s*";
-		dateDmy="\\s*((?<day>"+componentMissing+"?"+componentSep+")?(?<month>"+componentMissing+"?"+componentSep+")?(?<year>\\d\\d"+componentMissing+"?)|(?<unspecified>\\?))\\s*";
+		componentMissing="[\\?Xu]";
+		dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
+		dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 		patterns.add(Pattern.compile(dateDmy+dateSep+dateDmy.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 	}
@@ -77,11 +78,13 @@ public class PatternNumericDateRangeExtractorWithMissingPartsAndXx implements Da
 					if(!mtc.find())
 						dStart.setYear(Integer.parseInt(year));
 					else {
-						dStart.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length())));
-						if(mtc.group(0).length()==2)
+						if(mtc.group(0).length()==2) {
+							dStart.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length()))*100);
 							dStart.setYearPrecision(YearPrecision.CENTURY);
-						else
+						} else {
+							dStart.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length()))*10);
 							dStart.setYearPrecision(YearPrecision.DECADE);
+						}
 					}
 					
 					String month = m.group("month");
@@ -111,11 +114,13 @@ public class PatternNumericDateRangeExtractorWithMissingPartsAndXx implements Da
 					if(!mtc.find())
 						dEnd.setYear(Integer.parseInt(year));
 					else {
-						dEnd.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length())));
-						if(mtc.group(0).length()==2)
+						if(mtc.group(0).length()==2) {
+							dEnd.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length()))*100);
 							dEnd.setYearPrecision(YearPrecision.CENTURY);
-						else
+						} else {
+							dEnd.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length()))*10);
 							dEnd.setYearPrecision(YearPrecision.DECADE);
+						}
 					}
 					
 					String month = m.group("month2");
