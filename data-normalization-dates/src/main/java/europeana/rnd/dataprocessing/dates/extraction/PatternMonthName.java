@@ -44,7 +44,7 @@ public class PatternMonthName implements DateExtractor {
 				d.setYear(Integer.parseInt(m.group(3)));
 				d.setMonth(month.getValue());
 				d.setDay(Integer.parseInt(m.group(1)));
-				return new Match(MatchId.MONTH_NAME_DAY_YEAR, inputValue, new Instant(d));
+				return new Match(MatchId.MONTH_NAME, inputValue, new Instant(d));
 			}
 			m=patternMonthDayYear.get(month).matcher(inputValue); 
 			if(m.matches()) {
@@ -52,14 +52,14 @@ public class PatternMonthName implements DateExtractor {
 				d.setYear(Integer.parseInt(m.group(3)));
 				d.setMonth(month.getValue());
 				d.setDay(Integer.parseInt(m.group(2)));
-				return new Match(MatchId.MONTH_NAME_DAY_YEAR, inputValue, new Instant(d));
+				return new Match(MatchId.MONTH_NAME, inputValue, new Instant(d));
 			}
 			m=patternMonthYear.get(month).matcher(inputValue); 
 			if(m.matches()) {
 				Date d=new Date();
 				d.setYear(Integer.parseInt(m.group(2)));
 				d.setMonth(month.getValue());
-				return new Match(MatchId.MONTH_NAME_YEAR, inputValue, new Instant(d));
+				return new Match(MatchId.MONTH_NAME, inputValue, new Instant(d));
 			}
 		}
 		return null;

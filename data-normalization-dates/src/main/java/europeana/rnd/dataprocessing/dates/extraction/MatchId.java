@@ -5,7 +5,8 @@ public enum MatchId {
 	YYYY, xYYYYx
 	,YYYY_Range_Open, YYYY_Range, DCMIPeriod, YYYY_MM_DD, xYYYY_MM_DDx
 	,YYYYMMDD_Range_Open, YYYYMMDD_Range,
-	MONTH_NAME_DAY_YEAR, MONTH_NAME_YEAR, FormatedFullDate, YYYY_MM, xYYYY_MMx, DD_MM_YYYY, xDD_MM_YYYYx, 
+	//MONTH_NAME_DAY_YEAR,
+	MONTH_NAME, FormatedFullDate, YYYY_MM, xYYYY_MMx, DD_MM_YYYY, xDD_MM_YYYYx, 
 	Century_Numeric, 
 	Century_Roman, Century_Range_Roman,
 //	CenturyX, 
@@ -31,8 +32,8 @@ public enum MatchId {
 		case Iso8601BriefDateRange: return "ISO 8601 brief (interval)";
 		case Iso8601Date: return "ISO 8601";
 		case Iso8601DateRange: return "ISO 8601 (interval)";
-		case MONTH_NAME_DAY_YEAR: return "month name, day and year";
-		case MONTH_NAME_YEAR: return "month name and year";
+//		case MONTH_NAME_DAY_YEAR: return "month name, day and year";
+		case MONTH_NAME: return "with month name";
 		case Numeric_AllVariants: return "numeric date (various separators)";
 		case Numeric_AllVariants_Xx: return "numeric date (various separators and unknown parts)";
 		case Numeric_Range_AllVariants: return "numeric date interval (various separators)";
