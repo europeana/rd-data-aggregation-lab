@@ -8,8 +8,8 @@ import java.text.ParseException;
 
 public class EdtfParser {
 	
-	private static final Pattern DATE_PATTERN=Pattern.compile("((?<year1>\\d{4})-(?<month1>\\d{2})-(?<day1>\\d{2})|"
-			+ "(?<year2>\\d{4})-(?<month2>\\d{2})|"
+	private static final Pattern DATE_PATTERN=Pattern.compile("((?<year1>\\-?\\d{4})-(?<month1>\\d{2})-(?<day1>\\d{2})|"
+			+ "(?<year2>\\-?\\d{4})-(?<month2>\\d{2})|"
 			+ "(?<year3>\\-?\\d{4})"
 			+ ")(?<modifier>[\\?%~]?)");
 	private static final Pattern TIME_PATTERN=Pattern.compile("((?<hour1>\\d{2}):(?<minute1>\\d{2}):(?<second1>\\d{2})|"+
@@ -41,7 +41,11 @@ public class EdtfParser {
 	protected Interval parseInterval(String edtfString) throws ParseException {
 		String startPart=edtfString.substring(0,edtfString.indexOf('/'));
 		String endPart=edtfString.substring(edtfString.indexOf('/')+1);
-		return new Interval(parseInstant(startPart), parseInstant(endPart));			
+		Instant start = parseInstant(startPart);
+		Instant end = parseInstant(endPart);
+		if((end.date.isUnkown() || end.date.isUnspecified()) && (start.date.isUnkown() || start.date.isUnspecified()))
+			throw new ParseException(edtfString, 0);
+		return new Interval(start, end);
 	}
 	
 	protected Time parseTime(String edtfString) throws ParseException {

@@ -33,7 +33,7 @@ public class EdtfSerializer {
 					buf.append("?");
 			}
 		}
-		if(edtf.getTime()!=null) {
+		if(edtf.getTime()!=null && (edtf.getTime().getHour()!=0 || edtf.getTime().getMinute()!=0 || edtf.getTime().getSecond()!=0)) {
 			buf.append("T").append(padInt(edtf.getTime().getHour(),2));
 			if (edtf.getTime().getMinute()!=null) {
 				buf.append(":").append(padInt(edtf.getTime().getMinute(),2));
@@ -61,8 +61,6 @@ public class EdtfSerializer {
 				return prefix+yearStr.substring(0,2)+"XX";
 			case DECADE:
 				return prefix+yearStr.substring(0,3)+"X";
-			case YEAR:
-				return prefix+yearStr;
 			} 
 		}
 		return prefix+yearStr;

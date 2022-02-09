@@ -43,11 +43,13 @@ public class PatternNumericDateExtractorWithMissingPartsAndXx implements DateExt
 				if(!mtc.find())
 					d.setYear(Integer.parseInt(year));
 				else {
-					d.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length())));
-					if(mtc.group(0).length()==2)
+					if(mtc.group(0).length()==2) {
 						d.setYearPrecision(YearPrecision.CENTURY);
-					else
+						d.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length()))*100);
+					} else {
 						d.setYearPrecision(YearPrecision.DECADE);
+						d.setYear(Integer.parseInt(year.substring(0, year.length()-mtc.group(0).length()))*10);
+					}
 				}
 
 				String month = m.group("month");

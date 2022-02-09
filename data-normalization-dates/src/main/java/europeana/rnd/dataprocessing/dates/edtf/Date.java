@@ -1,7 +1,7 @@
 package europeana.rnd.dataprocessing.dates.edtf;
 
 public class Date {
-	public enum YearPrecision { MILLENIUM, CENTURY, DECADE, YEAR };
+	public enum YearPrecision { MILLENIUM, CENTURY, DECADE };
 	
 	public static final Date UNKNOWN=new Date() {
 		{
@@ -54,13 +54,13 @@ public class Date {
 		return month;
 	}
 	public void setMonth(Integer month) {
-		this.month = month;
+		this.month = month == 0 ? null : month;
 	}
 	public Integer getDay() {
 		return day;
 	}
 	public void setDay(Integer day) {
-		this.day = day;
+		this.day = day == 0 ? null : day;
 	}
 	public boolean isUnspecified() {
 		return unspecified;

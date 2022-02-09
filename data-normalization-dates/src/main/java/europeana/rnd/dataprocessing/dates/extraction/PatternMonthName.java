@@ -28,9 +28,9 @@ public class PatternMonthName implements DateExtractor {
 			}
 			monthNamesPattern+=")";
 
-			patternDayMonthYear.put(month, Pattern.compile("[\\s\\[]*(\\d\\d?)[\\s\\w\\.,]{1,4}"+monthNamesPattern+"[\\s\\.,\\w]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
-			patternMonthDayYear.put(month, Pattern.compile("[\\s\\[]*"+monthNamesPattern+"[\\s\\.\\w,]{1,4}(\\d\\d?)[\\s\\.,\\w]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
-			patternMonthYear.put(month, Pattern.compile("[\\s\\[]*"+monthNamesPattern+"[\\s\\.,\\w]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
+			patternDayMonthYear.put(month, Pattern.compile("[\\s\\[]*(\\d\\d?)[\\sa-zA-Z_\\.,]{1,4}"+monthNamesPattern+"[\\s\\.,a-zA-Z_]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
+			patternMonthDayYear.put(month, Pattern.compile("[\\s\\[]*"+monthNamesPattern+"[\\s\\.a-zA-Z_,]{1,4}(\\d\\d?)[\\s\\.,a-zA-Z_]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
+			patternMonthYear.put(month, Pattern.compile("[\\s\\[]*"+monthNamesPattern+"[\\s\\.,a-zA-Z_]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
 		}
 		
 	}

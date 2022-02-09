@@ -12,11 +12,12 @@ public enum MatchId {
 	Numeric_Range_AllVariants, Numeric_Range_AllVariants_Xx,
 	Numeric_AllVariants, Decade, Numeric_AllVariants_Xx, 
 	Iso8601Date, Iso8601BriefDate, Iso8601BriefDateRange, Iso8601DateRange, 
-	YYYY_MM_DD_Spaces, BcAd, Edtf;
+	YYYY_MM_DD_Spaces, BcAd, Edtf, INVALID;
 
 	public String getLabel() {
 		switch (this) {
 		case NO_MATCH: return "no match";
+		case INVALID: return "invalid";
 		case BcAd: return "BC/AD";
 		case Century_Numeric: return "century (numeric)";
 		case Century_Range_Roman: return "century range (roman numerals)";

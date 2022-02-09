@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
+import europeana.rnd.dataprocessing.dates.edtf.EdtfValidator;
 import europeana.rnd.dataprocessing.dates.extraction.Cleaner;
 import europeana.rnd.dataprocessing.dates.extraction.DateExtractor;
 import europeana.rnd.dataprocessing.dates.extraction.DcmiPeriodExtractor;
@@ -77,11 +78,13 @@ public class DatesExtractorHandler {
 		for(Match val: rec.getAllValues()) {
 			try {
 				Match extracted=runDateNormalization(val.getInput()); 
+				if(extracted.getMatchId()!=MatchId.NO_MATCH)
+					if(!EdtfValidator.validate(extracted.getExtracted())) 
+						extracted.setMatchId(MatchId.INVALID);
 				val.setResult(extracted);
 			} catch (Exception e) {
 				System.err.println("Error in value: "+val.getInput());
 				e.printStackTrace();
-				
 				val.setResult(new Match(MatchId.NO_MATCH, val.getInput(), null));
 			}
 		}

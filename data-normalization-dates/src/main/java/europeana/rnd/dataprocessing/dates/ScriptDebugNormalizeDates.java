@@ -3,7 +3,9 @@ package europeana.rnd.dataprocessing.dates;
 import java.io.File;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
+import europeana.rnd.dataprocessing.dates.edtf.EdtfValidator;
 import europeana.rnd.dataprocessing.dates.extraction.Match;
+import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 import europeana.rnd.dataprocessing.dates.stats.DateExtractionStatistics;
 import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
 import inescid.dataaggregation.data.model.Dc;
@@ -136,7 +138,9 @@ public class ScriptDebugNormalizeDates {
 //				"01?-1905",
 //				"15/21-8-1918",
 //				"199--09-28",
-				"19960216-19960619"
+//				"19960216-19960619"
+				"-0549-01-01T00:00:00Z",
+				"1740-00-00"
 				
 		}) {
 			datesInRec.addToProviderProxy(Dc.date, Jena.createLiteral(test).asLiteral());
@@ -145,6 +149,9 @@ public class ScriptDebugNormalizeDates {
 			System.out.println(r.getCleanOperation());
 			System.out.println(r.getMatchId());
 			System.out.println(r.getExtracted());
+			if (r.getMatchId()!=MatchId.NO_MATCH) {
+				System.out.println("valid: "+EdtfValidator.validate(r.getExtracted()));
+			}
 		}
 		DatesExtractorHandler.runDateNormalization(datesInRec);
 		for(DateValue dv: datesInRec.getAllValuesDetailed()) 
