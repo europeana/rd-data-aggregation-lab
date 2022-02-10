@@ -13,6 +13,8 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
 import europeana.rnd.dataprocessing.dates.edtf.EdtfValidator;
+import europeana.rnd.dataprocessing.dates.edtf.Instant;
+import europeana.rnd.dataprocessing.dates.edtf.Interval;
 import europeana.rnd.dataprocessing.dates.extraction.Cleaner;
 import europeana.rnd.dataprocessing.dates.extraction.DateExtractor;
 import europeana.rnd.dataprocessing.dates.extraction.DcmiPeriodExtractor;
@@ -79,8 +81,21 @@ public class DatesExtractorHandler {
 			try {
 				Match extracted=runDateNormalization(val.getInput()); 
 				if(extracted.getMatchId()!=MatchId.NO_MATCH)
-					if(!EdtfValidator.validate(extracted.getExtracted())) 
-						extracted.setMatchId(MatchId.INVALID);
+					if(!EdtfValidator.validate(extracted.getExtracted())) {
+						if(extracted.getExtracted() instanceof Interval) {
+							//lets try to invert the start and end dates and see if it validates
+							Interval i=(Interval)extracted.getExtracted();
+							Instant start = i.getStart();
+							i.setStart(i.getEnd());
+							i.setEnd(start);
+							if(!EdtfValidator.validate(extracted.getExtracted())) {
+								i.setEnd(i.getStart());
+								i.setStart(start);
+								extracted.setMatchId(MatchId.INVALID);
+							}
+						} else
+							extracted.setMatchId(MatchId.INVALID);
+					}
 				val.setResult(extracted);
 			} catch (Exception e) {
 				System.err.println("Error in value: "+val.getInput());

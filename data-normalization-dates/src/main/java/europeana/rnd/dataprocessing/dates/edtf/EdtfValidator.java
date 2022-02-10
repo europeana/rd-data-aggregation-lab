@@ -92,7 +92,7 @@ public class EdtfValidator {
 					if(date.day==31 && !isMonthOf31Days(date.month))
 						return false;
 					if(date.month==2)
-						if(date.day==30 || (date.day==29 && Year.isLeap(date.year)))
+						if(date.day==30 || (date.day==29 && !Year.isLeap(date.year)))
 							return false;
 				}
 			}
