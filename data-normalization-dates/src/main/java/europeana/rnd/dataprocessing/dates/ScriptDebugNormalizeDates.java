@@ -139,8 +139,8 @@ public class ScriptDebugNormalizeDates {
 //				"15/21-8-1918",
 //				"199--09-28",
 //				"19960216-19960619"
-				"-0549-01-01T00:00:00Z",
-				"1740-00-00"
+//				"-0549-01-01T00:00:00Z",
+				"Byzantine Period; start=395; end=641"
 				
 		}) {
 			datesInRec.addToProviderProxy(Dc.date, Jena.createLiteral(test).asLiteral());

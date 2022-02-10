@@ -2,6 +2,8 @@ package europeana.rnd.dataprocessing.dates.extraction;
 
 import java.util.Date;
 
+import europeana.rnd.dataprocessing.dates.edtf.Instant;
+
 /**
  * A time interval, representing a DCMI period. They may be open.
  * <p>
@@ -10,25 +12,25 @@ import java.util.Date;
  */
 public final class DcmiPeriod {
 
-  private final Date start;
-  private final Date end;
+  private final Instant start;
+  private final Instant end;
   private final String name;
 
   /**
    * Create a new period. To create an open interval you may set one of the boundaries null.
    */
-  public DcmiPeriod(Date start, Date end) {
+  public DcmiPeriod(Instant start, Instant end) {
     this(start, end, null);
   }
 
   /**
    * Create a new period with an optional name. To create an open interval you may set one of the bounbaries null.
    */
-  public DcmiPeriod(Date start, Date end, String name) {
+  public DcmiPeriod(Instant start, Instant end, String name) {
     if (start == null && end == null)
       throw new IllegalStateException("A period must be bounded at least at one end");
-    if (start != null && end != null && end.before(start))
-      throw new IllegalStateException("The end date is before the start date");
+//    if (start != null && end != null && end.before(start))
+//      throw new IllegalStateException("The end date is before the start date");
 
     this.start = start;
     this.end = end;
@@ -38,14 +40,14 @@ public final class DcmiPeriod {
   /**
    * Returns the start date of the period or null, if it has only an upper bound.
    */
-  public Date getStart() {
+  public Instant getStart() {
     return start;
   }
 
   /**
    * Returns the end date of the period or null, if it has only a lower bound.
    */
-  public Date getEnd() {
+  public Instant getEnd() {
     return end;
   }
 

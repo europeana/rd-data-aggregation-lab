@@ -1,10 +1,12 @@
 package europeana.rnd.dataprocessing.dates.extraction;
 
+import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.joda.time.format.ISODateTimeFormat;
 
+import europeana.rnd.dataprocessing.dates.edtf.EdtfParser;
 import europeana.rnd.dataprocessing.dates.edtf.Instant;
 import europeana.rnd.dataprocessing.dates.edtf.Interval;
 
@@ -25,8 +27,8 @@ public class DcmiPeriodExtractor implements DateExtractor {
 	    try {
 	      if (mayBeW3CDTFEncoded) {
 	        // Declare fields
-	        Date start = null;
-	        Date end = null;
+	        Instant start = null;
+	        Instant end = null;
 	        String name = null;
 	        // Parse
 	        Matcher m = DCMI_PERIOD.matcher(value);
@@ -62,8 +64,14 @@ public class DcmiPeriodExtractor implements DateExtractor {
 	   * @throws IllegalArgumentException
 	   *           if the value cannot be parsed
 	   */
-	  private static Date parseW3CDTF(String value) {
-	    return ISODateTimeFormat.dateTimeParser().parseDateTime(value).toDate();
+	  private static Instant parseW3CDTF(String value) {
+		  try {
+			EdtfParser parser=new EdtfParser();
+			  return (Instant) parser.parse(value);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException(e);
+		}
+//	    return ISODateTimeFormat.dateTimeParser().parseDateTime(value).toDate();
 	  }
 
 
@@ -77,16 +85,15 @@ public class DcmiPeriodExtractor implements DateExtractor {
 			Instant edtfStart;
 			Instant edtfEnd;
 			if(decoded.hasStart()) {
-				edtfStart=new Instant(decoded.getStart());
+				edtfStart=decoded.getStart();
 			}else
 				edtfStart=new Instant(europeana.rnd.dataprocessing.dates.edtf.Date.UNSPECIFIED);
 			if(decoded.hasEnd()) {
-				edtfEnd=new Instant(decoded.getEnd());
+				edtfEnd=decoded.getEnd();
 			}else
 				edtfEnd=new Instant(europeana.rnd.dataprocessing.dates.edtf.Date.UNSPECIFIED);
 			
 			Interval edtf=new Interval(edtfStart, edtfEnd);
-			
 			return new Match(MatchId.DCMIPeriod, inputValue, edtf);
 		} catch (IllegalStateException e) {
 			//a parsing error occoured
