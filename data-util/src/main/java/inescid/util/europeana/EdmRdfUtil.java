@@ -115,9 +115,15 @@ public class EdmRdfUtil {
 		}
 	}
 
-
 	public static String recordUriFromApiId(String europeanaApiRecordId) {
 		return "http://data.europeana.eu/item" + (europeanaApiRecordId.startsWith("/") ? "" : "/") + europeanaApiRecordId;
+	}
+	public static String getDatasetFromApiIdOrUri(String europeanaUriOrApiId) {
+		europeanaUriOrApiId=europeanaUriOrApiId.substring(0,europeanaUriOrApiId.lastIndexOf('/'));
+		int idx=europeanaUriOrApiId.lastIndexOf('/');
+		if(idx>=0)
+			return europeanaUriOrApiId.substring(idx+1);
+		return europeanaUriOrApiId;
 	}
 	
 	private static AccessException buildAccessException(HttpRequest con, Exception e) {
