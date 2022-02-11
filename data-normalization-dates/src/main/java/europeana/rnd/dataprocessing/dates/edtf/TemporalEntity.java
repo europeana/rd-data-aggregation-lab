@@ -1,6 +1,6 @@
 package europeana.rnd.dataprocessing.dates.edtf;
 
-public class TemporalEntity {
+public abstract class TemporalEntity {
 
 	public String serialize() {
 		return new EdtfSerializer().serialize(this);
@@ -10,4 +10,8 @@ public class TemporalEntity {
 	public String toString() {
 		return EdtfSerializer.serialize(this);
 	}
+
+	public abstract void setApproximate(boolean approx);
+
+	public abstract void setUncertain(boolean uncertain);
 }

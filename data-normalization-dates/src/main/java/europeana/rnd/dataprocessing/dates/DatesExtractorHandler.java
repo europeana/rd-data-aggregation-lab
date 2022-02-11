@@ -15,12 +15,14 @@ import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
 import europeana.rnd.dataprocessing.dates.edtf.EdtfValidator;
 import europeana.rnd.dataprocessing.dates.edtf.Instant;
 import europeana.rnd.dataprocessing.dates.edtf.Interval;
+import europeana.rnd.dataprocessing.dates.extraction.CleanId;
 import europeana.rnd.dataprocessing.dates.extraction.Cleaner;
 import europeana.rnd.dataprocessing.dates.extraction.DateExtractor;
 import europeana.rnd.dataprocessing.dates.extraction.DcmiPeriodExtractor;
 import europeana.rnd.dataprocessing.dates.extraction.Match;
 import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 import europeana.rnd.dataprocessing.dates.extraction.PatternBcAd;
+import europeana.rnd.dataprocessing.dates.extraction.PatternBriefDateRange;
 import europeana.rnd.dataprocessing.dates.extraction.PatternCentury;
 import europeana.rnd.dataprocessing.dates.extraction.PatternDateExtractorYyyyMmDdSpaces;
 import europeana.rnd.dataprocessing.dates.extraction.PatternDecade;
@@ -50,6 +52,7 @@ public class DatesExtractorHandler {
 	
 	static ArrayList<DateExtractor> extractors=new ArrayList<DateExtractor>() {{
 //		add(new PatternDateExtractorYyyy());
+		add(new PatternBriefDateRange());		
 		add(new PatternEdtf());
 		add(new PatternDateExtractorYyyyMmDdSpaces());
 //		add(new PatternDateExtractorDdMmYyyy());
@@ -146,6 +149,17 @@ public class DatesExtractorHandler {
 			return new Match(MatchId.NO_MATCH, val, null);
 		else
 			extracted.setInput(val);
+		
+		if(extracted.getCleanOperation()!=null) {
+			if(extracted.getCleanOperation()==CleanId.CIRCA) {
+				extracted.getExtracted().setApproximate(true);
+			} else if(extracted.getCleanOperation()==CleanId.SQUARE_BRACKETS) {
+				extracted.getExtracted().setUncertain(true);
+			} else if(extracted.getCleanOperation()==CleanId.SQUARE_BRACKETS_AND_CIRCA) {
+				extracted.getExtracted().setUncertain(true);
+				extracted.getExtracted().setApproximate(true);
+			}
+		}
 		return extracted;
 	}
 	

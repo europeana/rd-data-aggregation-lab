@@ -53,4 +53,13 @@ public class Instant extends TemporalEntity {
 		this.time = time;
 	}
 
+	@Override
+	public void setApproximate(boolean approx) {
+		date.setApproximate(approx);
+	}
+
+	@Override
+	public void setUncertain(boolean uncertain) {
+		date.setUncertain(uncertain);
+	}
 }

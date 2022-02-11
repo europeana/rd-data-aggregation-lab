@@ -27,5 +27,21 @@ public class Interval extends TemporalEntity {
 		this.end = end;
 	}
 
+
+	@Override
+	public void setApproximate(boolean approx) {
+		if(start!=null && start.date!=null)
+			start.date.setApproximate(approx);
+		if(end!=null && end.date!=null)
+			end.date.setApproximate(approx);
+	}
+
+	@Override
+	public void setUncertain(boolean uncertain) {
+		if(start!=null && start.date!=null)
+			start.date.setUncertain(uncertain);
+		if(end!=null && end.date!=null)
+			end.date.setUncertain(uncertain);
+	}
 	
 }

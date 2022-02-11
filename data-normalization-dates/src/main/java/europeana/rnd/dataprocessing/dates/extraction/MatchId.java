@@ -13,7 +13,7 @@ public enum MatchId {
 	Numeric_Range_AllVariants, Numeric_Range_AllVariants_Xx,
 	Numeric_AllVariants, Decade, Numeric_AllVariants_Xx, 
 	Iso8601Date, Iso8601BriefDate, Iso8601BriefDateRange, Iso8601DateRange, 
-	YYYY_MM_DD_Spaces, BcAd, Edtf, INVALID;
+	YYYY_MM_DD_Spaces, BcAd, Edtf, INVALID, Brief_Date_Range;
 
 	public String getLabel() {
 		switch (this) {
@@ -50,6 +50,7 @@ public enum MatchId {
 //		case xYYYY_MM_DDx: return "";
 //		case xYYYY_MMx: return "";
 //		case xYYYYx: return "";
+		case Brief_Date_Range: return "brief date range";
 		default:
 			return name();
 		}
