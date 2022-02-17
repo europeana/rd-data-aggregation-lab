@@ -142,9 +142,12 @@ public class EdmRdfUtil {
 	public static Resource getProxyOfProvider(Model edm) {
 		ResIterator proxies = edm.listResourcesWithProperty(Rdf.type, Ore.Proxy);
 		for(Resource proxy: proxies.toList()) {
-			Statement isEuropeanaProxy = proxy.getProperty(Edm.europeanaProxy);
-			if(isEuropeanaProxy==null)
-				return proxy;
+			Statement europeanaProxySt = proxy.getProperty(Edm.europeanaProxy);			
+			if(europeanaProxySt!=null) {
+				boolean isEuropeana = europeanaProxySt.getObject().asLiteral().getBoolean();
+				if(!isEuropeana)
+					return proxy;
+			}
 		}
 		return null;
 	}

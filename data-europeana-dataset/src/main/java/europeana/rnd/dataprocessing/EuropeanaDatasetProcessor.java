@@ -43,11 +43,13 @@ public class EuropeanaDatasetProcessor {
 		File workingFolder=handler.getWorkingFolder();
 
 		final ProgressTrackerOnFile tracker=workingFolder==null ? null : new ProgressTrackerOnFile(new File(workingFolder, EuropeanaDatasetProcessor.class.getSimpleName()+"_progress.txt"));
-		final int offset=tracker.getTokenAsInt();
-		System.out.println("Starting at offset "+offset);
-		repository.setStartRecord(offset);
-//		repository.setLang(Lang.RDFXML);
-		repository.setLang(Lang.TURTLE);
+		if(tracker!=null) {
+			int offset=tracker.getTokenAsInt();
+			System.out.println("Starting at offset "+offset);
+			repository.setStartRecord(offset);
+		}
+		repository.setLang(Lang.RDFXML);
+//		repository.setLang(Lang.TURTLE);
 		
 		try {
 			repository.iterate(new Handler<Model, String>() {
@@ -90,7 +92,8 @@ public class EuropeanaDatasetProcessor {
 						}
 					}finally {
 						try {
-							tracker.track(repository.getCurrentRecordIndex());
+							if(tracker!=null)
+								tracker.track(repository.getCurrentRecordIndex());
 						} catch (IOException e) {
 							e.printStackTrace();
 							throw new RuntimeException(e.getMessage(), e);
