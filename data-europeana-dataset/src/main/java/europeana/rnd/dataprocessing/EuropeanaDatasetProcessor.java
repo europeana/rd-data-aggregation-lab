@@ -36,6 +36,9 @@ public class EuropeanaDatasetProcessor {
 		handler.initParameters(args);
 		File inputFolder=handler.getEuropeanaDatasetFolder();
 		
+
+		System.out.println("Processing "+inputFolder.getAbsolutePath());
+		
 		RecordIterator repository=new RecordIterator(inputFolder);
 		
 		handler.initProcessing();
