@@ -76,10 +76,6 @@ public class SelectDatesFromEuropeanaNewspaperDataset {
 		
 		// INIT OPERATIONS - END
 
-		final ProgressTrackerOnFile tracker=new ProgressTrackerOnFile(new File(outputFolder, SelectDatesFromEuropeanaNewspaperDataset.class.getSimpleName()+"_progress.txt"));
-		final int offset=tracker.getTokenAsInt();
-		System.out.println("Starting at offset "+offset);
-		repository.setStartRecord(offset);
 		if(fileFormat.equals("XML"))
 			repository.setLang(Lang.RDFXML);
 		else
@@ -92,7 +88,6 @@ public class SelectDatesFromEuropeanaNewspaperDataset {
 				
 				public boolean handle(Model edm) {
 //					System.out.println(".");
-					try {
 //						String recId = fb.getAbout().substring(1);
 						if (repository.getCurrentRecordIndex()!=0 && (repository.getCurrentRecordIndex() % 10000 == 0 || repository.getCurrentRecordIndex() == 10)) {
 	//						csvOut.flush();
@@ -127,14 +122,6 @@ public class SelectDatesFromEuropeanaNewspaperDataset {
 							System.err.println("Error: " + choUri);
 							e.printStackTrace();
 						}
-					}finally {
-						try {
-							tracker.track(repository.getCurrentRecordIndex());
-						} catch (IOException e) {
-							e.printStackTrace();
-							throw new RuntimeException(e.getMessage(), e);
-						}
-					}
 					return true;
 				}
 

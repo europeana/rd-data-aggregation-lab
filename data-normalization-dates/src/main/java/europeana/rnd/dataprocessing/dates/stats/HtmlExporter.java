@@ -136,6 +136,19 @@ public class HtmlExporter {
 	private static void writeStatsByCollection(Appendable writer, MapOfMaps<String, MatchId, Examples> statsByCollection, String label, String title) throws IOException {
 		ArrayList<String> cols=new ArrayList<String>(statsByCollection.keySet());
 		Collections.sort(cols);
+		
+		//move proxy to the top
+		ArrayList<String> proxyCols=new ArrayList<String>(statsByCollection.keySet());
+		for(String col: cols.toArray(new String[0])) {
+			if(col.startsWith("Proxy")) {
+				proxyCols.add(0, col);
+				cols.remove(col);
+			}
+		}
+		for(String proxyCol: proxyCols) {
+			cols.add(0,proxyCol);
+		}
+		
 		writer.append("<h2>Date normalization: occurrence of date patterns by "+label+"<br />"+title+"</h2>\n");
 		
 		writer.append("<table id=\"top\">\r\n"

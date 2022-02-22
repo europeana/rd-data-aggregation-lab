@@ -1,5 +1,6 @@
 package europeana.rnd.dataprocessing.dates;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,27 @@ import inescid.dataaggregation.data.model.Skos;
 import inescid.util.RdfUtil;
 
 public class DatesHandler {
+	
+	public static class NewspaperDatesHandler extends DatesHandler {
+		public NewspaperDatesHandler(String outputFolder) {
+			super(outputFolder);
+			File f=new File(outputFolder);
+			if(!f.exists())
+				f.mkdir();
+		}
+		
+		@Override
+		public void handle(Model edm, int recCnt) throws IOException {
+			Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
+			String choUri = choRes.getURI();
+			if(ScriptNormalizeDatesNewspapersReport.isFromNewspapersCollection(choUri)) {
+				DatesInRecord res = getDatesInRecord(edm);
+				if (!res.isEmpty())
+					jsonWriter.write(res);
+			}
+		}
+	}
+	
 	
 	public static Set<Resource> edmClassesToProcess=new HashSet<Resource>() {{
 		add(Ore.Proxy);

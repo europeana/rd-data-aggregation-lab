@@ -52,14 +52,13 @@ public class ScriptSelectDatesFromEuropeanaDataset {
 		RecordIterator repository=new RecordIterator(new File(inputFolder));
 		
 		// INIT OPERATIONS
-		DatesHandler datesHandler=new DatesHandler(outputFolder);
+		DatesHandler[] datesHandlers=new DatesHandler[] {
+				new DatesHandler(outputFolder),
+				new DatesHandler.NewspaperDatesHandler(outputFolder+ "/newspapers")
+		};
 		
 		// INIT OPERATIONS - END
 
-		final ProgressTrackerOnFile tracker=new ProgressTrackerOnFile(new File(outputFolder, ScriptSelectDatesFromEuropeanaDataset.class.getSimpleName()+"_progress.txt"));
-		final int offset=tracker.getTokenAsInt();
-		System.out.println("Starting at offset "+offset);
-		repository.setStartRecord(offset);
 		if(fileFormat.equals("XML"))
 			repository.setLang(Lang.RDFXML);
 		else
@@ -72,7 +71,6 @@ public class ScriptSelectDatesFromEuropeanaDataset {
 				
 				public boolean handle(Model edm) {
 //					System.out.println(".");
-					try {
 //						String recId = fb.getAbout().substring(1);
 						if (repository.getCurrentRecordIndex()!=0 && (repository.getCurrentRecordIndex() % 10000 == 0 || repository.getCurrentRecordIndex() == 10)) {
 	//						csvOut.flush();
@@ -93,7 +91,8 @@ public class ScriptSelectDatesFromEuropeanaDataset {
 						Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 						String choUri = choRes.getURI();
 						try {
-							datesHandler.handle(edm, repository.getCurrentRecordIndex());
+							for(DatesHandler handler : datesHandlers)
+								handler.handle(edm, repository.getCurrentRecordIndex());
 							// CALL OPERATIONS - END
 							okRecs++;
 							
@@ -107,14 +106,6 @@ public class ScriptSelectDatesFromEuropeanaDataset {
 							System.err.println("Error: " + choUri);
 							e.printStackTrace();
 						}
-					}finally {
-						try {
-							tracker.track(repository.getCurrentRecordIndex());
-						} catch (IOException e) {
-							e.printStackTrace();
-							throw new RuntimeException(e.getMessage(), e);
-						}
-					}
 					return true;
 				}
 
@@ -127,7 +118,8 @@ public class ScriptSelectDatesFromEuropeanaDataset {
 			});
 		} finally {
 			// CLOSE OPERATIONS
-			datesHandler.finalize();
+			for(DatesHandler handler : datesHandlers)
+				handler.finalize();
 			// CLOSE OPERATIONS - END
 		}
 //		csvOut.close();
