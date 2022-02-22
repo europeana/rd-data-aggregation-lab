@@ -14,6 +14,7 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord;
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
+import europeana.rnd.dataprocessing.dates.Source;
 import europeana.rnd.dataprocessing.dates.extraction.CleanId;
 import europeana.rnd.dataprocessing.dates.extraction.Match;
 import europeana.rnd.dataprocessing.dates.extraction.MatchId;
@@ -24,8 +25,10 @@ import inescid.util.datastruct.MapOfSets;
 
 public class DateExtractionStatistics {
 	MapOfMaps<String, MatchId, Examples> statsByCollection;
-	MapOfMaps<String, MatchId, Examples> statsByClass;
-	MapOfMaps<String, MatchId, Examples> statsByClassAndProperty;
+	MapOfMaps<String, MatchId, Examples> statsByClassProvider;
+	MapOfMaps<String, MatchId, Examples> statsByClassAndPropertyProvider;
+	MapOfMaps<String, MatchId, Examples> statsByClassEuropeana;
+	MapOfMaps<String, MatchId, Examples> statsByClassAndPropertyEuropeana;
 	Map<MatchId, Examples> statsByMatch;
 	
 //	MapOfMapsOfInts<String, MatchId> statsByProperty;
@@ -36,8 +39,10 @@ public class DateExtractionStatistics {
 
 	public DateExtractionStatistics() {
 		statsByCollection=new MapOfMaps<String, MatchId, Examples>();
-		statsByClass=new MapOfMaps<String, MatchId, Examples>();
-		statsByClassAndProperty=new MapOfMaps<String, MatchId, Examples>();
+		statsByClassProvider=new MapOfMaps<String, MatchId, Examples>();
+		statsByClassAndPropertyProvider=new MapOfMaps<String, MatchId, Examples>();
+		statsByClassEuropeana=new MapOfMaps<String, MatchId, Examples>();
+		statsByClassAndPropertyEuropeana=new MapOfMaps<String, MatchId, Examples>();
 		statsByMatch=new HashMap<MatchId, Examples>();
 //		statsByProperty=new MapOfMapsOfInts<String, MatchId>();
 //		statsByClass=new MapOfMapsOfInts<String, MatchId>();
@@ -47,7 +52,7 @@ public class DateExtractionStatistics {
 	}
 	
 	static final int lengthOfChoUriPrefix = "http://data.europeana.eu/item/".length();
-	public void add(String choUri, DateValue match) {
+	public void add(String choUri, Source source, DateValue match) {
 		String collection=choUri.substring(lengthOfChoUriPrefix, choUri.indexOf('/', lengthOfChoUriPrefix));
 		
 		Examples examples = statsByCollection.get(collection, match.match.getMatchId());
@@ -57,19 +62,35 @@ public class DateExtractionStatistics {
 		}
 		examples.add(match.match.getInput());
 		
-		examples = statsByClass.get(match.className, match.match.getMatchId());
-		if(examples==null) {
-			examples=new Examples();
-			statsByClass.put(match.className, match.match.getMatchId(), examples);
+		if(source == Source.PROVIDER) {
+			examples = statsByClassProvider.get(match.className, match.match.getMatchId());
+			if(examples==null) {
+				examples=new Examples();
+				statsByClassProvider.put(match.className, match.match.getMatchId(), examples);
+			}
+			examples.add(match.match.getInput());
+			
+			examples = statsByClassAndPropertyProvider.get(match.className+","+match.property, match.match.getMatchId());
+			if(examples==null) {
+				examples=new Examples();
+				statsByClassAndPropertyProvider.put(match.className+","+match.property, match.match.getMatchId(), examples);
+			}
+			examples.add(match.match.getInput());
+		} else {
+			examples = statsByClassEuropeana.get(match.className, match.match.getMatchId());
+			if(examples==null) {
+				examples=new Examples();
+				statsByClassEuropeana.put(match.className, match.match.getMatchId(), examples);
+			}
+			examples.add(match.match.getInput());
+			
+			examples = statsByClassAndPropertyEuropeana.get(match.className+","+match.property, match.match.getMatchId());
+			if(examples==null) {
+				examples=new Examples();
+				statsByClassAndPropertyEuropeana.put(match.className+","+match.property, match.match.getMatchId(), examples);
+			}
+			examples.add(match.match.getInput());
 		}
-		examples.add(match.match.getInput());
-		
-		examples = statsByClassAndProperty.get(match.className+","+match.property, match.match.getMatchId());
-		if(examples==null) {
-			examples=new Examples();
-			statsByClassAndProperty.put(match.className+","+match.property, match.match.getMatchId(), examples);
-		}
-		examples.add(match.match.getInput());
 		
 		examples = statsByMatch.get(match.match.getMatchId());
 		if(examples==null) {
@@ -88,8 +109,10 @@ public class DateExtractionStatistics {
 		File globalCleanToFile=new File(toFolder, "stats-global-clean.csv");
 		File collectionsToFile=new File(toFolder, "stats-collections.csv");
 		File matchToFile=new File(toFolder, "stats-matches.csv");
-		File classesToFile=new File(toFolder, "stats-class.csv");
-		File classesAndPropertiesToFile=new File(toFolder, "stats-class_and_property.csv");
+		File classesToFileProvider=new File(toFolder, "stats-class-provider.csv");
+		File classesAndPropertiesToFileProvider=new File(toFolder, "stats-class-and-property-provider.csv");
+		File classesToFileEuropeana=new File(toFolder, "stats-class-europeana.csv");
+		File classesAndPropertiesToFileEuropeana=new File(toFolder, "stats-class-and-property-europeana.csv");
 		
 		FileWriterWithEncoding writer=new FileWriterWithEncoding(globalToFile, StandardCharsets.UTF_8);
 		MapOfInts.writeCsv(statsGlobal, writer);
@@ -103,17 +126,27 @@ public class DateExtractionStatistics {
 		writeMapCsv(statsByCollection, writer);
 		writer.close();
 		
-		writer=new FileWriterWithEncoding(classesToFile, StandardCharsets.UTF_8);
-		writeMapCsv(statsByClass, writer);
-		writer.close();
-		
-		writer=new FileWriterWithEncoding(classesAndPropertiesToFile, StandardCharsets.UTF_8);
-		writeMapCsv(statsByClassAndProperty, writer);
-		writer.close();
-
 		writer=new FileWriterWithEncoding(matchToFile, StandardCharsets.UTF_8);
 		writeMapCsv(statsByMatch, writer);
 		writer.close();
+		
+		writer=new FileWriterWithEncoding(classesToFileProvider, StandardCharsets.UTF_8);
+		writeMapCsv(statsByClassProvider, writer);
+		writer.close();
+		
+		writer=new FileWriterWithEncoding(classesAndPropertiesToFileProvider, StandardCharsets.UTF_8);
+		writeMapCsv(statsByClassAndPropertyProvider, writer);
+		writer.close();
+
+		writer=new FileWriterWithEncoding(classesToFileEuropeana, StandardCharsets.UTF_8);
+		writeMapCsv(statsByClassEuropeana, writer);
+		writer.close();
+		
+		writer=new FileWriterWithEncoding(classesAndPropertiesToFileEuropeana, StandardCharsets.UTF_8);
+		writeMapCsv(statsByClassAndPropertyEuropeana, writer);
+		writer.close();
+
+
 	}
 	
 	private void writeMapCsv(MapOfMaps<String, MatchId, Examples> sets, FileWriterWithEncoding csvWrite) throws IOException {

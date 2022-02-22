@@ -47,6 +47,7 @@ import europeana.rnd.dataprocessing.dates.stats.NoMatchSampling;
 public class DatesExtractorHandler {
 	File outputFolder;
 	DateExtractionStatistics stats=new DateExtractionStatistics();
+	DateExtractionStatistics statsSubjectCoverage=new DateExtractionStatistics();
 	NoMatchSampling noMatchSampling=new NoMatchSampling();
 	static Cleaner cleaner=new Cleaner();
 	
@@ -80,7 +81,7 @@ public class DatesExtractorHandler {
 	}
 	
 	public static void runDateNormalization(DatesInRecord rec) throws Exception {
-		for(Match val: rec.getAllValues()) {
+		for(Match val: rec.getAllValues(Source.ANY)) {
 			try {
 				Match extracted=runDateNormalization(val.getInput()); 
 				if(extracted.getMatchId()!=MatchId.NO_MATCH)
@@ -166,24 +167,28 @@ public class DatesExtractorHandler {
 	
 	public void handle(DatesInRecord rec) throws Exception {
 		runDateNormalization(rec);
-		for(DateValue match: rec.getAllValuesDetailed()) {
-			handleResult(rec.getChoUri(), match);			
-		}
+		for(DateValue match: rec.getAllValuesDetailed(Source.PROVIDER)) 
+			handleResult(rec.getChoUri(), Source.PROVIDER, match);			
+		for(DateValue match: rec.getAllValuesDetailed(Source.EUROPEANA)) 
+			handleResult(rec.getChoUri(), Source.EUROPEANA, match);			
 	}
 	
-	private void handleResult(String choUri, DateValue dateValue) {
+	private void handleResult(String choUri, Source source, DateValue dateValue) {
 		try {
-			stats.add(choUri, dateValue);
-			Writer wrt=getWriterForMatch(dateValue.match.getMatchId());
-			wrt.write(escape(dateValue.match.getInput()));
-			if(dateValue.match.getExtracted()!=null) {
-				wrt.write(",");
-				wrt.write(escape(dateValue.match.getExtracted().serialize()));
-			}
-			wrt.write("\n");	
-			
-			if(dateValue.match.getMatchId()==MatchId.NO_MATCH)
-				noMatchSampling.add(dateValue.match);
+			if(dateValue.property.equals("coverage") || dateValue.property.equals("subject")) {
+				statsSubjectCoverage.add(choUri, source, dateValue);
+			} else {
+				stats.add(choUri, source, dateValue);
+				Writer wrt=getWriterForMatch(dateValue.match.getMatchId());
+				wrt.write(escape(dateValue.match.getInput()));
+				if(dateValue.match.getExtracted()!=null) {
+					wrt.write(",");
+					wrt.write(escape(dateValue.match.getExtracted().serialize()));
+				}
+				wrt.write("\n");	
+				if(dateValue.match.getMatchId()==MatchId.NO_MATCH)
+					noMatchSampling.add(dateValue.match);
+			}			
 		} catch (IOException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}		
@@ -215,8 +220,12 @@ public class DatesExtractorHandler {
 			for(Writer a: writers.values()) 
 				a.close();
 			stats.save(outputFolder);
+			File covSubToFolder = new File(outputFolder, "coverage-subject");
+			if(!covSubToFolder.exists())
+				covSubToFolder.mkdir();
+			statsSubjectCoverage.save(covSubToFolder);
 			
-			HtmlExporter.export(stats, outputFolder);
+			HtmlExporter.export(stats, statsSubjectCoverage, outputFolder);
 			
 			File outNoMatchSampling=new File(outputFolder, "no-match-samples.csv");
 			noMatchSampling.save(outNoMatchSampling);

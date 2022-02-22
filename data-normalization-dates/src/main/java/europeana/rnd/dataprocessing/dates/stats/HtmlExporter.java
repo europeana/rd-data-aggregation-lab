@@ -20,35 +20,93 @@ public class HtmlExporter {
 	private static final DecimalFormat countFormat = new DecimalFormat("#,##0");
 	private static final DecimalFormat percentFormat = new DecimalFormat("#,##0.0##");
 
-	public static void export(DateExtractionStatistics stats, File outFolder) throws IOException {
-		File htmlFile=new File(outFolder, "MatchesByPattern.html");
-		FileWriterWithEncoding writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
-		writeStart(writer);
-		writeStatsByMatch(writer, stats.statsByMatch);
-		writeEnd(writer);	
-		writer.close();
-		
-		htmlFile=new File(outFolder, "MatchesByCollection.html");
-		writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
-		writeStart(writer);
-		writeStatsByCollection(writer, stats.statsByCollection, "collection");
-		writeEnd(writer);	
-		writer.close();
-		
-		htmlFile=new File(outFolder, "MatchesByClass.html");
-		writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
-		writeStart(writer);
-		writeStatsByCollection(writer, stats.statsByClass,"class");
-		writeEnd(writer);	
-		writer.close();
-		
-		htmlFile=new File(outFolder, "MatchesByClassAndProperty.html");
-		writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
-		writeStart(writer);
-		writeStatsByCollection(writer, stats.statsByClassAndProperty,"class/property");
-		writeEnd(writer);	
-		writer.close();
-		
+	public static void export(DateExtractionStatistics stats, DateExtractionStatistics statsCoverageSubject, File outFolder) throws IOException {
+		{
+			File htmlFile=new File(outFolder, "MatchesByPattern.html");
+			FileWriterWithEncoding writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByMatch(writer, stats.statsByMatch, "");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByCollection.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, stats.statsByCollection, "collection", "");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByClassProvider.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, stats.statsByClassProvider,"class", "(from provider's metadata)");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByClassAndPropertyProvider.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, stats.statsByClassAndPropertyProvider,"class/property", "(from provider's metadata)");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByClassEuropeana.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, stats.statsByClassEuropeana,"class","(from Europeana's metadata)");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByClassAndPropertyEuropeana.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, stats.statsByClassAndPropertyEuropeana,"class/property","(from Europeana's metadata)");
+			writeEnd(writer);	
+			writer.close();
+		}
+		{
+			File htmlFile=new File(outFolder, "MatchesByPatternCoverageSubject.html");
+			FileWriterWithEncoding writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByMatch(writer, statsCoverageSubject.statsByMatch, "(dc:subject and dc:coverage)");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByCollectionCoverageSubject.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, statsCoverageSubject.statsByCollection, "collection", "(dc:subject and dc:coverage)");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByClassProviderCoverageSubject.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, statsCoverageSubject.statsByClassProvider,"class", "(dc:subject and dc:coverage from provider's metadata)");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByClassAndPropertyProviderCoverageSubject.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, statsCoverageSubject.statsByClassAndPropertyProvider,"class/property", "(dc:subject and dc:coverage from provider's metadata)");
+			writeEnd(writer);
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByClassEuropeanaCoverageSubject.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, statsCoverageSubject.statsByClassEuropeana,"class", "(dc:subject and dc:coverage from Europeana's metadata)");
+			writeEnd(writer);	
+			writer.close();
+			
+			htmlFile=new File(outFolder, "MatchesByClassAndPropertyEuropeanaCoverageSubject.html");
+			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+			writeStart(writer);
+			writeStatsByCollection(writer, statsCoverageSubject.statsByClassAndPropertyEuropeana,"class/property", "(dc:subject and dc:coverage from Europeana's metadata)");
+			writeEnd(writer);	
+			writer.close();
+		}
 
 		
 		//		htmlFile=new File(outFolder, "MatchesGlobal.html");
@@ -75,10 +133,10 @@ public class HtmlExporter {
 //		writer.append("</table>\n");
 //	}
 	
-	private static void writeStatsByCollection(Appendable writer, MapOfMaps<String, MatchId, Examples> statsByCollection, String label) throws IOException {
+	private static void writeStatsByCollection(Appendable writer, MapOfMaps<String, MatchId, Examples> statsByCollection, String label, String title) throws IOException {
 		ArrayList<String> cols=new ArrayList<String>(statsByCollection.keySet());
 		Collections.sort(cols);
-		writer.append("<h2>Date normalization: occurrence of date patterns by "+label+"</h2>\n");
+		writer.append("<h2>Date normalization: occurrence of date patterns by "+label+"<br />"+title+"</h2>\n");
 		
 		writer.append("<table id=\"top\">\r\n"
 				+ "<tr>\r\n"
@@ -144,7 +202,7 @@ public class HtmlExporter {
 		}		
 	}
 	
-	private static void writeStatsByMatch(Appendable writer, Map<MatchId, Examples> statsByMatch) throws IOException {
+	private static void writeStatsByMatch(Appendable writer, Map<MatchId, Examples> statsByMatch, String title) throws IOException {
 		ArrayList<MatchId> matchIds=new ArrayList<MatchId>(statsByMatch.keySet());
 		Collections.sort(matchIds, new Comparator<MatchId>() {
 			@Override
@@ -157,7 +215,7 @@ public class HtmlExporter {
 		for(MatchId matchId: matchIds) 
 			total+=statsByMatch.get(matchId).totalFound;
 
-		writer.append("<h2>Date normalization: occurrence of date patterns across the whole dataset</h2>\n");
+		writer.append("<h2>Date normalization: occurrence of date patterns across the whole dataset <br />"+title+"</h2>\n");
 		writer.append("<table id=\"top\">\r\n"
 				+ "<tr>\r\n"
 				+ "<td><b>Pattern</b></td><td align=\"right\"><b>Count</b></td><td align=\"center\"><b>%</b></td><td></td></tr>\n");

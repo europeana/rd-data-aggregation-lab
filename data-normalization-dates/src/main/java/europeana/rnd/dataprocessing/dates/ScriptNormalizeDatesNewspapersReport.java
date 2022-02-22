@@ -16,7 +16,7 @@ import javax.json.stream.JsonParser;
 import inescid.util.europeana.EdmRdfUtil;
 
 public class ScriptNormalizeDatesNewspapersReport {
-	HashSet<String> datasets=new HashSet<String>() {{
+	static HashSet<String> datasets=new HashSet<String>() {{
 		add("9200338");
 		add("15");
 		add("2064915");
@@ -94,10 +94,7 @@ public class ScriptNormalizeDatesNewspapersReport {
 					JsonObject jv=it.next().asJsonObject();
 					
 					//check here
-					String dataset = EdmRdfUtil.getDatasetFromApiIdOrUri(jv.getString("id"));
-//					System.out.println(jv.getString("id"));
-//					System.out.println(dataset);
-					if(datasets.contains(dataset)) {
+					if(isFromNewspapersCollection(jv.getString("id"))) {
 						DatesInRecord record=new DatesInRecord(jv);
 						try {
 							handler.handle(record);
@@ -112,6 +109,10 @@ public class ScriptNormalizeDatesNewspapersReport {
 		handler.close();
 	}
 
+	public static boolean isFromNewspapersCollection(String choUri) {
+		String dataset = EdmRdfUtil.getDatasetFromApiIdOrUri(choUri);
+		return datasets.contains(dataset);
+	}
 
 	public static void main(String[] args) throws Exception {
 		String sourceFolder = "c://users/nfrei/desktop/data/dates";

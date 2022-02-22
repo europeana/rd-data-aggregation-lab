@@ -30,7 +30,27 @@ import inescid.util.Handler;
 import inescid.util.RdfUtil;
 import inescid.util.datastruct.MapOfInts;
 
-public class ScriptSelectDatesFromEuropeanaDataset {
+public class SelectDatesFromEuropeanaNewspaperDataset {
+	
+	public class NewspaperDatesHandler extends DatesHandler {
+		
+		public NewspaperDatesHandler(String outputFolder) {
+			super(outputFolder);
+		}
+		
+		@Override
+		public void handle(Model edm, int recCnt) throws IOException {
+			Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
+			String choUri = choRes.getURI();
+			if(ScriptNormalizeDatesNewspapersReport.isFromNewspapersCollection(choUri)) {
+				DatesInRecord res = getDatesInRecord(edm);
+				if (!res.isEmpty())
+					jsonWriter.write(res);
+			}
+		}
+
+		
+	}
 
 	public static void main(String[] args) throws Exception {
 		String outputFolder = null;
@@ -56,7 +76,7 @@ public class ScriptSelectDatesFromEuropeanaDataset {
 		
 		// INIT OPERATIONS - END
 
-		final ProgressTrackerOnFile tracker=new ProgressTrackerOnFile(new File(outputFolder, ScriptSelectDatesFromEuropeanaDataset.class.getSimpleName()+"_progress.txt"));
+		final ProgressTrackerOnFile tracker=new ProgressTrackerOnFile(new File(outputFolder, SelectDatesFromEuropeanaNewspaperDataset.class.getSimpleName()+"_progress.txt"));
 		final int offset=tracker.getTokenAsInt();
 		System.out.println("Starting at offset "+offset);
 		repository.setStartRecord(offset);
