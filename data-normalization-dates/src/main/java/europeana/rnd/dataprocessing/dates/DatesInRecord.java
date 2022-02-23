@@ -1,6 +1,8 @@
 package europeana.rnd.dataprocessing.dates;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -119,6 +121,14 @@ public class DatesInRecord {
 			}
 			return vals;	
 		}
+
+		public List<Match> getValuesFor(Resource cls, String prop) {
+			List<Match> ret=null;
+			MapOfLists<String, Match> valuesByFieldMap = valuesByClassAndField.get(cls);
+			if(valuesByFieldMap!=null) 
+				ret=valuesByFieldMap.get(prop);
+			return ret==null ? Collections.emptyList() : ret;
+		}
 	}
 	
 	String choUri;
@@ -216,6 +226,23 @@ public class DatesInRecord {
 		case ANY:
 			vals.addAll(fromProvider.getAllValuesDetailed());
 			vals.addAll(fromEuropeana.getAllValuesDetailed());
+			break;
+		}
+		return vals;
+	}
+
+	public List<Match> getValuesFor(Source source, Resource cls, Property prop) {
+		ArrayList<Match> vals=new ArrayList<Match>();
+		switch (source) {
+		case PROVIDER:
+			vals.addAll(fromProvider.getValuesFor(cls, prop.getLocalName()));
+			break;
+		case EUROPEANA:
+			vals.addAll(fromEuropeana.getValuesFor(cls, prop.getLocalName()));
+			break;
+		case ANY:
+			vals.addAll(fromProvider.getValuesFor(cls, prop.getLocalName()));
+			vals.addAll(fromEuropeana.getValuesFor(cls, prop.getLocalName()));
 			break;
 		}
 		return vals;

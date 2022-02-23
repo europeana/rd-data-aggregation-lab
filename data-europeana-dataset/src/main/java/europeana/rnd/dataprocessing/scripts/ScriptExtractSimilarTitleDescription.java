@@ -1,7 +1,12 @@
 package europeana.rnd.dataprocessing.scripts;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.Set;
 
@@ -19,7 +24,9 @@ import inescid.util.RdfUtil;
 import inescid.util.europeana.EdmRdfUtil;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.text.similarity.LevenshteinDistance;
@@ -32,7 +39,9 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 	FileWriterWithEncoding csvFileWriter;
 
 	public static void main(String[] args) throws Exception {
-		EuropeanaDatasetProcessor.run(args, new ScriptExtractSimilarTitleDescription());
+//		EuropeanaDatasetProcessor.run(args, new ScriptExtractSimilarTitleDescription());
+		
+		filterCsv(new File("C:\\Users\\nfrei\\Desktop\\data\\problem_pattern_3\\problem_pattern_3.csv"));
 	}
 	
 	@Override
@@ -42,7 +51,7 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 			if (args != null && args.length >= 1) {
 				outCsvFile = new File(args[1]);
 			}else {
-				outCsvFile = new File("c://users/nfrei/desktop/data/problem_pattern_3.csv");
+				outCsvFile = new File("c://users/nfrei/desktop/data/problem_pattern_3/problem_pattern_3.csv");
 				testing=true;
 			}
 			csvFileWriter=new FileWriterWithEncoding(outCsvFile, StandardCharsets.UTF_8);
@@ -125,4 +134,57 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 		return !testing || casesFound<10;
 	}
 	
+	private static void filterCsv(File inCsvFile) throws IOException {
+		Reader reader=new FileReader(inCsvFile, StandardCharsets.UTF_8);
+		CSVParser parser=new CSVParser(reader, CSVFormat.DEFAULT);
+		
+		File outCsvFile98=new File(inCsvFile.getParentFile(), "problem_pattern_3_0.98-1.00.csv");
+		File outCsvFile95=new File(inCsvFile.getParentFile(), "problem_pattern_3_0.95-0.98.csv");
+		File outCsvFile90=new File(inCsvFile.getParentFile(), "problem_pattern_3_0.90-0.95.csv");
+		
+		Writer csvFileWriter98=new FileWriterWithEncoding(outCsvFile98, StandardCharsets.UTF_8);
+		CSVPrinter csvPrinter98=new CSVPrinter(csvFileWriter98, CSVFormat.DEFAULT);
+		Writer csvFileWriter95=new FileWriterWithEncoding(outCsvFile95, StandardCharsets.UTF_8);
+		CSVPrinter csvPrinter95=new CSVPrinter(csvFileWriter95, CSVFormat.DEFAULT);
+		Writer csvFileWriter90=new FileWriterWithEncoding(outCsvFile90, StandardCharsets.UTF_8);
+		CSVPrinter csvPrinter90=new CSVPrinter(csvFileWriter90, CSVFormat.DEFAULT);
+
+		boolean first=true;
+		for(CSVRecord rec: parser) {
+			if(first) {
+				first=false;
+				for(String v: rec) {
+					csvPrinter98.print(v);
+					csvPrinter95.print(v);
+					csvPrinter90.print(v);
+				}
+				csvPrinter98.println();
+				csvPrinter95.println();
+				csvPrinter90.println();
+				continue;
+			}
+			double opt3=Double.parseDouble(rec.get(7));
+			if (opt3 > 0.98) {
+				for(String v: rec)
+					csvPrinter98.print(v);
+				csvPrinter98.println();
+			} else if (opt3 > 0.95) {
+				for(String v: rec)
+					csvPrinter95.print(v);
+				csvPrinter95.println();				
+			} else if (opt3 > 0.9) {
+				for(String v: rec)
+					csvPrinter90.print(v);
+				csvPrinter90.println();								
+			}
+		}
+		parser.close();
+		reader.close();
+		csvPrinter98.close();
+		csvFileWriter98.close();
+		csvPrinter95.close();
+		csvFileWriter95.close();
+		csvPrinter90.close();
+		csvFileWriter90.close();
+	}
 }

@@ -15,11 +15,13 @@ public class ScriptNormalizeDatesTest {
 
 	File folder;
 	DatesExtractorHandler handler;
+	DatesAgentHandler handlerAgents;
 	
-	public ScriptNormalizeDatesTest(File folder, DatesExtractorHandler handler) {
+	public ScriptNormalizeDatesTest(File folder) {
 		super();
 		this.folder = folder;
-		this.handler = handler;
+		this.handler = new DatesExtractorHandler(folder);
+		this.handlerAgents = new DatesAgentHandler(folder);
 	}
 
 	public void process() throws IOException {
@@ -38,6 +40,7 @@ public class ScriptNormalizeDatesTest {
 					DatesInRecord record=new DatesInRecord(jv);
 					try {
 						handler.handle(record);
+						handlerAgents.handle(record);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -46,6 +49,7 @@ public class ScriptNormalizeDatesTest {
 			}
 		}
 		handler.close();
+		handlerAgents.close();
 	}
 
 
@@ -62,7 +66,7 @@ public class ScriptNormalizeDatesTest {
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
 		
-		ScriptNormalizeDatesTest processor=new ScriptNormalizeDatesTest(new File(sourceFolder), new DatesExtractorHandler(outFolder));
+		ScriptNormalizeDatesTest processor=new ScriptNormalizeDatesTest(new File(sourceFolder));
 		processor.process();
 	}
 }
