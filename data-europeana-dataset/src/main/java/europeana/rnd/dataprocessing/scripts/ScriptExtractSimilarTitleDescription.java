@@ -135,7 +135,7 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 	}
 	
 	private static void filterCsv(File inCsvFile) throws IOException {
-		Reader reader=new FileReader(inCsvFile, StandardCharsets.UTF_8);
+		Reader reader=new InputStreamReader(new FileInputStream(inCsvFile), StandardCharsets.UTF_8);
 		CSVParser parser=new CSVParser(reader, CSVFormat.DEFAULT);
 		
 		File outCsvFile98=new File(inCsvFile.getParentFile(), "problem_pattern_3_0.98-1.00.csv");
