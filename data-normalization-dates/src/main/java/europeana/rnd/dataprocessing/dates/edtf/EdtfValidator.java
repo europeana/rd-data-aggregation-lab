@@ -78,22 +78,24 @@ public class EdtfValidator {
 
 	private static boolean validateInstant(Instant edtf) {
 		Date date = edtf.getDate();
-		if(date.isUnkown() || date.isUnspecified())
-			return true;
-		if(date.year==null)
-			return false;
-		if(date.yearPrecision==null) {
-			if(date.month!=null) {
-				if(date.month<1 || date.month>12)
+		if(date!=null) {
+			if(!(date.isUnkown() || date.isUnspecified())) {
+				if(date.year==null)
 					return false;
-				if(date.day!=null) {
-					if(date.day<1 || date.day>31)
-						return false;
-					if(date.day==31 && !isMonthOf31Days(date.month))
-						return false;
-					if(date.month==2)
-						if(date.day==30 || (date.day==29 && !Year.isLeap(date.year)))
+				if(date.yearPrecision==null) {
+					if(date.month!=null) {
+						if(date.month<1 || date.month>12)
 							return false;
+						if(date.day!=null) {
+							if(date.day<1 || date.day>31)
+								return false;
+							if(date.day==31 && !isMonthOf31Days(date.month))
+								return false;
+							if(date.month==2)
+								if(date.day==30 || (date.day==29 && !Year.isLeap(date.year)))
+									return false;
+						}
+					}
 				}
 			}
 		}
