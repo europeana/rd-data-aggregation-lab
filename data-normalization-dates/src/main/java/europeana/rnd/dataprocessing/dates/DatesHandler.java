@@ -132,6 +132,22 @@ public class DatesHandler {
 				}
 			}
 		}
+		for (Resource webRes : edm.listResourcesWithProperty(Rdf.type, Edm.WebResource).toList()) {
+			for (Statement st : webRes.listProperties().toList()) {
+				if (isTemporalProp(st.getPredicate())) {
+					if (st.getObject().isLiteral()) {
+						res.addTo(Source.PROVIDER, Edm.WebResource, st.getPredicate(), st.getObject().asLiteral());
+					} else if(st.getObject().isResource()) {
+						Statement typeSt = st.getObject().asResource().getProperty(Rdf.type);
+						if(typeSt!=null && typeSt.getObject().isResource()) {
+							Resource resType=typeSt.getObject().asResource();
+							if(edmClassesToProcess.contains(resType))
+								getDatesInResource(res, Source.PROVIDER, resType, st.getObject().asResource());
+						}						
+					}
+				}
+			}
+		}
 		return res;
 	}
 

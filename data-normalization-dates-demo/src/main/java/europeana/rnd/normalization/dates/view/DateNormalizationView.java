@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord;
+import europeana.rnd.dataprocessing.dates.Source;
 import europeana.rnd.dataprocessing.dates.extraction.Match;
+import inescid.dataaggregation.data.model.Edm;
+import inescid.dataaggregation.data.model.Ore;
 import inescid.util.datastruct.MapOfLists;
 
 public class DateNormalizationView {
@@ -28,7 +31,6 @@ public class DateNormalizationView {
 		public String getName() {
 			return name;
 		}
-		
 	}
 
 	public class PropertyWithDates {
@@ -62,10 +64,17 @@ public class DateNormalizationView {
 	
 	public List<ClassWithDates> getClassesWithDates() {
 		List<ClassWithDates> classes=new ArrayList<DateNormalizationView.ClassWithDates>();
-		if(! datesInRecord.getValuesByFieldInEuropeanaProxy().isEmpty()) 
-			classes.add(new ClassWithDates("ore:Proxy (Europeana)", datesInRecord.getValuesByFieldInEuropeanaProxy()));
-		if(! datesInRecord.getValuesByFieldInProviderProxy().isEmpty()) 
-			classes.add(new ClassWithDates("ore:Proxy (Provider)", datesInRecord.getValuesByFieldInProviderProxy()));
+		if(! datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Ore.Proxy).isEmpty()) 
+			classes.add(new ClassWithDates("ore:Proxy (Europeana)", datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Ore.Proxy)));
+		if(! datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Ore.Proxy).isEmpty()) 
+			classes.add(new ClassWithDates("ore:Proxy (Provider)", datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Ore.Proxy)));
+
+		if(! datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.WebResource).isEmpty()) 
+			classes.add(new ClassWithDates("edm:WebResource", datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.WebResource)));
+
+
+		
+		
 		if(! datesInRecord.getValuesByFieldInWebResources().isEmpty()) 
 			classes.add(new ClassWithDates("edm:Web Resource", datesInRecord.getValuesByFieldInWebResources()));
 		if(! datesInRecord.getValuesByFieldInAgents().isEmpty()) 

@@ -129,6 +129,10 @@ public class DatesInRecord {
 				ret=valuesByFieldMap.get(prop);
 			return ret==null ? Collections.emptyList() : ret;
 		}
+
+		public MapOfLists<String, Match> getValuesFor(Resource cls) {
+			return valuesByClassAndField.get(cls);
+		}
 	}
 	
 	String choUri;
@@ -246,6 +250,17 @@ public class DatesInRecord {
 			break;
 		}
 		return vals;
+	}
+
+	public MapOfLists<String, Match> getValuesByFieldInClass(Source source, Resource cls) {
+		switch (source) {
+		case PROVIDER:
+			return fromProvider.getValuesFor(cls);
+		case EUROPEANA:
+			return fromEuropeana.getValuesFor(cls);
+		default:
+			throw new IllegalArgumentException("Source cannot be "+source);
+		}
 	}
 	
 	
