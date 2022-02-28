@@ -11,6 +11,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 
+import europeana.rnd.dataprocessing.dates.NewspaperCollection.NewspaperRecordType;
 import inescid.dataaggregation.data.model.Dc;
 import inescid.dataaggregation.data.model.DcTerms;
 import inescid.dataaggregation.data.model.Edm;
@@ -34,7 +35,7 @@ public class DatesHandler {
 		public void handle(Model edm, int recCnt) throws IOException {
 			Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 			String choUri = choRes.getURI();
-			if(ScriptNormalizeDatesNewspapersReport.isFromNewspapersCollection(choUri)) {
+			if(NewspaperCollection.isFromNewspapersCollection(choUri)) {
 				DatesInRecord res = getDatesInRecord(edm);
 				if (!res.isEmpty())
 					jsonWriter.write(res);
@@ -111,8 +112,18 @@ public class DatesHandler {
 //			HashSet<String> processedResources=new HashSet<String>();
 		Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 		String choUri = choRes.getURI();
-		DatesInRecord res = new DatesInRecord(choUri);
-
+		
+		boolean isNewspaperTitle=false;
+		boolean isNewspaperIssue=false;
+		if(NewspaperCollection.isFromNewspapersCollection(choUri)) {
+			NewspaperRecordType recType=NewspaperCollection.identifyRecordType(edm);
+			if(recType!=null) {
+				isNewspaperIssue=recType==NewspaperRecordType.ISSUE;
+				isNewspaperTitle=recType==NewspaperRecordType.TITLE;
+			}
+		}
+		
+		DatesInRecord res = new DatesInRecord(choUri, isNewspaperTitle, isNewspaperIssue);
 		for (Resource proxy : edm.listResourcesWithProperty(Rdf.type, Ore.Proxy).toList()) {
 			Statement europeanaProxySt = proxy.getProperty(Edm.europeanaProxy);
 			Source isEuropeanaProxy = europeanaProxySt != null

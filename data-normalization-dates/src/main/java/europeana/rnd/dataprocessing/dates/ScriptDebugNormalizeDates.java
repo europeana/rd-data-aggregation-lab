@@ -27,7 +27,7 @@ public class ScriptDebugNormalizeDates {
 //	      }
 
 
-		DatesInRecord datesInRec=new DatesInRecord("http://data.europeana.eu/item/00000/exampleCHO");
+		DatesInRecord datesInRec=new DatesInRecord("http://data.europeana.eu/item/00000/exampleCHO", false, false);
 		
 		DateExtractionStatistics des=new DateExtractionStatistics();
 		DateExtractionStatistics desSubCov=new DateExtractionStatistics();

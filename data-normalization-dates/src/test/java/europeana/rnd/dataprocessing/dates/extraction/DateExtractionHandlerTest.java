@@ -19,7 +19,7 @@ public class DateExtractionHandlerTest {
 	void parseDate() throws Exception {
 		DatesExtractorHandler handler=new DatesExtractorHandler();
 		
-		DatesInRecord testRec=new DatesInRecord("http://data.europeana.eu/item/test/test");
+		DatesInRecord testRec=new DatesInRecord("http://data.europeana.eu/item/test/test", false, false);
 		testRec.addTo(Source.PROVIDER, Ore.Proxy, Dc.date, ResourceFactory.createLangLiteral("1972/10/31 | 1972/10/01", null));
 		handler.handle(testRec);
 	}

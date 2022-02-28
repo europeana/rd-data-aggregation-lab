@@ -32,7 +32,7 @@ import inescid.util.datastruct.MapOfInts;
 
 public class SelectDatesFromEuropeanaNewspaperDataset {
 	
-	public class NewspaperDatesHandler extends DatesHandler {
+	public static class NewspaperDatesHandler extends DatesHandler {
 		
 		public NewspaperDatesHandler(String outputFolder) {
 			super(outputFolder);
@@ -42,13 +42,12 @@ public class SelectDatesFromEuropeanaNewspaperDataset {
 		public void handle(Model edm, int recCnt) throws IOException {
 			Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 			String choUri = choRes.getURI();
-			if(ScriptNormalizeDatesNewspapersReport.isFromNewspapersCollection(choUri)) {
+			if(NewspaperCollection.isFromNewspapersCollection(choUri)) {
 				DatesInRecord res = getDatesInRecord(edm);
 				if (!res.isEmpty())
 					jsonWriter.write(res);
 			}
 		}
-
 		
 	}
 
@@ -72,7 +71,7 @@ public class SelectDatesFromEuropeanaNewspaperDataset {
 		RecordIterator repository=new RecordIterator(new File(inputFolder));
 		
 		// INIT OPERATIONS
-		DatesHandler datesHandler=new DatesHandler(outputFolder);
+		DatesHandler datesHandler=new NewspaperDatesHandler(outputFolder);
 		
 		// INIT OPERATIONS - END
 

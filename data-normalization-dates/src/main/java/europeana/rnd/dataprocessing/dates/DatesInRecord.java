@@ -137,18 +137,26 @@ public class DatesInRecord {
 	}
 	
 	String choUri;
+	boolean isNewspaperTitle;
+	boolean isNewspaperIssue;
 	DatesFromSource fromProvider=new DatesFromSource();
 	DatesFromSource fromEuropeana=new DatesFromSource();
 	
 	public DatesInRecord(String choUri) {
+		this(choUri, false, false);
+	}
+	
+	public DatesInRecord(String choUri, boolean isNewspaperTitle, boolean isNewspaperIssue) {
 		super();
 		this.choUri = choUri;
+		this.isNewspaperTitle = isNewspaperTitle;
+		this.isNewspaperIssue = isNewspaperIssue;
 		fromProvider=new DatesFromSource();
 		fromEuropeana=new DatesFromSource();
 	}
 
 	public DatesInRecord(JsonObject jv) {
-		this(jv.getString("id"));
+		this(jv.getString("id"), jv.getBoolean("newspaperTitle", false), jv.getBoolean("newspaperIssue", false));
 		JsonObject fromProviderJson = jv.getJsonObject("fromProvider");
 		JsonObject fromEuropeanaJson = jv.getJsonObject("fromEuropeana");
 		fromProvider.readValuesOfSourceFromJson(fromProviderJson);
@@ -173,6 +181,10 @@ public class DatesInRecord {
 	public JsonObject toJson() {
 		JsonObjectBuilder ret=Json.createObjectBuilder();
 		ret.add("id", Json.createValue(choUri));
+		if(isNewspaperTitle)
+			ret.add("newspaperTitle", Json.createValue("true"));
+		if(isNewspaperIssue)
+			ret.add("newspaperIssue", Json.createValue("true"));
 		ret.add("fromEuropeana", fromEuropeana.toJson());
 		ret.add("fromProvider", fromProvider.toJson());
 		return ret.build();

@@ -64,7 +64,6 @@ public class ScriptNormalizeDatesTest {
 		File outFolder=new File(sourceFolder+"/extraction");
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
-
 		
 		ScriptNormalizeDatesTest processor=new ScriptNormalizeDatesTest(new File(sourceFolder), outFolder);
 		processor.process();
