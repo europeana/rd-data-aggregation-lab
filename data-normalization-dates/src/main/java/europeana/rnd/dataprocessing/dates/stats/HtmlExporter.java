@@ -138,16 +138,17 @@ public class HtmlExporter {
 		Collections.sort(cols);
 		
 		//move proxy to the top
-		ArrayList<String> proxyCols=new ArrayList<String>(statsByCollection.keySet());
-		for(String col: cols.toArray(new String[0])) {
+		ArrayList<String> proxyCols=new ArrayList<String>();
+		for(int i=0; i<cols.size() ; i++) {
+			String col=cols.get(i);
 			if(col.startsWith("Proxy")) {
-				proxyCols.add(0, col);
-				cols.remove(col);
+				cols.remove(i);
+				proxyCols.add(col);
+				i--;
 			}
 		}
-		for(String proxyCol: proxyCols) {
-			cols.add(0,proxyCol);
-		}
+		proxyCols.addAll(cols);
+		cols=proxyCols;
 		
 		writer.append("<h2>Date normalization: occurrence of date patterns by "+label+"<br />"+title+"</h2>\n");
 		

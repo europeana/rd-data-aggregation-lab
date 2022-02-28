@@ -17,11 +17,11 @@ public class ScriptNormalizeDatesTest {
 	DatesExtractorHandler handler;
 	DatesAgentHandler handlerAgents;
 	
-	public ScriptNormalizeDatesTest(File folder) {
+	public ScriptNormalizeDatesTest(File folder, File outputFolder) {
 		super();
 		this.folder = folder;
-		this.handler = new DatesExtractorHandler(folder);
-		this.handlerAgents = new DatesAgentHandler(folder);
+		this.handler = new DatesExtractorHandler(outputFolder);
+		this.handlerAgents = new DatesAgentHandler(outputFolder);
 	}
 
 	public void process() throws IOException {
@@ -61,12 +61,12 @@ public class ScriptNormalizeDatesTest {
 				sourceFolder = args[0];
 			}
 		}
-		
 		File outFolder=new File(sourceFolder+"/extraction");
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
+
 		
-		ScriptNormalizeDatesTest processor=new ScriptNormalizeDatesTest(new File(sourceFolder));
+		ScriptNormalizeDatesTest processor=new ScriptNormalizeDatesTest(new File(sourceFolder), outFolder);
 		processor.process();
 	}
 }

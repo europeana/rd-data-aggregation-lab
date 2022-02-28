@@ -31,17 +31,18 @@ public class DatesInRecord {
 		public String className;
 		public String property;
 		public Match match;
+		
 		public DateValue(String className, String property, Match match) {
 			super();
 			this.className = className;
 			this.property = property;
 			this.match = match;
 		}
+		
 		@Override
 		public String toString() {
 			return "DateValue [className=" + className + ", property=" + property + ", match=" + match + "]";
 		}
-		
 		
 	}
 	public static class DatesFromSource {
@@ -149,7 +150,7 @@ public class DatesInRecord {
 	public DatesInRecord(JsonObject jv) {
 		this(jv.getString("id"));
 		JsonObject fromProviderJson = jv.getJsonObject("fromProvider");
-		JsonObject fromEuropeanaJson = jv.getJsonObject("fromProvider");
+		JsonObject fromEuropeanaJson = jv.getJsonObject("fromEuropeana");
 		fromProvider.readValuesOfSourceFromJson(fromProviderJson);
 		fromEuropeana.readValuesOfSourceFromJson(fromEuropeanaJson);
 	}
