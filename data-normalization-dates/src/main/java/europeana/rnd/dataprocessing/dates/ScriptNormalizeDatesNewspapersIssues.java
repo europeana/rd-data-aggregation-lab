@@ -66,8 +66,6 @@ public class ScriptNormalizeDatesNewspapersIssues {
 						try {
 							if(record.isNewspaperIssue) {
 								stats.issuesCount++;
-								int issuesWithDctermsIssued=0;
-								int issuesWithDctermsIssuedNormalizable=0;		
 								handler.handle(record);							
 								List<Match> issuedValues = record.getValuesFor(Source.PROVIDER, Ore.Proxy, DcTerms.issued);
 								if(issuedValues!=null && !issuedValues.isEmpty()) {
@@ -79,6 +77,8 @@ public class ScriptNormalizeDatesNewspapersIssues {
 										}
 									}
 								}
+							} else if(record.isNewspaperTitle) {
+								stats.titlesCount++;
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
