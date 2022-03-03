@@ -141,6 +141,7 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 		File outCsvFile98=new File(inCsvFile.getParentFile(), "problem_pattern_3_0.98-1.00.csv");
 		File outCsvFile95=new File(inCsvFile.getParentFile(), "problem_pattern_3_0.95-0.98.csv");
 		File outCsvFile90=new File(inCsvFile.getParentFile(), "problem_pattern_3_0.90-0.95.csv");
+		File outCsvFile80=new File(inCsvFile.getParentFile(), "problem_pattern_3_0.80-0.90.csv");
 		
 		Writer csvFileWriter98=new FileWriterWithEncoding(outCsvFile98, StandardCharsets.UTF_8);
 		CSVPrinter csvPrinter98=new CSVPrinter(csvFileWriter98, CSVFormat.DEFAULT);
@@ -148,6 +149,8 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 		CSVPrinter csvPrinter95=new CSVPrinter(csvFileWriter95, CSVFormat.DEFAULT);
 		Writer csvFileWriter90=new FileWriterWithEncoding(outCsvFile90, StandardCharsets.UTF_8);
 		CSVPrinter csvPrinter90=new CSVPrinter(csvFileWriter90, CSVFormat.DEFAULT);
+		Writer csvFileWriter80=new FileWriterWithEncoding(outCsvFile80, StandardCharsets.UTF_8);
+		CSVPrinter csvPrinter80=new CSVPrinter(csvFileWriter80, CSVFormat.DEFAULT);
 
 		boolean first=true;
 		for(CSVRecord rec: parser) {
@@ -157,10 +160,12 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 					csvPrinter98.print(v);
 					csvPrinter95.print(v);
 					csvPrinter90.print(v);
+					csvPrinter80.print(v);
 				}
 				csvPrinter98.println();
 				csvPrinter95.println();
 				csvPrinter90.println();
+				csvPrinter80.println();
 				continue;
 			}
 			double opt3=Double.parseDouble(rec.get(7));
@@ -176,6 +181,10 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 				for(String v: rec)
 					csvPrinter90.print(v);
 				csvPrinter90.println();								
+			} else if (opt3 > 0.8) {
+				for(String v: rec)
+					csvPrinter80.print(v);
+				csvPrinter80.println();								
 			}
 		}
 		parser.close();
@@ -186,5 +195,7 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 		csvFileWriter95.close();
 		csvPrinter90.close();
 		csvFileWriter90.close();
+		csvPrinter80.close();
+		csvFileWriter80.close();
 	}
 }
