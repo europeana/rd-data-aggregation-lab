@@ -156,7 +156,13 @@ public class DatesInRecord {
 	}
 
 	public DatesInRecord(JsonObject jv) {
-		this(jv.getString("id"), jv.getBoolean("newspaperTitle", false), jv.getBoolean("newspaperIssue", false));
+		this(jv.getString("id")
+				, jv.containsKey("newspaperTitle") && jv.getString("newspaperTitle").equals("true") 
+				, jv.containsKey("newspaperIssue") && jv.getString("newspaperIssue").equals("true"));
+//		this(jv.getString("id"));
+//		System.out.println(jv.getString("newspaperTitle"));
+//		System.out.println(jv.getString("newspaperIssue"));
+		
 		JsonObject fromProviderJson = jv.getJsonObject("fromProvider");
 		JsonObject fromEuropeanaJson = jv.getJsonObject("fromEuropeana");
 		fromProvider.readValuesOfSourceFromJson(fromProviderJson);
