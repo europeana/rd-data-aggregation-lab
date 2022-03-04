@@ -86,7 +86,7 @@ public class DateNormalizationForm extends UriForm {
 		if(edmChoRes!=null) {
 			try {
 				//TODO execute date normalization
-				DatesInRecord datesInRecord = DatesHandler.getDatesInRecord(edmChoRes.getModel());
+				DatesInRecord datesInRecord = DatesHandler.getDatesInRecordSingleRecord(edmChoRes.getModel());
 				DatesExtractorHandler.runDateNormalization(datesInRecord);
 				cho=new DateNormalizationView(datesInRecord);		
 			} catch (Exception e) {

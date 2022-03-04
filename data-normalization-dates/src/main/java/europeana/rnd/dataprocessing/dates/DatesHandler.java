@@ -36,7 +36,7 @@ public class DatesHandler {
 			Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 			String choUri = choRes.getURI();
 			if(NewspaperCollection.isFromNewspapersCollection(choUri)) {
-				DatesInRecord res = getDatesInRecord(edm);
+				DatesInRecord res = getDatesInRecord(edm, entityTracker);
 				if (!res.isEmpty())
 					jsonWriter.write(res);
 			}
@@ -51,7 +51,7 @@ public class DatesHandler {
 		add(Edm.TimeSpan);
 	}};
 	
-	class EntityTracker {
+	static class EntityTracker {
 //		HashSet<String> processedInProvider=new HashSet<String>();
 //		HashSet<String> processedInEuropeana=new HashSet<String>();
 		HashSet<String> processed=new HashSet<String>();
@@ -101,14 +101,17 @@ public class DatesHandler {
 	}
 
 	public void handle(Model edm, int recCnt) throws IOException {
-		DatesInRecord res = getDatesInRecord(edm);
+		DatesInRecord res = getDatesInRecord(edm, entityTracker);
 		if (!res.isEmpty())
 			jsonWriter.write(res);
 //			if (recCnt % 10000 == 0) {
 //			}
 	}
+	public static DatesInRecord getDatesInRecordSingleRecord(Model edm) {
+		return getDatesInRecord(edm, new EntityTracker());
+	}
 
-	public DatesInRecord getDatesInRecord(Model edm) {
+	private static DatesInRecord getDatesInRecord(Model edm, EntityTracker entityTracker) {
 //			HashSet<String> processedResources=new HashSet<String>();
 		Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 		String choUri = choRes.getURI();
@@ -137,7 +140,7 @@ public class DatesHandler {
 						if(typeSt!=null && typeSt.getObject().isResource()) {
 							Resource resType=typeSt.getObject().asResource();
 							if(edmClassesToProcess.contains(resType))
-								getDatesInResource(res, isEuropeanaProxy, resType, st.getObject().asResource());
+								getDatesInResource(res, isEuropeanaProxy, resType, st.getObject().asResource(), entityTracker);
 						}						
 					}
 				}
@@ -153,7 +156,7 @@ public class DatesHandler {
 						if(typeSt!=null && typeSt.getObject().isResource()) {
 							Resource resType=typeSt.getObject().asResource();
 							if(edmClassesToProcess.contains(resType))
-								getDatesInResource(res, Source.PROVIDER, resType, st.getObject().asResource());
+								getDatesInResource(res, Source.PROVIDER, resType, st.getObject().asResource(), entityTracker);
 						}						
 					}
 				}
@@ -162,7 +165,7 @@ public class DatesHandler {
 		return res;
 	}
 
-	private void getDatesInResource(DatesInRecord res, Source source, Resource resType, Resource resource) {
+	private static  void getDatesInResource(DatesInRecord res, Source source, Resource resType, Resource resource, EntityTracker entityTracker) {
 		if(resource.isURIResource()) {
 			if(entityTracker.contains(source, resource.getURI()))
 				return;
@@ -177,7 +180,7 @@ public class DatesHandler {
 					if(typeSt!=null && typeSt.getObject().isResource()) {
 						Resource subResType=typeSt.getObject().asResource();
 						if(edmClassesToProcess.contains(resType))
-							getDatesInResource(res, source, resType, st.getObject().asResource());
+							getDatesInResource(res, source, resType, st.getObject().asResource(), entityTracker);
 					}
 				}
 			}

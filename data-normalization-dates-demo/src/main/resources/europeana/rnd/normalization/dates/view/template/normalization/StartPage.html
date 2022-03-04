@@ -22,8 +22,30 @@
 <ul>
 	<li><a href="${context}/static/MatchesByPattern.html">Occurrences across the whole dataset</a></li>
 	<li><a href="${context}/static/MatchesByCollection.html">Occurrences by dataset</a></li>
-	<li><a href="${context}/static/MatchesByClass.html">Occurrences by class</a></li>
-	<li><a href="${context}/static/MatchesByClassAndProperty.html">Occurrences by class and property</a></li>
+	
+	<li>Occurrences by class:
+		<ul>
+			<li><a href="${context}/static/MatchesByClassEuropeana.html">from Europeana's metadata</a></li>
+			<li><a href="${context}/static/MatchesByClassProvider.html">from provider's metadata</a></li>
+		</ul>
+	</li>
+	<li>Occurrences by class and property:
+		<ul>
+			<li><a href="${context}/static/MatchesByClassAndPropertyEuropeana.html">from Europeana's metadata</a></li>
+			<li><a href="${context}/static/MatchesByClassAndPropertyProvider.html">from provider's metadata</a></li>
+		</ul>
+	</li>
+</ul>
+
+<p>The properties dc:subject and dc:coverage have been analysed separately because they are expected to contain non-date values in most cases.
+The statistics for these properties can be accessed in the following links:</p>
+<ul>
+	<li>Occurrences of dc:coverage and dc:subject in ore:Proxy:
+		<ul>
+			<li>from Europeana's metadata (no occurrences found)</li>
+			<li><a href="${context}/static/MatchesByClassAndPropertyProviderCoverageSubject.html">from provider's metadata</a></li>
+		</ul>
+	</li>
 </ul>
 
 <h2>Statistics of the Newspapers thematic collection</h2>

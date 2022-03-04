@@ -70,17 +70,20 @@ public class DateNormalizationView {
 			classes.add(new ClassWithDates("ore:Proxy (Provider)", datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Ore.Proxy)));
 
 		if(! datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.WebResource).isEmpty()) 
-			classes.add(new ClassWithDates("edm:WebResource", datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.WebResource)));
-
-
+			classes.add(new ClassWithDates("edm:WebResource (Europeana)", datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.WebResource)));		
+		if(! datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Edm.WebResource).isEmpty()) 
+			classes.add(new ClassWithDates("edm:WebResource (Provider)", datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Edm.WebResource)));
 		
+		if(! datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.Agent).isEmpty()) 
+			classes.add(new ClassWithDates("edm:Agent (Europeana)", datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.Agent)));		
+		if(! datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Edm.Agent).isEmpty()) 
+			classes.add(new ClassWithDates("edm:Agent (Provider)", datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Edm.Agent)));
 		
-		if(! datesInRecord.getValuesByFieldInWebResources().isEmpty()) 
-			classes.add(new ClassWithDates("edm:Web Resource", datesInRecord.getValuesByFieldInWebResources()));
-		if(! datesInRecord.getValuesByFieldInAgents().isEmpty()) 
-			classes.add(new ClassWithDates("foaf:Agent", datesInRecord.getValuesByFieldInAgents()));
-		if(! datesInRecord.getValuesByFieldInTimeSpans().isEmpty()) 
-			classes.add(new ClassWithDates("edm:TimeSpan", datesInRecord.getValuesByFieldInTimeSpans()));
+		if(! datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.TimeSpan).isEmpty()) 
+			classes.add(new ClassWithDates("edm:TimeSpan (Europeana)", datesInRecord.getValuesByFieldInClass(Source.EUROPEANA, Edm.TimeSpan)));		
+		if(! datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Edm.TimeSpan).isEmpty()) 
+			classes.add(new ClassWithDates("edm:TimeSpan (Provider)", datesInRecord.getValuesByFieldInClass(Source.PROVIDER, Edm.TimeSpan)));
+
 		return classes;
 	}
 }
