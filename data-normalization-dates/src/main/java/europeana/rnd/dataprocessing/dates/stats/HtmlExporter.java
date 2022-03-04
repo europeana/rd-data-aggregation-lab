@@ -11,8 +11,10 @@ import java.util.Map;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.jena.ext.com.google.common.math.Stats;
 
 import europeana.rnd.dataprocessing.dates.extraction.MatchId;
+import europeana.rnd.dataprocessing.dates.stats.NewspapersIssuedStats.DatesInIssuesStats;
 import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfMaps;
 
@@ -32,7 +34,7 @@ public class HtmlExporter {
 			htmlFile=new File(outFolder, "MatchesByCollection.html");
 			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
 			writeStart(writer);
-			writeStatsByCollection(writer, stats.statsByCollection, "collection", "");
+			writeStatsByCollection(writer, stats.statsByCollection, "dataset", "");
 			writeEnd(writer);	
 			writer.close();
 			
@@ -75,7 +77,7 @@ public class HtmlExporter {
 			htmlFile=new File(outFolder, "MatchesByCollectionCoverageSubject.html");
 			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
 			writeStart(writer);
-			writeStatsByCollection(writer, statsCoverageSubject.statsByCollection, "collection", "(dc:subject and dc:coverage)");
+			writeStatsByCollection(writer, statsCoverageSubject.statsByCollection, "dataset", "(dc:subject and dc:coverage)");
 			writeEnd(writer);	
 			writer.close();
 			
@@ -262,7 +264,6 @@ public class HtmlExporter {
 			}
 			writer.append("<br /><a href=\"#top\">back to top</a><br />\n");
 		}
-		
 	}
 	
 	private static void writeStart(Appendable writer) throws IOException {
@@ -289,6 +290,42 @@ public class HtmlExporter {
 	private static void writeEnd(Appendable writer) throws IOException {
 		writer.append("\n</body>\r\n"
 				+ "</html>");
+	}
+
+	public static void export(NewspapersIssuedStats stats, File outFolder) throws IOException {
+		File htmlFile=new File(outFolder, "NewspapersIssuedDates.html");
+		FileWriterWithEncoding writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
+		writeStart(writer);
+
+		writer.append("<h2>Date normalization: Analysis of dcterms:issued in the Newspapers Collection</h2>\r\n"
+				+ "<p>Items in collection: "+stats.totalItems()+"</p>\r\n"
+				+ "\r\n"
+				+ "<p><b>Occurrences of dcterms:issued in the complete Newspapers Colletion:</p>\r\n"
+				+ "<table>\r\n"
+				+ "<tr><td><b>Titles</b></td><td><b>Issues</b></td><td><b>Issues with dcterms:issued</b></td><td><b>Normalizable %</b></td></tr>\r\n"
+				+ "<tr><td align=\"center\">"+countFormat.format(stats.statsGlobal.titlesCount)+"</td><td align=\"center\">"+
+				countFormat.format(stats.statsGlobal.issuesCount)+"</td><td align=\"center\">"+
+				countFormat.format(stats.statsGlobal.issuesWithDctermsIssued)+"</td><td align=\"center\">"+
+				percentFormat.format(stats.statsGlobal.normalizablePercent())+"%</td></tr>\r\n"
+				+ "</table>\r\n"
+				+ "\r\n"
+				+ "<br />\r\n"
+				+ "<p><b>Occurrences of dcterms:issued in individual datasets:</b></p>\r\n"
+				+ "<table>"
+				+ "<tr><td><b>Dataset</b></td><td><b>Titles</b></td><td><b>Issues</b></td><td><b>Issues with dcterms:issued</b></td><td><b>Normalizable %</b></td></tr>\r\n"
+				);
+		
+		for(String dataset: stats.sortedDatasets()) {
+			DatesInIssuesStats dsStats = stats.statsByDataset.get(dataset);
+			writer.append("<tr><td align=\"center\">"+dataset+"</td>"
+					+ "<td align=\"center\">"+countFormat.format(dsStats.titlesCount)+"</td><td align=\"center\">"+
+					countFormat.format(dsStats.issuesCount)+"</td><td align=\"center\">"+
+					countFormat.format(dsStats.issuesWithDctermsIssued)+"</td><td align=\"center\">"+
+					percentFormat.format(dsStats.normalizablePercent())+"%</td></tr>\r\n");
+		}
+		writer.append("</table>");
+		writeEnd(writer);	
+		writer.close();
 	}
 	
 	

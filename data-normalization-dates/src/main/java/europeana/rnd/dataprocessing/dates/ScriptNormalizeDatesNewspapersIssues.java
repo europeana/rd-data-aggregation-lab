@@ -3,6 +3,7 @@ package europeana.rnd.dataprocessing.dates;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -16,39 +17,29 @@ import javax.json.stream.JsonParser;
 
 import europeana.rnd.dataprocessing.dates.extraction.Match;
 import europeana.rnd.dataprocessing.dates.extraction.MatchId;
+import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
+import europeana.rnd.dataprocessing.dates.stats.NewspapersIssuedStats;
 import inescid.dataaggregation.data.model.DcTerms;
 import inescid.dataaggregation.data.model.Ore;
 import inescid.util.europeana.EdmRdfUtil;
 
 public class ScriptNormalizeDatesNewspapersIssues {
-	 
 	
-	public static class DatesInIssuesStats {
-		int titlesCount=0;
-		int issuesCount=0;
-		int issuesWithDctermsIssued=0;
-		int issuesWithDctermsIssuedNormalizable=0;
-		@Override
-		public String toString() {
-			return "DatesInIssuesStats [titlesCount=" + titlesCount + ", issuesCount=" + issuesCount
-					+ ", issuesWithDctermsIssued=" + issuesWithDctermsIssued + ", issuesWithDctermsIssuedNormalizable="
-					+ issuesWithDctermsIssuedNormalizable + "]";
-		}		
-	}
-	
-	File folder;
+	File inputFolder;
+	File outputFolder;
 	DatesExtractorHandler handler;
 	
-	public ScriptNormalizeDatesNewspapersIssues(File folder, DatesExtractorHandler handler) {
+	public ScriptNormalizeDatesNewspapersIssues(File folder, File outFolder) {
 		super();
-		this.folder = folder;
-		this.handler = handler;
+		this.inputFolder = folder;
+		this.outputFolder = outFolder;
+		this.handler = new DatesExtractorHandler(outFolder);
 	}
 
 	public void process() throws IOException {
-		DatesInIssuesStats stats=new DatesInIssuesStats();
+		NewspapersIssuedStats stats=new NewspapersIssuedStats();
 		
-		for(File innerFolder: folder.listFiles()) {
+		for(File innerFolder: inputFolder.listFiles()) {
 			if(innerFolder.isFile()) continue;
 			if(!innerFolder.getName().startsWith("dates_export_")) continue;
 			for(File jsonFile: innerFolder.listFiles()) {
@@ -61,24 +52,26 @@ public class ScriptNormalizeDatesNewspapersIssues {
 				for(Iterator<JsonValue> it=arrayStream.iterator() ; it.hasNext() ;) {
 					JsonObject jv=it.next().asJsonObject();
 					//check here
-					if(NewspaperCollection.isFromNewspapersCollection(jv.getString("id"))) {
+					String choUri = jv.getString("id");
+					if(NewspaperCollection.isFromNewspapersCollection(choUri)) {
+						String dataset = EdmRdfUtil.getDatasetFromApiIdOrUri(choUri);
 						DatesInRecord record=new DatesInRecord(jv);
 						try {
 							if(record.isNewspaperIssue) {
-								stats.issuesCount++;
+								stats.incrementIssue(dataset);
 								handler.handle(record);							
 								List<Match> issuedValues = record.getValuesFor(Source.PROVIDER, Ore.Proxy, DcTerms.issued);
 								if(issuedValues!=null && !issuedValues.isEmpty()) {
-									stats.issuesWithDctermsIssued++;
+									stats.incrementIssueWithDctermsIssued(dataset);
 									for(Match m: issuedValues) {
 										if(m.getMatchId()!=MatchId.NO_MATCH && m.getMatchId()!=MatchId.INVALID) {
-											stats.issuesWithDctermsIssuedNormalizable++;									
+											stats.incrementIssueWithDctermsIssuedNormalizable(dataset);
 											break;
 										}
 									}
 								}
 							} else if(record.isNewspaperTitle) {
-								stats.titlesCount++;
+								stats.incrementTitle(dataset);
 							}
 						} catch (Exception e) {
 							e.printStackTrace();
@@ -86,12 +79,11 @@ public class ScriptNormalizeDatesNewspapersIssues {
 					}
 				}
 				is.close();
-				System.out.println(stats);
 			}
 		}
 		handler.close();
 		System.out.println("Finished");
-		System.out.println(stats);
+		HtmlExporter.export(stats, outputFolder);
 	}
 
 
@@ -108,7 +100,7 @@ public class ScriptNormalizeDatesNewspapersIssues {
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
 		
-		ScriptNormalizeDatesNewspapersIssues processor=new ScriptNormalizeDatesNewspapersIssues(new File(sourceFolder), new DatesExtractorHandler(outFolder));
+		ScriptNormalizeDatesNewspapersIssues processor=new ScriptNormalizeDatesNewspapersIssues(new File(sourceFolder), outFolder);
 		processor.process();
 	}
 }
