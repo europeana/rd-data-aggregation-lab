@@ -20,7 +20,7 @@ public class NewspapersIssuedStats {
 					+ issuesWithDctermsIssuedNormalizable + "]";
 		}
 		public double normalizablePercent() {
-			return (double)issuesWithDctermsIssuedNormalizable/(double)issuesWithDctermsIssued * 100;
+			return (double)issuesWithDctermsIssuedNormalizable/(double)issuesCount * 100;
 		}		
 	}
 	

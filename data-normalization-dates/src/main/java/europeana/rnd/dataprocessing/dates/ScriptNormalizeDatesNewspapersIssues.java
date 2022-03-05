@@ -57,9 +57,9 @@ public class ScriptNormalizeDatesNewspapersIssues {
 						String dataset = EdmRdfUtil.getDatasetFromApiIdOrUri(choUri);
 						DatesInRecord record=new DatesInRecord(jv);
 						try {
+							handler.handle(record);							
 							if(record.isNewspaperIssue) {
 								stats.incrementIssue(dataset);
-								handler.handle(record);							
 								List<Match> issuedValues = record.getValuesFor(Source.PROVIDER, Ore.Proxy, DcTerms.issued);
 								if(issuedValues!=null && !issuedValues.isEmpty()) {
 									stats.incrementIssueWithDctermsIssued(dataset);
