@@ -144,8 +144,15 @@ public class ScriptDebugNormalizeDates {
 //				"-0549-01-01T00:00:00Z",
 //				"Byzantine Period; start=0395; end=0641",
 //				"1918-20",
-				"1942-1943 c.",
-	 			"[1942-1943]",
+//				"1942-1943 c.",
+//	 			"[1942-1943]",
+//	 			"(1942-1943)",
+//	 			"(1942)",
+//				"-3.6982",
+//				"[ca. 16??]",
+//				"[19--?]",
+//				"ISO9126",
+				"SVV",
 		}) {
 			datesInRec.addTo(Source.EUROPEANA, Ore.Proxy, Dc.date, Jena.createLiteral(test).asLiteral());
 			System.out.println(test);
@@ -154,7 +161,7 @@ public class ScriptDebugNormalizeDates {
 			System.out.println(r.getMatchId());
 			System.out.println(r.getExtracted());
 			if (r.getMatchId()!=MatchId.NO_MATCH) {
-				System.out.println("valid: "+EdtfValidator.validate(r.getExtracted()));
+				System.out.println("valid: "+EdtfValidator.validate(r.getExtracted(), false));
 			}
 		}
 		DatesExtractorHandler.runDateNormalization(datesInRec);

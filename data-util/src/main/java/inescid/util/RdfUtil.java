@@ -304,7 +304,6 @@ public class RdfUtil {
 	final static Pattern patternSpaceInIriTtl=Pattern.compile(patternCharInIriPreTtl+" "+patternCharInIriSufTtl);
 	final static Pattern patternIllegalChar=Pattern.compile("Illegal character in IRI \\([^\\)]*'(.)'");
 	
-	
 	public static Model readRdf(InputStream content, Lang l) throws RiotException {
 		try {
 			byte[] byteArray = IOUtils.toByteArray(content);			

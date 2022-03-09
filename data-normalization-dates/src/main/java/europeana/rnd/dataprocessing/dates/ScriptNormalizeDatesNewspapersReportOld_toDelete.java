@@ -15,13 +15,13 @@ import javax.json.stream.JsonParser;
 
 import inescid.util.europeana.EdmRdfUtil;
 
-public class ScriptNormalizeDatesNewspapersReport {
+public class ScriptNormalizeDatesNewspapersReportOld_toDelete {
 
 	
 	File folder;
 	DatesExtractorHandler handler;
 	
-	public ScriptNormalizeDatesNewspapersReport(File folder, DatesExtractorHandler handler) {
+	public ScriptNormalizeDatesNewspapersReportOld_toDelete(File folder, DatesExtractorHandler handler) {
 		super();
 		this.folder = folder;
 		this.handler = handler;
@@ -71,7 +71,7 @@ public class ScriptNormalizeDatesNewspapersReport {
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
 		
-		ScriptNormalizeDatesNewspapersReport processor=new ScriptNormalizeDatesNewspapersReport(new File(sourceFolder), new DatesExtractorHandler(outFolder));
+		ScriptNormalizeDatesNewspapersReportOld_toDelete processor=new ScriptNormalizeDatesNewspapersReportOld_toDelete(new File(sourceFolder), new DatesExtractorHandler(outFolder));
 		processor.process();
 	}
 }

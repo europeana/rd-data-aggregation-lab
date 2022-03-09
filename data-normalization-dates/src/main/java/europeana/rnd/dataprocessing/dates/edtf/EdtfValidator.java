@@ -2,20 +2,30 @@ package europeana.rnd.dataprocessing.dates.edtf;
 
 import java.time.Year;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import europeana.rnd.dataprocessing.dates.edtf.Date.YearPrecision;
 
 public class EdtfValidator {
 	
-	public static boolean validate(TemporalEntity edtf) {
+	public static boolean validate(TemporalEntity edtf, boolean allowFutureDates) {
+		boolean isValid=false;
 		if(edtf instanceof Instant)
-			return validateInstant((Instant) edtf);
-	    return validateInterval((Interval)edtf);
+			isValid = validateInstant((Instant) edtf, true);
+		else
+			isValid = validateInterval((Interval)edtf);
+		return isValid && (allowFutureDates || validateNotInFuture(edtf));
+	}
+
+	private static boolean validateNotInFuture(TemporalEntity edtf) {
+		if(edtf instanceof Instant)
+			return validateInstantNotInFuture((Instant) edtf);
+		return validateIntervalNotInFuture((Interval)edtf);
 	}
 
 	private static boolean validateInterval(Interval edtf) {
 		if( edtf.getStart()==null || edtf.getEnd()==null ||
-				!validateInstant(edtf.getStart()) || !validateInstant(edtf.getEnd()))
+				!validateInstant(edtf.getStart(), false) || !validateInstant(edtf.getEnd(), false))
 			return false;
 		
 		Date sDate = edtf.getStart().getDate();
@@ -76,7 +86,7 @@ public class EdtfValidator {
 		}
 	}
 
-	private static boolean validateInstant(Instant edtf) {
+	private static boolean validateInstant(Instant edtf, boolean standalone) {
 		Date date = edtf.getDate();
 		if(date!=null) {
 			if(!(date.isUnkown() || date.isUnspecified())) {
@@ -111,9 +121,35 @@ public class EdtfValidator {
 				return false;
 			//TODO: validate timezone
 		}
+		if(standalone) {
+			if ((date==null || date.isUnkown()) && t==null)
+				return false;
+		}
 		return true;
 	}
 
+	private static boolean validateIntervalNotInFuture(Interval edtf) {
+		return validateInstantNotInFuture(edtf.getStart()) && validateInstantNotInFuture(edtf.getEnd()); 
+	}
+	private static boolean validateInstantNotInFuture(Instant edtf) {
+		if(edtf.getDate().isUnkown() || edtf.getDate().isUnspecified())
+			return true;
+		int currentYear=new GregorianCalendar().get(Calendar.YEAR);
+		if(edtf.getDate().getYearPrecision()==null) {
+			return edtf.getDate().getYear()<=currentYear;
+		}else if(edtf.getDate().getYearPrecision()==YearPrecision.MILLENIUM) {
+			currentYear=(currentYear / 1000) * 1000;
+			return (edtf.getDate().getYear() * 1000) /1000  <= currentYear;
+		}else if(edtf.getDate().getYearPrecision()==YearPrecision.CENTURY) {
+			currentYear=(currentYear / 100) * 100;
+			return (edtf.getDate().getYear() * 100) /100  <= currentYear;
+		}else if(edtf.getDate().getYearPrecision()==YearPrecision.DECADE) {
+			currentYear=(currentYear / 10) * 10;
+			return (edtf.getDate().getYear() * 10) /10  <= currentYear;
+		}
+		throw new IllegalArgumentException("This should never occour");
+	}	
+	
 	private static boolean isMonthOf31Days(Integer month) {
 		month-=1;//java Calendar starts at month 0
         return ((month == Calendar.JANUARY) || 

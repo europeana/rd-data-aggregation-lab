@@ -32,7 +32,6 @@ public class PatternMonthName implements DateExtractor {
 			patternMonthDayYear.put(month, Pattern.compile("[\\s\\[]*"+monthNamesPattern+"[\\s\\.a-zA-Z_,]{1,4}(\\d\\d?)[\\s\\.,a-zA-Z_]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
 			patternMonthYear.put(month, Pattern.compile("[\\s\\[]*"+monthNamesPattern+"[\\s\\.,a-zA-Z_]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
 		}
-		
 	}
 	
 	@Override

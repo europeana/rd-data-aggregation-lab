@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.output.FileWriterWithEncoding;
+import org.apache.commons.lang3.StringUtils;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
 import europeana.rnd.dataprocessing.dates.edtf.EdtfValidator;
@@ -28,8 +29,6 @@ import europeana.rnd.dataprocessing.dates.extraction.PatternDateExtractorYyyyMmD
 import europeana.rnd.dataprocessing.dates.extraction.PatternDecade;
 import europeana.rnd.dataprocessing.dates.extraction.PatternEdtf;
 import europeana.rnd.dataprocessing.dates.extraction.PatternFormatedFullDate;
-import europeana.rnd.dataprocessing.dates.extraction.PatternIso8601Date;
-import europeana.rnd.dataprocessing.dates.extraction.PatternIso8601DateRange;
 import europeana.rnd.dataprocessing.dates.extraction.PatternMonthName;
 import europeana.rnd.dataprocessing.dates.extraction.PatternNumericDateExtractorWithMissingParts;
 import europeana.rnd.dataprocessing.dates.extraction.PatternNumericDateExtractorWithMissingPartsAndXx;
@@ -40,6 +39,8 @@ import europeana.rnd.dataprocessing.dates.extraction.trash.PatternDateExtractorD
 import europeana.rnd.dataprocessing.dates.extraction.trash.PatternDateExtractorYyyy;
 import europeana.rnd.dataprocessing.dates.extraction.trash.PatternDateExtractorYyyyMm;
 import europeana.rnd.dataprocessing.dates.extraction.trash.PatternDateRangeExtractorYyyy;
+import europeana.rnd.dataprocessing.dates.extraction.trash.PatternIso8601Date;
+import europeana.rnd.dataprocessing.dates.extraction.trash.PatternIso8601DateRange;
 import europeana.rnd.dataprocessing.dates.stats.DateExtractionStatistics;
 import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
 import europeana.rnd.dataprocessing.dates.stats.NoMatchSampling;
@@ -53,7 +54,7 @@ public class DatesExtractorHandler {
 	
 	static ArrayList<DateExtractor> extractors=new ArrayList<DateExtractor>() {{
 //		add(new PatternDateExtractorYyyy());
-		add(new PatternBriefDateRange());		
+		add(new PatternBriefDateRange());
 		add(new PatternEdtf());
 		add(new PatternDateExtractorYyyyMmDdSpaces());
 //		add(new PatternDateExtractorDdMmYyyy());
@@ -84,15 +85,15 @@ public class DatesExtractorHandler {
 		for(Match val: rec.getAllValues(Source.ANY)) {
 			try {
 				Match extracted=runDateNormalization(val.getInput()); 
-				if(extracted.getMatchId()!=MatchId.NO_MATCH)
-					if(!EdtfValidator.validate(extracted.getExtracted())) {
+				if(extracted.getMatchId()!=MatchId.NO_MATCH) {
+					if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
 						if(extracted.getExtracted() instanceof Interval) {
 							//lets try to invert the start and end dates and see if it validates
 							Interval i=(Interval)extracted.getExtracted();
 							Instant start = i.getStart();
 							i.setStart(i.getEnd());
 							i.setEnd(start);
-							if(!EdtfValidator.validate(extracted.getExtracted())) {
+							if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
 								i.setEnd(i.getStart());
 								i.setStart(start);
 								extracted.setMatchId(MatchId.INVALID);
@@ -100,6 +101,7 @@ public class DatesExtractorHandler {
 						} else
 							extracted.setMatchId(MatchId.INVALID);
 					}
+				}
 				val.setResult(extracted);
 			} catch (Exception e) {
 				System.err.println("Error in value: "+val.getInput());
@@ -123,7 +125,7 @@ public class DatesExtractorHandler {
 		if(extracted==null) {
 			//Trying patterns after cleaning 
 			CleanResult cleanResult = cleaner.clean1st(valTrim);
-			if (cleanResult!=null) {
+			if (cleanResult!=null && !StringUtils.isEmpty(cleanResult.getCleanedValue())) {
 				for(DateExtractor extractor: extractors) {
 					extracted = extractor.extract(cleanResult.getCleanedValue());
 					if (extracted!=null) {
@@ -136,14 +138,14 @@ public class DatesExtractorHandler {
 		if(extracted==null) {
 			//Trying patterns after cleaning 
 			CleanResult cleanResult = cleaner.clean2nd(valTrim);
-			if (cleanResult!=null) {
+			if (cleanResult!=null && !StringUtils.isEmpty(cleanResult.getCleanedValue())) {
 				for(DateExtractor extractor: extractors) {
 					extracted = extractor.extract(cleanResult.getCleanedValue());
 					if (extracted!=null) {
 						extracted.setCleanOperation(cleanResult.getCleanOperation());
 						break;
 					}
-				}										
+				}
 			}
 		}
 		if(extracted==null)
@@ -159,6 +161,11 @@ public class DatesExtractorHandler {
 			} else if(extracted.getCleanOperation()==CleanId.SQUARE_BRACKETS_AND_CIRCA) {
 				extracted.getExtracted().setUncertain(true);
 				extracted.getExtracted().setApproximate(true);
+			} else if(extracted.getCleanOperation()==CleanId.PARENTHESES_FULL_VALUE_AND_CIRCA) {
+				extracted.getExtracted().setUncertain(true);
+				extracted.getExtracted().setApproximate(true);
+			} else if(extracted.getCleanOperation()==CleanId.PARENTHESES_FULL_VALUE) {
+				extracted.getExtracted().setUncertain(true);
 			}
 		}
 		return extracted;

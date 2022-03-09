@@ -3,6 +3,8 @@ package europeana.rnd.dataprocessing.dates.extraction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Cleaner {
 	public class CleanResult {
 		CleanId cleanOperation;
@@ -27,21 +29,31 @@ public class Cleaner {
 //	Pattern patEndingText=Pattern.compile("\\s*\\([^//)]+\\)\\s*$");
 	Pattern patEndingSquareBracket=Pattern.compile("\\s*\\]\\s*$");
 	Pattern patSquareBrackets=Pattern.compile("\\[([^\\]]+)\\]");
-	Pattern patCa=Pattern.compile("(circa|CA\\.?|C\\.)\\s*",Pattern.CASE_INSENSITIVE);
+	Pattern patParenthesesFullValue=Pattern.compile("\\s*\\(([^\\(\\)]+)\\)\\s*");
+	Pattern patParenthesesFullValueAndCa=Pattern.compile("\\s*\\((circa|CA\\.?|C\\.)([^\\(\\)]+)\\)\\s*");
+	Pattern patCa=Pattern.compile("^\\s*(circa|CA\\.?|C\\.)\\s*",Pattern.CASE_INSENSITIVE);
 	Pattern patSquareBracketsAndCa=Pattern.compile("\\[(circa|CA\\.?|C\\.)\\s*([^\\]]+)\\]",Pattern.CASE_INSENSITIVE);
-	
 	Pattern patEndingTextSquareBrackets=Pattern.compile("\\s*\\[.+\\]\\s*$");
 	
 	public CleanResult clean1st(String value) {
 		Matcher m = patInitialTextA.matcher(value);
-		if(m.find()) 
-			return new CleanResult(CleanId.INITIAL_TEXT, m.replaceFirst(""));
+		if(m.find()) {
+			String cleanedVal = m.replaceFirst("");		
+			if(!StringUtils.isEmpty(cleanedVal))
+				return new CleanResult(CleanId.INITIAL_TEXT, cleanedVal);
+		}
 		m = patInitialTextB.matcher(value);
-		if(m.find()) 
-			return new CleanResult(CleanId.INITIAL_TEXT, m.replaceFirst(""));
+		if(m.find() ) {
+			String cleanedVal = m.replaceFirst("");		
+			if(!StringUtils.isEmpty(cleanedVal))
+			return new CleanResult(CleanId.INITIAL_TEXT, cleanedVal);
+		}
 		m = patEndingText.matcher(value);
-		if(m.find()) 
-			return new CleanResult(CleanId.ENDING_TEXT, m.replaceFirst(""));
+		if(m.find() ) {
+			String cleanedVal = m.replaceFirst("");		
+			if(!StringUtils.isEmpty(cleanedVal))
+				return new CleanResult(CleanId.ENDING_TEXT, cleanedVal);
+		}
 		m = patSquareBracketsAndCa.matcher(value);
 		if(m.find()) 
 			return new CleanResult(CleanId.SQUARE_BRACKETS_AND_CIRCA, m.replaceAll("$2"));
@@ -55,14 +67,23 @@ public class Cleaner {
 		if(m.find()) 
 			return new CleanResult(CleanId.SQUARE_BRACKET_END, m.replaceAll(""));
 		m = patEndingDot.matcher(value);
-		if(m.find()) 
-			return new CleanResult(CleanId.ENDING_TEXT, m.replaceFirst(""));
+		if(m.find() ) {
+			String cleanedVal = m.replaceFirst("");		
+			if(!StringUtils.isEmpty(cleanedVal))
+				return new CleanResult(CleanId.ENDING_TEXT, cleanedVal);
+		}
 		return null;
 	}
 	public CleanResult clean2nd(String value) {
 		Matcher m = patEndingTextSquareBrackets.matcher(value);
 		if(m.find()) 
 			return new CleanResult(CleanId.ENDING_TEXT, m.replaceFirst(""));
+		m = patParenthesesFullValueAndCa.matcher(value);
+		if(m.matches()) 
+			return new CleanResult(CleanId.PARENTHESES_FULL_VALUE_AND_CIRCA, m.replaceAll("$1"));
+		m = patParenthesesFullValue.matcher(value);
+		if(m.matches()) 
+			return new CleanResult(CleanId.PARENTHESES_FULL_VALUE, m.replaceAll("$1"));
 		return null;
 	}
 }

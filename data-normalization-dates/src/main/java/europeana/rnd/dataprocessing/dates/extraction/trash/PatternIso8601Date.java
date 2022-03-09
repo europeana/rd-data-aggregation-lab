@@ -1,4 +1,4 @@
-package europeana.rnd.dataprocessing.dates.extraction;
+package europeana.rnd.dataprocessing.dates.extraction.trash;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -6,6 +6,9 @@ import java.util.regex.Pattern;
 import europeana.rnd.dataprocessing.dates.edtf.Date;
 import europeana.rnd.dataprocessing.dates.edtf.Instant;
 import europeana.rnd.dataprocessing.dates.edtf.Time;
+import europeana.rnd.dataprocessing.dates.extraction.DateExtractor;
+import europeana.rnd.dataprocessing.dates.extraction.Match;
+import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 
 public class PatternIso8601Date implements DateExtractor {
 	String patIsoDateBriefString="(?<year>-?\\d{4})(?<month>\\d{2})?(?<day>\\d{2})?"

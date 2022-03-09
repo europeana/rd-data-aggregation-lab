@@ -20,6 +20,8 @@ public class EdtfParser {
 //TODO:timezone			+ "(?<year>\\n{4})-(?<month>\\n{2})|(?<year>\\n{4}))(?<modifier>[\\?%~]?)");
 
 	public TemporalEntity parse(String edtfString) throws ParseException {
+		if (StringUtils.isEmpty(edtfString))
+			throw new ParseException("Not input given", 0);
 		if (edtfString.contains("/")) 
 			return parseInterval(edtfString);
 		return parseInstant(edtfString);
@@ -97,7 +99,7 @@ public class EdtfParser {
 				if(modifier.equals("?"))
 					d.setUncertain(true);
 				else if(modifier.equals("~"))
-						d.setApproximate(true);
+					d.setApproximate(true);
 				else if(modifier.equals("%")) {
 					d.setApproximate(true);
 					d.setUncertain(true);
