@@ -54,13 +54,13 @@ public class Date {
 		return month;
 	}
 	public void setMonth(Integer month) {
-		this.month = month == 0 ? null : month;
+		this.month = month==null || month == 0 ? null : month;
 	}
 	public Integer getDay() {
 		return day;
 	}
 	public void setDay(Integer day) {
-		this.day = day == 0 ? null : day;
+		this.day = day==null || day==0 ? null : day;
 	}
 	public boolean isUnspecified() {
 		return unspecified;
