@@ -78,14 +78,6 @@ public class EdtfParseAndSerializeTest {
 		assert (parse.getDate().getMonth()==null);
 		assert (parse.getDate().getDay()==null);
 		assert (serializer.serialize(parse).equals(dateStr));
-		
-		dateStr="";
-		parse=(Instant) parser.parse(dateStr);
-		assert (parse.getDate().isUnkown());
-		assert (parse.getDate().getYear()==null);
-		assert (parse.getDate().getMonth()==null);
-		assert (parse.getDate().getDay()==null);
-		assert (serializer.serialize(parse).equals(dateStr));
 	}
 	
 	@Test
@@ -167,8 +159,11 @@ public class EdtfParseAndSerializeTest {
 	@Test
 	void parseInvalid() throws ParseException {
 		String dateStr="";
-		Interval parse = (Interval) parser.parse(dateStr);
-		assert (parse.getEnd().getDate().getDay()==2);
-		assert (serializer.serialize(parse).equals(dateStr));
+		try {
+			Interval parse = (Interval) parser.parse(dateStr);
+			assert (false);
+		} catch (ParseException e) {
+			//OK
+		}
 	}
 }
