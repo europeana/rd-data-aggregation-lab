@@ -132,7 +132,7 @@ public class EdtfValidator {
 		return validateInstantNotInFuture(edtf.getStart()) && validateInstantNotInFuture(edtf.getEnd()); 
 	}
 	private static boolean validateInstantNotInFuture(Instant edtf) {
-		if(edtf.getDate().isUnkown() || edtf.getDate().isUnspecified())
+		if(edtf.getDate()==null || edtf.getDate().isUnkown() || edtf.getDate().isUnspecified())
 			return true;
 		int currentYear=new GregorianCalendar().get(Calendar.YEAR);
 		if(edtf.getDate().getYearPrecision()==null) {

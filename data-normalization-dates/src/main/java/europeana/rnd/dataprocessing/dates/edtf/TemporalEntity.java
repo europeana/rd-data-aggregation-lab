@@ -14,4 +14,6 @@ public abstract class TemporalEntity {
 	public abstract void setApproximate(boolean approx);
 
 	public abstract void setUncertain(boolean uncertain);
+
+	public abstract boolean isTimeOnly();
 }

@@ -11,6 +11,11 @@ public class Interval extends TemporalEntity {
 		this.end = end;
 	}
 
+	@Override
+	public boolean isTimeOnly() {
+		return (start==null || start.isTimeOnly() ) && (end==null || end.isTimeOnly() );
+	}
+	
 	public Instant getStart() {
 		return start;
 	}

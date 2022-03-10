@@ -101,6 +101,10 @@ public class DatesExtractorHandler {
 						} else
 							extracted.setMatchId(MatchId.INVALID);
 					}
+					if(extracted.getMatchId()!=MatchId.NO_MATCH && extracted.getMatchId()!=MatchId.INVALID) {
+						if(extracted.getExtracted().isTimeOnly())
+							extracted.setMatchId(MatchId.NO_MATCH);
+					}
 				}
 				val.setResult(extracted);
 			} catch (Exception e) {

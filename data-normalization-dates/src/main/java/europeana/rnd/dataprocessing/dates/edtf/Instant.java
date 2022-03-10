@@ -37,6 +37,11 @@ public class Instant extends TemporalEntity {
 		//TODO: convert timezone
 	}
 
+	@Override
+	public boolean isTimeOnly() {
+		return date==null;
+	}
+	
 	public Date getDate() {
 		return date;
 	}
