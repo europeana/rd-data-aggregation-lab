@@ -13,13 +13,20 @@ public class PatternDecade implements DateExtractor {
 	
 	public Match extract(String inputValue) {
 		Matcher m=patUncertainEnding.matcher(inputValue); 
-		if(!m.matches()) 
-			m=patUncertainBegining.matcher(inputValue); 
 		if(m.matches()) { 
 			Date d=new Date();
 			d.setYearPrecision(YearPrecision.DECADE);
 			d.setYear(Integer.parseInt(m.group("year"))*10);
 			if(m.group("uncertain")!=null || m.group("uncertain2")!=null)
+				d.setUncertain(true);
+			return new Match(MatchId.Decade, inputValue, new Instant(d));
+		}
+		m=patUncertainBegining.matcher(inputValue); 
+		if(m.matches()) {
+			Date d=new Date();
+			d.setYearPrecision(YearPrecision.DECADE);
+			d.setYear(Integer.parseInt(m.group("year"))*10);
+			if(m.group("uncertain")!=null)
 				d.setUncertain(true);
 			return new Match(MatchId.Decade, inputValue, new Instant(d));
 		}
