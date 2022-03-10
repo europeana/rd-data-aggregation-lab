@@ -153,7 +153,8 @@ public class ScriptDebugNormalizeDates {
 //				"[19--?]",
 //				"ISO9126",
 //				"SVV",
-				"1985-10-xx",
+//				"1985-10-xx",
+				"19..",
 		}) {
 			datesInRec.addTo(Source.EUROPEANA, Ore.Proxy, Dc.date, Jena.createLiteral(test).asLiteral());
 			System.out.println(test);

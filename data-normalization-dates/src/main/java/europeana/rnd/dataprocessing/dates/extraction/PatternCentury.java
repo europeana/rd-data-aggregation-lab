@@ -9,13 +9,10 @@ import europeana.rnd.dataprocessing.dates.edtf.Instant;
 import europeana.rnd.dataprocessing.dates.edtf.Interval;
 
 public class PatternCentury implements DateExtractor {
-	Pattern patYyyy=Pattern.compile("\\s*(?<uncertain>\\?)?(\\d{2})\\.{2}(?<uncertain2>\\?)?\\s*",Pattern.CASE_INSENSITIVE);
+	Pattern patYyyy=Pattern.compile("\\s*(?<uncertain>\\?)?(?<century>\\d{2})\\.{2}(?<uncertain2>\\?)?\\s*",Pattern.CASE_INSENSITIVE);
 	Pattern patRoman=Pattern.compile("\\s*(s\\s|s\\.|sec\\.?)\\s*\\s*",Pattern.CASE_INSENSITIVE);
 //	Pattern patYyyyX=Pattern.compile("\\s*([\\[\\?]{0,2})(\\d\\d)xx[\\]\\?]{0,2}\\s*",Pattern.CASE_INSENSITIVE);
 	Pattern patRomanClean=Pattern.compile("\\s*(I{1,3}|IV|VI{0,3}|I?X|XI{1,3}|XIV|XVI{0,3}|I?XX|XXI)\\s*",Pattern.CASE_INSENSITIVE);
-
-	
-	
 	
 	Pattern patRomanRange=Pattern.compile("\\s*(s\\.?|sec\\.?)\\s*([XIV]{1,5})\\s*"+"\\-"+
 			"\\s*([XIV]{1,5})\\s*"
@@ -27,7 +24,7 @@ public class PatternCentury implements DateExtractor {
 		if(m.matches()) {
 			Date d=new Date();
 			d.setYearPrecision(YearPrecision.CENTURY);
-			d.setYear(Integer.parseInt(m.group(1))*100);
+			d.setYear(Integer.parseInt(m.group("century"))*100);
 			if(m.group("uncertain")!=null || m.group("uncertain2")!=null)
 				d.setUncertain(true);
 			return new Match(MatchId.Century_Numeric, inputValue, new Instant(d));
