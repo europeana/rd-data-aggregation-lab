@@ -101,4 +101,11 @@ public final class Edm {
 	public static final Property rights = ResourceFactory.createProperty("http://www.europeana.eu/schemas/edm/rights");
 	public static final Property europeanaProxy = ResourceFactory.createProperty("http://www.europeana.eu/schemas/edm/europeanaProxy");
 	public static final Resource Agent = ResourceFactory.createResource("http://www.europeana.eu/schemas/edm/Agent");
+
+	public static String getPrefixedName(Property property) {
+		String prefix = NS_EXTERNAL_PREFERRED_BY_NS.get(property.getNameSpace());
+		if(prefix==null)
+			throw new IllegalArgumentException("Unknown namespace: "+property.getNameSpace());
+		return prefix+":"+property.getLocalName();
+	}
 }
