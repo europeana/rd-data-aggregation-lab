@@ -9,6 +9,8 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.ResourceFactory;
 
+import inescid.util.RdfUtil.Jena;
+
 
 public final class Edm {
 	public static String NS="http://www.europeana.eu/schemas/edm/";
@@ -102,10 +104,23 @@ public final class Edm {
 	public static final Property europeanaProxy = ResourceFactory.createProperty("http://www.europeana.eu/schemas/edm/europeanaProxy");
 	public static final Resource Agent = ResourceFactory.createResource("http://www.europeana.eu/schemas/edm/Agent");
 
-	public static String getPrefixedName(Property property) {
-		String prefix = NS_EXTERNAL_PREFERRED_BY_NS.get(property.getNameSpace());
+	public static String getPrefixedName(Resource propertyOrClass) {
+		String prefix = NS_EXTERNAL_PREFERRED_BY_NS.get(propertyOrClass.getNameSpace());
 		if(prefix==null)
-			throw new IllegalArgumentException("Unknown namespace: "+property.getNameSpace());
-		return prefix+":"+property.getLocalName();
+			throw new IllegalArgumentException("Unknown namespace: "+propertyOrClass.getNameSpace());
+		return prefix+":"+propertyOrClass.getLocalName();
+	}
+
+	public static Resource getResourceFromPrefixedName(String prefixedUri) {
+		return Jena.createResource(getUriFromPrefixedName(prefixedUri));
+	}
+	public static Property getPropertyFromPrefixedName(String prefixedUri) {
+		return Jena.createProperty(getUriFromPrefixedName(prefixedUri));
+	}
+	public static String getUriFromPrefixedName(String prefixedUri) {
+		String pref=prefixedUri.substring(0, prefixedUri.indexOf(':'));
+		String localName=prefixedUri.substring(prefixedUri.indexOf(':')+1);
+		String ns = NS_EXTERNAL_PREFERRED_BY_PREFIXES.get(pref);
+		return ns+localName;
 	}
 }

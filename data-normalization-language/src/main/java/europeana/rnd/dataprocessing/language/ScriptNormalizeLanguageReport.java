@@ -21,6 +21,28 @@ public class ScriptNormalizeLanguageReport {
 	}
 
 	public void process() throws IOException {
+		for(File innerFolder: folder.listFiles()) {
+			if(innerFolder.isFile()) continue;
+			if(!innerFolder.getName().startsWith("language_export_")) continue;
+			for(File jsonFile: innerFolder.listFiles()) {
+				if(jsonFile.isDirectory()) continue;
+				System.out.println(jsonFile.getAbsolutePath());
+				FileInputStream is = new FileInputStream(jsonFile);
+				JsonParser parser = Json.createParser(is);
+				parser.next();
+				Stream<JsonValue> arrayStream = parser.getArrayStream();
+				for(Iterator<JsonValue> it=arrayStream.iterator() ; it.hasNext() ;) {
+					JsonObject jv=it.next().asJsonObject();
+					LanguageInRecord record=new LanguageInRecord(jv);
+					try {
+						System.out.println(record);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+				is.close();
+			}
+		}
 	}
 
 

@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonString;
@@ -32,6 +33,43 @@ public class LanguageInRecord {
 		MapOfLists<String, Match> langTagValuesByField=new MapOfLists<String, Match>();
 		MapOfInts<String> withoutLangTagByField= new MapOfInts<String>();
 		MapOfLists<String, Match> propertyValuesByField=new MapOfLists<String, Match>();//in principle this will be used only for dc:language
+
+		public LanguageInClass() {
+		}
+		
+		public LanguageInClass(JsonObject jsonObj) {
+			if (jsonObj.containsKey("langTags")) {
+				JsonObject joLangTags = jsonObj.getJsonObject("langTags");
+				for(Entry<String, JsonValue> field: joLangTags.entrySet()) {
+					String prop=field.getKey();
+					JsonArray jaVals = field.getValue().asJsonArray();
+					for(JsonValue jv: jaVals) {
+						String val=((JsonString)jv).getString();
+						langTagValuesByField.put(prop, new Match(val));
+					}
+				}
+			}
+			if (jsonObj.containsKey("withoutLangTags")) {
+				JsonObject joWithoutLangTags = jsonObj.getJsonObject("withoutLangTags");
+				for(Entry<String, JsonValue> field: joWithoutLangTags.entrySet()) {
+					String prop=field.getKey();
+					Integer val=((JsonNumber)field.getValue()).intValue();
+					withoutLangTagByField.addTo(prop, val);
+				}
+			}
+			if (jsonObj.containsKey("propertyValues")) {
+				JsonObject joProps = jsonObj.getJsonObject("propertyValues");
+				for(Entry<String, JsonValue> field: joProps.entrySet()) {
+					String prop=field.getKey();
+					JsonArray jaVals = field.getValue().asJsonArray();
+					for(JsonValue jv: jaVals) {
+						String val=((JsonString)jv).getString();
+						propertyValuesByField.put(prop, new Match(val));
+					}
+				}
+			}
+		}
+
 
 		public JsonValue toJson() {
 			JsonObjectBuilder valsObj=Json.createObjectBuilder();
@@ -90,6 +128,31 @@ public class LanguageInRecord {
 		}
 		
 		public void readValuesOfSourceFromJson(JsonObject jv) {
+			for(Entry<String, JsonValue> field: jv.entrySet()) {
+				Resource cls=Edm.getResourceFromPrefixedName(field.getKey());
+				valuesByClassAndField.put(cls, new LanguageInClass(field.getValue().asJsonObject()));
+			}
+
+//			JsonObject jsonClassObj = jv.getJsonObject(jsonField);
+//			if(jsonClassObj!=null)
+//				for(Entry<String, JsonValue> field: jsonClassObj.entrySet()) {
+//					JsonArray valuesArr = field.getValue().asJsonArray();
+//					for(Iterator<JsonValue> it=valuesArr.iterator() ; it.hasNext() ;) {
+//						String val=((JsonString)it.next()).getString();
+//						valuesByFieldMap.put(field.getKey(), new Match(val));
+//					}
+//				}
+			
+			
+			
+			
+//			JsonObjectBuilder ret=Json.createObjectBuilder();
+//			for(Resource cls: valuesByClassAndField.keySet()) {
+//				ret.add(cls.getURI(), valuesByClassAndField.get(cls).toJson());
+//			}
+//			return ret.build();
+
+			
 //			for(Resource cls: DatesHandler.edmClassesToProcess)
 //				readValuesFromJson(jv, cls.getLocalName(), valuesByClassAndField.get(cls));
 		}
@@ -128,7 +191,7 @@ public class LanguageInRecord {
 		public JsonObject toJson() {
 			JsonObjectBuilder ret=Json.createObjectBuilder();
 			for(Resource cls: valuesByClassAndField.keySet()) {
-				ret.add(cls.getURI(), valuesByClassAndField.get(cls).toJson());
+				ret.add(Edm.getPrefixedName(cls), valuesByClassAndField.get(cls).toJson());
 			}
 			return ret.build();
 		}

@@ -475,7 +475,7 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 //		Writer csvFileWriterTwoLines=new FileWriterWithEncoding(outCsvFileTwoLines, StandardCharsets.UTF_8);
 //		CSVPrinter csvPrinterTwoLines=new CSVPrinter(csvFileWriterTwoLines, CSVFormat.DEFAULT);
 		
-		csvPrinter98.printRecord("Title/Description", "Lev. dist.", "Score 3", "Sho. Com. Seq.", "Len. Dif.", "Problem?");
+		csvPrinter98.printRecord("Title/Description", "Lev. dist.", "Score 3", "Length distance", "Sho. Com. Seq.", "Len. Dif.", "Problem?");
 //		csvPrinter98.printRecord("", "", "1 - lev_dist / max(length_title, length_desc)", "", "", "scv>0.9 and len_dif<30");
 		
 		boolean first=true;
