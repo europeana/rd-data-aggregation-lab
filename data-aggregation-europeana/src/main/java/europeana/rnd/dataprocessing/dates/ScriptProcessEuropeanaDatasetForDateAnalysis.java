@@ -29,8 +29,6 @@ import eu.europeana.corelib.solr.bean.impl.FullBeanImpl;
 import eu.europeana.indexing.tiers.model.MetadataTier;
 import europeana.rnd.aggregated.RecordIterator;
 import europeana.rnd.dataprocessing.ProgressTrackerOnFile;
-import europeana.rnd.dataprocessing.LangTagsResult.IN;
-import europeana.rnd.dataprocessing.LangTagsResult.SOURCE;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.dataset.profile.tiers.EpfTiersCalculator;

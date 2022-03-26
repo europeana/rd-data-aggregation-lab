@@ -1,10 +1,10 @@
-package europeana.rnd.dataprocessing;
+package europeana.rnd.dataprocessing.language;
 
 import java.io.Serializable;
 
 import inescid.util.datastruct.MapOfInts;
 
-public class LangTagsResult implements Serializable {
+public class OldLangTagsResult implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum IN {CHO, CONTEXT};
@@ -16,7 +16,7 @@ public class LangTagsResult implements Serializable {
 	MapOfInts<String> tagsInProviderContext;
 	MapOfInts<String> tagsInEuropeanaContext;
 
-	public LangTagsResult() {
+	public OldLangTagsResult() {
 		tagsInProvider=new MapOfInts<String>();
 		tagsInEuropeana=new MapOfInts<String>();
 		tagsInProviderContext=new MapOfInts<String>();
@@ -36,7 +36,7 @@ public class LangTagsResult implements Serializable {
 				tagsInProviderContext.incrementTo(lang);
 	}
 
-	public void add(LangTagsResult langsResult) {
+	public void add(OldLangTagsResult langsResult) {
 		tagsInProvider.addToAll(langsResult.tagsInProvider);
 		tagsInEuropeana.addToAll(langsResult.tagsInEuropeana);
 		tagsInProviderContext.addToAll(langsResult.tagsInProviderContext);

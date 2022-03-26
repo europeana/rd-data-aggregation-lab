@@ -133,41 +133,6 @@ public class LanguageInRecord {
 				valuesByClassAndField.put(cls, new LanguageInClass(field.getValue().asJsonObject()));
 			}
 
-//			JsonObject jsonClassObj = jv.getJsonObject(jsonField);
-//			if(jsonClassObj!=null)
-//				for(Entry<String, JsonValue> field: jsonClassObj.entrySet()) {
-//					JsonArray valuesArr = field.getValue().asJsonArray();
-//					for(Iterator<JsonValue> it=valuesArr.iterator() ; it.hasNext() ;) {
-//						String val=((JsonString)it.next()).getString();
-//						valuesByFieldMap.put(field.getKey(), new Match(val));
-//					}
-//				}
-			
-			
-			
-			
-//			JsonObjectBuilder ret=Json.createObjectBuilder();
-//			for(Resource cls: valuesByClassAndField.keySet()) {
-//				ret.add(cls.getURI(), valuesByClassAndField.get(cls).toJson());
-//			}
-//			return ret.build();
-
-			
-//			for(Resource cls: DatesHandler.edmClassesToProcess)
-//				readValuesFromJson(jv, cls.getLocalName(), valuesByClassAndField.get(cls));
-		}
-		
-		private void readValuesFromJson(JsonObject jv, String jsonField,
-				MapOfLists<String, Match> valuesByFieldMap) {
-//			JsonObject jsonClassObj = jv.getJsonObject(jsonField);
-//			if(jsonClassObj!=null)
-//				for(Entry<String, JsonValue> field: jsonClassObj.entrySet()) {
-//					JsonArray valuesArr = field.getValue().asJsonArray();
-//					for(Iterator<JsonValue> it=valuesArr.iterator() ; it.hasNext() ;) {
-//						String val=((JsonString)it.next()).getString();
-//						valuesByFieldMap.put(field.getKey(), new Match(val));
-//					}
-//				}
 		}
 
 		public void addTo(Resource cls, Property property, Literal value) {

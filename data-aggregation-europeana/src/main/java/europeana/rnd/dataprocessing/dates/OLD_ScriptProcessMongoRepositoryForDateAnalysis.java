@@ -26,8 +26,6 @@ import eu.europeana.corelib.edm.utils.EdmUtils;
 import eu.europeana.corelib.solr.bean.impl.FullBeanImpl;
 import eu.europeana.indexing.tiers.model.MetadataTier;
 import europeana.rnd.dataprocessing.ProgressTrackerOnFile;
-import europeana.rnd.dataprocessing.LangTagsResult.IN;
-import europeana.rnd.dataprocessing.LangTagsResult.SOURCE;
 import inescid.dataaggregation.dataset.profile.tiers.EpfTiersCalculator;
 import inescid.dataaggregation.dataset.profile.tiers.TiersCalculation;
 import inescid.europeanarepository.EdmMongoServer;

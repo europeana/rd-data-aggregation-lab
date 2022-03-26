@@ -21,6 +21,7 @@ public class ScriptNormalizeLanguageReport {
 	}
 
 	public void process() throws IOException {
+		LanguageStatsInDataset stats=new LanguageStatsInDataset("Europeana");
 		for(File innerFolder: folder.listFiles()) {
 			if(innerFolder.isFile()) continue;
 			if(!innerFolder.getName().startsWith("language_export_")) continue;
@@ -35,6 +36,10 @@ public class ScriptNormalizeLanguageReport {
 					JsonObject jv=it.next().asJsonObject();
 					LanguageInRecord record=new LanguageInRecord(jv);
 					try {
+						
+						//TODO: run normalisation, run subtags check
+						
+						stats.add(record);
 						System.out.println(record);
 					} catch (Exception e) {
 						e.printStackTrace();

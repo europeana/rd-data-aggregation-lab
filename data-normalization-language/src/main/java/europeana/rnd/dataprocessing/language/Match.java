@@ -1,50 +1,76 @@
 package europeana.rnd.dataprocessing.language;
 
 public class Match {
-	
-	MatchId matchId;
+	boolean hasCountry=false;
+	boolean hasVariant=false;
+	boolean hasScript=false;
+	boolean hasExtension=false;
+	boolean hasSubtags=false;
 	String input;
-	String extracted;
+	String normalized;
 	
-	public Match(MatchId matchId, String input, String extracted) {
+	public Match(String input, String extracted) {
 		super();
-		this.matchId = matchId;
 		this.input = input;
-		this.extracted = extracted;
+		this.normalized = extracted;
 	}
 	
 	public Match(String input) {
 		this.input = input;		
 	}
 
-	public MatchId getMatchId() {
-		return matchId;
-	}
 	public String getInput() {
 		return input;
 	}
-	public String getExtracted() {
-		return extracted;
-	}
-
-	public void setMatchId(MatchId matchId) {
-		this.matchId=matchId;
+	public String getNormalized() {
+		return normalized;
 	}
 
 	public void setInput(String input) {
 		this.input = input;
 	}
 
-	public void setExtracted(String extracted) {
-		this.extracted = extracted;
+	public void setNormalized(String extracted) {
+		this.normalized = extracted;
 	}
 
-	public void setResult(Match result) {
-		matchId=result.getMatchId();
-		this.extracted=result.getExtracted();
+	public boolean isHasCountry() {
+		return hasCountry;
 	}
-	@Override
-	public String toString() {
-		return "Match [matchId=" + matchId + ", input=" + input + ", extracted=" + extracted + "]";
+
+	public void setHasCountry(boolean hasCountry) {
+		this.hasCountry = hasCountry;
+	}
+
+	public boolean isHasVariant() {
+		return hasVariant;
+	}
+
+	public void setHasVariant(boolean hasVariant) {
+		this.hasVariant = hasVariant;
+	}
+
+	public boolean isHasScript() {
+		return hasScript;
+	}
+
+	public void setHasScript(boolean hasScript) {
+		this.hasScript = hasScript;
+	}
+
+	public boolean isHasExtension() {
+		return hasExtension;
+	}
+
+	public void setHasExtension(boolean hasExtension) {
+		this.hasExtension = hasExtension;
+	}
+
+	public boolean isHasSubtags() {
+		return hasSubtags;
+	}
+
+	public void setHasSubtags(boolean hasSubtags) {
+		this.hasSubtags = hasSubtags;
 	}
 }

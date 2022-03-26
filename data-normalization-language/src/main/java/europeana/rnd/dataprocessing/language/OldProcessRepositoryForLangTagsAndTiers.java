@@ -1,4 +1,4 @@
-package europeana.rnd.dataprocessing;
+package europeana.rnd.dataprocessing.language;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,22 +25,13 @@ import org.apache.jena.riot.RiotException;
 import org.h2.mvstore.MVMap;
 import org.h2.mvstore.MVStore;
 
-import eu.europeana.corelib.edm.utils.EdmUtils;
-import eu.europeana.corelib.solr.bean.impl.FullBeanImpl;
-import eu.europeana.indexing.tiers.model.MetadataTier;
-import europeana.rnd.dataprocessing.LangTagsResult.IN;
-import europeana.rnd.dataprocessing.LangTagsResult.SOURCE;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Ore;
 import inescid.dataaggregation.data.model.Rdf;
-import inescid.dataaggregation.dataset.profile.tiers.EpfTiersCalculator;
-import inescid.dataaggregation.dataset.profile.tiers.TiersCalculation;
-import inescid.europeanarepository.EdmMongoServer;
-import inescid.europeanarepository.EdmMongoServer.Handler;
 import inescid.util.RdfUtil;
 import inescid.util.datastruct.MapOfInts;
 
-public class ProcessRepositoryForLangTagsAndTiers {
+public class OldProcessRepositoryForLangTagsAndTiers {
 
 	public static void main(String[] args) throws Exception {
 		String outputFolder = "c://users/nfrei/desktop/data/";
@@ -63,7 +54,7 @@ public class ProcessRepositoryForLangTagsAndTiers {
 		
 		// INIT OPERATIONS - END
 
-		final ProgressTrackerOnFile tracker=new ProgressTrackerOnFile(new File(outputFolder, ProcessRepositoryForLangTagsAndTiers.class.getSimpleName()+"_progress.txt"));
+		final ProgressTrackerOnFile tracker=new ProgressTrackerOnFile(new File(outputFolder, OldProcessRepositoryForLangTagsAndTiers.class.getSimpleName()+"_progress.txt"));
 		final int offset=tracker.getTokenAsInt();
 		System.out.println("Starting at mongo offset "+offset);
 
@@ -140,7 +131,7 @@ public class ProcessRepositoryForLangTagsAndTiers {
 
 	
 	public static class LangTagsHandler {
-		LangTagsResult overalResult=new LangTagsResult();
+		OldLangTagsResult overalResult=new OldLangTagsResult();
 		String outputFolder;
 		
 		public LangTagsHandler(String outputFolder) {
@@ -150,7 +141,7 @@ public class ProcessRepositoryForLangTagsAndTiers {
 		public void handle(String choUri, Model edm, int recCnt) {
 			HashSet<Resource> processedResources=new HashSet<Resource>();
 			
-			LangTagsResult res=new LangTagsResult();
+			OldLangTagsResult res=new OldLangTagsResult();
 			for(Resource proxy:edm.listResourcesWithProperty(Rdf.type, Ore.Proxy).toList()) {
 				processedResources.add(proxy);
 				Statement europeanaProxySt = proxy.getProperty(Edm.europeanaProxy);
@@ -161,7 +152,7 @@ public class ProcessRepositoryForLangTagsAndTiers {
 					}else if(st.getObject().isLiteral()) {
 						String lang = st.getObject().asLiteral().getLanguage();
 						if(!StringUtils.isEmpty(lang))
-							res.inc(src, lang, LangTagsResult.IN.CHO);
+							res.inc(src, lang, OldLangTagsResult.IN.CHO);
 					}
 				}
 			}
@@ -192,7 +183,7 @@ public class ProcessRepositoryForLangTagsAndTiers {
 			MapOfInts.writeCsv(overalResult.getTagsInProviderContext(),writer);
 			writer.close();
 			
-			LangTagsResult mergedResult=new LangTagsResult();
+			OldLangTagsResult mergedResult=new OldLangTagsResult();
 			mergedResult.getTagsInEuropeana().addToAll(overalResult.getTagsInEuropeana());
 			mergedResult.getTagsInEuropeana().addToAll(overalResult.getTagsInEuropeanaContext());
 			writer=Files.newBufferedWriter(new File(outputFolder, "langtags-europeana.csv").toPath(), StandardCharsets.UTF_8);
@@ -206,8 +197,8 @@ public class ProcessRepositoryForLangTagsAndTiers {
 			writer.close();
 		}
 
-		private void processInnerResource(LangTagsResult res, Resource resource, SOURCE src, HashSet<Resource> processedResources) {
-			LangTagsResult.IN in=IN.CONTEXT;
+		private void processInnerResource(OldLangTagsResult res, Resource resource, SOURCE src, HashSet<Resource> processedResources) {
+			OldLangTagsResult.IN in=IN.CONTEXT;
 			Statement type = resource.getProperty(Rdf.type);
 			if(type!=null && (type.getObject().equals(Edm.ProvidedCHO) || type.getObject().equals(Ore.Proxy)))
 				in=IN.CHO;
