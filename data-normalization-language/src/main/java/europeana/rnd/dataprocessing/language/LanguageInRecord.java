@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -103,21 +104,46 @@ public class LanguageInRecord {
 		}
 	}
 	
-	public static class DateValue {
-		public String className;
+	public static class LangValue {
+		public Resource cls;
 		public String property;
 		public Match match;
+		public int withoutLangTag=0;
 		
-		public DateValue(String className, String property, Match match) {
+		public LangValue(Resource cls, String property, Match match, int withoutLangTag) {
 			super();
-			this.className = className;
+			this.cls = cls;
 			this.property = property;
 			this.match = match;
+			this.withoutLangTag = withoutLangTag;
+		}
+//		public LangValue(Resource cls, String property, Match match) {
+//			super();
+//			this.cls = cls;
+//			this.property = property;
+//			this.match = match;
+//		}
+		
+		@Override
+		public String toString() {
+			return "DateValue [className=" + cls + ", property=" + property + ", match=" + match + "]";
+		}		
+	}
+	public static class PropertyCount {
+		public Resource cls;
+		public String property;
+		public int count;
+		
+		public PropertyCount(Resource cls, String property, int count) {
+			super();
+			this.cls = cls;
+			this.property = property;
+			this.count = count;
 		}
 		
 		@Override
 		public String toString() {
-			return "DateValue [className=" + className + ", property=" + property + ", match=" + match + "]";
+			return "PropertyCount [className=" + cls + ", property=" + property + ", count=" + count + "]";
 		}
 		
 	}
@@ -161,13 +187,55 @@ public class LanguageInRecord {
 			return ret.build();
 		}
 
-//		public List<Match> getAllValues() {
+//		public List<Match> getAllLangTagValues() {
 //			List<Match> vals=new ArrayList<>();
-//			for(MapOfLists<String, Match> inResource: valuesByClassAndField.values()) {
-//				vals.addAll(inResource.valuesOfAllLists());
+//			for(LanguageInClass inResource: valuesByClassAndField.values()) {
+//				vals.addAll(inResource.langTagValuesByField.valuesOfAllLists());
 //			}
 //			return vals;
 //		}
+		
+		public List<LangValue> getAllLangTagValues() {
+			List<LangValue> vals=new ArrayList<>();
+			Set<Entry<Resource, LanguageInClass>> entrySet = valuesByClassAndField.entrySet();
+			for(Entry<Resource, LanguageInClass> inClass: entrySet) {
+				for (Entry<String, ArrayList<Match>> fieldResults : inClass.getValue().langTagValuesByField.entrySet()) {
+					for (Match match: fieldResults.getValue()) 
+						vals.add(new LangValue(inClass.getKey(), fieldResults.getKey(), match, getWithoutLangTagCount(inClass.getKey(), fieldResults.getKey())));
+				}
+			}
+			return vals;
+		}
+		private int getWithoutLangTagCount(Resource cls, String property) {
+			LanguageInClass languageInClass = valuesByClassAndField.get(cls);
+			if(languageInClass==null)
+				return 0;
+			Integer cnt = languageInClass.withoutLangTagByField.get(property);
+			return cnt==null ? 0 : cnt;
+		}
+
+		public List<PropertyCount> getAllCountWithoutLangTag() {
+			List<PropertyCount> vals=new ArrayList<>();
+			Set<Entry<Resource, LanguageInClass>> entrySet = valuesByClassAndField.entrySet();
+			for(Entry<Resource, LanguageInClass> inClass: entrySet) {
+				for (Entry<String, Integer> fieldResults : inClass.getValue().withoutLangTagByField.entrySet()) {
+					vals.add(new PropertyCount(inClass.getKey(), fieldResults.getKey(), fieldResults.getValue()));
+				}
+			}
+			return vals;
+		}
+		public List<LangValue> getAllPropertyValues() {
+			List<LangValue> vals=new ArrayList<>();
+			Set<Entry<Resource, LanguageInClass>> entrySet = valuesByClassAndField.entrySet();
+			for(Entry<Resource, LanguageInClass> inClass: entrySet) {
+				for (Entry<String, ArrayList<Match>> fieldResults : inClass.getValue().propertyValuesByField.entrySet()) {
+					for (Match match: fieldResults.getValue()) 
+						vals.add(new LangValue(inClass.getKey(), fieldResults.getKey(), match, 0));
+				}
+			}
+			return vals;
+		}
+
 //		public List<DateValue> getAllValuesDetailed() {
 //			ArrayList<DateValue> vals=new ArrayList<DateValue>();
 //			for(Resource cls: DatesHandler.edmClassesToProcess) {

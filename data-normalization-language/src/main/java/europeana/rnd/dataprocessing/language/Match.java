@@ -73,4 +73,11 @@ public class Match {
 	public void setHasSubtags(boolean hasSubtags) {
 		this.hasSubtags = hasSubtags;
 	}
+
+	@Override
+	public String toString() {
+		return "Match [input=" + input + ", normalized=" + normalized + "]";
+	}
+	
+	
 }

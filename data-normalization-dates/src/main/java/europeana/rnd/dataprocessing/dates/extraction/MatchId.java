@@ -17,7 +17,7 @@ public enum MatchId {
 
 	public String getLabel() {
 		switch (this) {
-		case NO_MATCH: return "not normalisable: not match with existing patterns";
+		case NO_MATCH: return "not normalisable: no match with existing patterns";
 		case INVALID: return "not normalisable: date apparently invalid";
 		case BcAd: return "normalisable: BC/AD date";
 		case Century_Numeric: return "normalisable: century (numeric)";
