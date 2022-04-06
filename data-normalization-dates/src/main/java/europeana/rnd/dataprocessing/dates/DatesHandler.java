@@ -11,7 +11,7 @@ import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 
-import europeana.rnd.dataprocessing.dates.NewspaperCollection.NewspaperRecordType;
+import europeana.rnd.dataprocessing.dates.ThematicCollections.NewspaperRecordType;
 import inescid.dataaggregation.data.model.Dc;
 import inescid.dataaggregation.data.model.DcTerms;
 import inescid.dataaggregation.data.model.Edm;
@@ -35,7 +35,7 @@ public class DatesHandler {
 		public void handle(Model edm, int recCnt) throws IOException {
 			Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 			String choUri = choRes.getURI();
-			if(NewspaperCollection.isFromNewspapersCollection(choUri)) {
+			if(ThematicCollections.isFromNewspapersCollection(choUri)) {
 				DatesInRecord res = getDatesInRecord(edm, entityTracker);
 				if (!res.isEmpty())
 					jsonWriter.write(res);
@@ -47,7 +47,7 @@ public class DatesHandler {
 	public static Set<Resource> edmClassesToProcess=new HashSet<Resource>() {{
 		add(Ore.Proxy);
 		add(Edm.Agent);
-		add(Edm.WebResource);
+//		add(Edm.WebResource);
 		add(Edm.TimeSpan);
 	}};
 	
@@ -118,8 +118,8 @@ public class DatesHandler {
 		
 		boolean isNewspaperTitle=false;
 		boolean isNewspaperIssue=false;
-		if(NewspaperCollection.isFromNewspapersCollection(choUri)) {
-			NewspaperRecordType recType=NewspaperCollection.identifyRecordType(edm);
+		if(ThematicCollections.isFromNewspapersCollection(choUri)) {
+			NewspaperRecordType recType=ThematicCollections.identifyRecordType(edm);
 			if(recType!=null) {
 				isNewspaperIssue=recType==NewspaperRecordType.ISSUE;
 				isNewspaperTitle=recType==NewspaperRecordType.TITLE;
@@ -179,8 +179,8 @@ public class DatesHandler {
 					Statement typeSt = st.getObject().asResource().getProperty(Rdf.type);
 					if(typeSt!=null && typeSt.getObject().isResource()) {
 						Resource subResType=typeSt.getObject().asResource();
-						if(edmClassesToProcess.contains(resType))
-							getDatesInResource(res, source, resType, st.getObject().asResource(), entityTracker);
+						if(edmClassesToProcess.contains(subResType))
+							getDatesInResource(res, source, subResType, st.getObject().asResource(), entityTracker);
 					}
 				}
 			}

@@ -21,7 +21,7 @@ public class ScriptNormalizeDatesTest {
 		super();
 		this.folder = folder;
 		this.handler = new DatesExtractorHandler(outputFolder);
-		this.handlerAgents = new DatesAgentHandler(outputFolder);
+//		this.handlerAgents = new DatesAgentHandler(outputFolder);
 	}
 
 	public void process() throws IOException {
@@ -37,10 +37,11 @@ public class ScriptNormalizeDatesTest {
 				Stream<JsonValue> arrayStream = parser.getArrayStream();
 				for(Iterator<JsonValue> it=arrayStream.iterator() ; it.hasNext() ;) {
 					JsonObject jv=it.next().asJsonObject();
+					String choUri = jv.getString("id");
 					DatesInRecord record=new DatesInRecord(jv);
 					try {
 						handler.handle(record);
-						handlerAgents.handle(record);
+//						handlerAgents.handle(record);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -49,7 +50,7 @@ public class ScriptNormalizeDatesTest {
 			}
 		}
 		handler.close();
-		handlerAgents.close();
+//		handlerAgents.close();
 	}
 
 

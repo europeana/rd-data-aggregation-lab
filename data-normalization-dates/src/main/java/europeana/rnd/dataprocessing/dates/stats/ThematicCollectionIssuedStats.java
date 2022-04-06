@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class NewspapersIssuedStats {
+public class ThematicCollectionIssuedStats {
+	
 	
 	DatesInIssuesStats statsGlobal=new DatesInIssuesStats();
 	HashMap<String, DatesInIssuesStats> statsByDataset=new HashMap<String, DatesInIssuesStats>();
@@ -24,34 +25,30 @@ public class NewspapersIssuedStats {
 		return statsDataset;
 	}
 
-	public void incrementIssue(String dataset) {
+	public void incrementRecord(String dataset) {
 		statsGlobal.issuesCount++;
 		getDatasetStats(dataset).issuesCount++;
 	}
 
-	public void incrementIssueWithDctermsIssued(String dataset) {
+	public void incrementRecordWithDctermsIssued(String dataset) {
 		statsGlobal.issuesWithDctermsIssued++;
 		getDatasetStats(dataset).issuesWithDctermsIssued++;
 	}
 
-	public void incrementIssueWithDctermsIssuedNormalizable(String dataset) {
+	public void incrementRecordWithDctermsIssuedNormalizable(String dataset) {
 		statsGlobal.issuesWithDctermsIssuedNormalizable++;
 		getDatasetStats(dataset).issuesWithDctermsIssuedNormalizable++;
-	}
-
-	public void incrementTitle(String dataset) {
-		statsGlobal.titlesCount++;
-		getDatasetStats(dataset).titlesCount++;
-	}
-
-	public int totalItems() {
-		return statsGlobal.issuesCount + statsGlobal.titlesCount;
 	}
 
 	public List<String> sortedDatasets() {
 		ArrayList<String> dss=new ArrayList<String>(statsByDataset.keySet());
 		Collections.sort(dss);
 		return dss;
+	}
+
+
+	public int totalItems() {
+		return statsGlobal.issuesCount + statsGlobal.titlesCount;
 	}
 	
 }

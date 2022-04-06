@@ -19,17 +19,18 @@ import europeana.rnd.dataprocessing.dates.extraction.Match;
 import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
 import europeana.rnd.dataprocessing.dates.stats.NewspapersIssuedStats;
+import europeana.rnd.dataprocessing.dates.stats.ThematicCollectionIssuedStats;
 import inescid.dataaggregation.data.model.DcTerms;
 import inescid.dataaggregation.data.model.Ore;
 import inescid.util.europeana.EdmRdfUtil;
 
-public class ScriptNormalizeDatesNewspapersIssues {
+public class ScriptNormalizeDatesThematicCollection {
 	
 	File inputFolder;
 	File outputFolder;
 	DatesExtractorHandler handler;
 	
-	public ScriptNormalizeDatesNewspapersIssues(File folder, File outFolder) {
+	public ScriptNormalizeDatesThematicCollection(File folder, File outFolder) {
 		super();
 		this.inputFolder = folder;
 		this.outputFolder = outFolder;
@@ -37,7 +38,7 @@ public class ScriptNormalizeDatesNewspapersIssues {
 	}
 
 	public void process() throws IOException {
-		NewspapersIssuedStats stats=new NewspapersIssuedStats();
+		ThematicCollectionIssuedStats stats=new ThematicCollectionIssuedStats();
 		
 		for(File innerFolder: inputFolder.listFiles()) {
 			if(innerFolder.isFile()) continue;
@@ -53,26 +54,27 @@ public class ScriptNormalizeDatesNewspapersIssues {
 					JsonObject jv=it.next().asJsonObject();
 					//check here
 					String choUri = jv.getString("id");
-					if(ThematicCollections.isFromNewspapersCollection(choUri)) {
+
+//					if(ThematicCollections.isFromWw1Collection(choUri)) {
+						if(ThematicCollections.isFromArtCollection(choUri)) {
+						
 						String dataset = EdmRdfUtil.getDatasetFromApiIdOrUri(choUri);
 						DatesInRecord record=new DatesInRecord(jv);
 						try {
 							handler.handle(record);							
-							if(record.isNewspaperIssue) {
-								stats.incrementIssue(dataset);
-								List<Match> issuedValues = record.getValuesFor(Source.PROVIDER, Ore.Proxy, DcTerms.issued);
-								if(issuedValues!=null && !issuedValues.isEmpty()) {
-									stats.incrementIssueWithDctermsIssued(dataset);
-									for(Match m: issuedValues) {
-										if(m.getMatchId()!=MatchId.NO_MATCH && m.getMatchId()!=MatchId.INVALID) {
-											stats.incrementIssueWithDctermsIssuedNormalizable(dataset);
-											break;
-										}
+
+							stats.incrementRecord(dataset);
+							List<Match> issuedValues = record.getValuesFor(Source.PROVIDER, Ore.Proxy, DcTerms.issued);
+							if(issuedValues!=null && !issuedValues.isEmpty()) {
+								stats.incrementRecordWithDctermsIssued(dataset);
+								for(Match m: issuedValues) {
+									if(m.getMatchId()!=MatchId.NO_MATCH && m.getMatchId()!=MatchId.INVALID) {
+										stats.incrementRecordWithDctermsIssuedNormalizable(dataset);
+										break;
 									}
 								}
-							} else if(record.isNewspaperTitle) {
-								stats.incrementTitle(dataset);
 							}
+							
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -83,7 +85,8 @@ public class ScriptNormalizeDatesNewspapersIssues {
 		}
 		handler.close();
 		System.out.println("Finished");
-		HtmlExporter.export(stats, outputFolder);
+//		HtmlExporter.export(stats, outputFolder, "WW1");
+		HtmlExporter.export(stats, outputFolder, "Art");
 	}
 
 
@@ -96,11 +99,12 @@ public class ScriptNormalizeDatesNewspapersIssues {
 			}
 		}
 		
-		File outFolder=new File(sourceFolder+"/extractionNewspapers");
+//		File outFolder=new File(sourceFolder+"/extractionWw1");
+		File outFolder=new File(sourceFolder+"/extractionArt");
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
 		
-		ScriptNormalizeDatesNewspapersIssues processor=new ScriptNormalizeDatesNewspapersIssues(new File(sourceFolder), outFolder);
+		ScriptNormalizeDatesThematicCollection processor=new ScriptNormalizeDatesThematicCollection(new File(sourceFolder), outFolder);
 		processor.process();
 	}
 }

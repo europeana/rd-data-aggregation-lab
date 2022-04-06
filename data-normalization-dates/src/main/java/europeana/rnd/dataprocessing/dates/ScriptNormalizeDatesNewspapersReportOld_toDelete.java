@@ -42,7 +42,7 @@ public class ScriptNormalizeDatesNewspapersReportOld_toDelete {
 					JsonObject jv=it.next().asJsonObject();
 					
 					//check here
-					if(NewspaperCollection.isFromNewspapersCollection(jv.getString("id"))) {
+					if(ThematicCollections.isFromNewspapersCollection(jv.getString("id"))) {
 						DatesInRecord record=new DatesInRecord(jv);
 						try {
 							handler.handle(record);

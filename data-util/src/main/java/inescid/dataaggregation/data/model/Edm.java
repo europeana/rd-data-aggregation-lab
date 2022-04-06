@@ -11,7 +11,6 @@ import org.apache.jena.rdf.model.ResourceFactory;
 
 import inescid.util.RdfUtil.Jena;
 
-
 public final class Edm {
 	public static String NS="http://www.europeana.eu/schemas/edm/";
 	public static String PREFIX="edm";
@@ -40,6 +39,7 @@ public final class Edm {
 		put("http://metadata.net/harmony/abc#", "abc");
 		put("http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#", "ebucore");
 		put("http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#", "dolce-lite");
+		put("http://www.w3.org/ns/dqv#", "dqv");
 	}};
 	public static Map<String, String> NS_EXTERNAL_PREFERRED_BY_PREFIXES=new HashMap<String, String>() {{
 		for(Entry<String, String> e : NS_EXTERNAL_PREFERRED_BY_NS.entrySet()) 

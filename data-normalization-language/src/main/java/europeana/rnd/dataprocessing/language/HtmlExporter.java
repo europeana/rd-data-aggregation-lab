@@ -205,7 +205,7 @@ public class HtmlExporter {
 			if(statsOfItem.cntNormalizable>0)
 				writer.append("<br /> - With <i>xml:lang</i> normalizable: "+countFormat.format(statsOfItem.cntNormalizable)+ " ("+percentFormat.format(statsOfItem.normalizablePercent()) +"%)");
 			if(statsOfItem.cntNotNormalizable>0)
-				writer.append("<br /> - With <i>xml:lang</i> not-normalizable: "+countFormat.format(statsOfItem.cntNotNormalizable)+ " ("+percentFormat.format(statsOfItem.normalizablePercent()) +"%)");
+				writer.append("<br /> - With <i>xml:lang</i> not-normalizable: "+countFormat.format(statsOfItem.cntNotNormalizable)+ " ("+percentFormat.format(statsOfItem.notNormalizablePercent()) +"%)");
 			if(statsOfItem.cntSubtags>0)
 				writer.append("<br /> - With <i>xml:lang</i> with subtags "+countFormat.format(statsOfItem.cntSubtags)+ " ("+percentFormat.format(statsOfItem.subtagsPercent()) +"%)");
 		}						
@@ -260,17 +260,7 @@ public class HtmlExporter {
 			+ "</tr>\n");
 		
 		writer.append("</table>\n");
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	}
 	
 	

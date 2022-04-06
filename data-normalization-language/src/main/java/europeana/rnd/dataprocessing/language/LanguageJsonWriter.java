@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
 class LanguageJsonWriter {
-	static int maxRecsPerFile = 2000;
+	static int maxRecsPerFile = 1000;
 	static int maxFilesPerFolder = 1000;
 //			final int maxRecsPerFile=20;
 //			final int maxFilesPerFolder=10;

@@ -38,9 +38,9 @@ public class ScriptSelectLanguageTagsAndDcLanguageFromEuropeanaDataset {
 		String fileFormat ="XML";
 
 		if (args != null && args.length >= 3) {
-				inputFolder = args[0];
-				outputFolder = args[1];
-				fileFormat = args[2];
+			inputFolder = args[0];
+			outputFolder = args[1];
+			fileFormat = args[2];
 		}else {
 			inputFolder = "c://users/nfrei/desktop/data/europeana_dataset";
 			outputFolder = "c://users/nfrei/desktop/data/language";
