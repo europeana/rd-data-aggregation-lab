@@ -2,14 +2,10 @@ package europeana.rnd.dataprocessing.language;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
@@ -26,65 +22,30 @@ import inescid.util.RdfUtil;
 
 public class LanguageHandler {
 	
-	static class EntityTracker {
-		static Pattern simplifyPattern=Pattern.compile("^https?://([^/]+)/(.*)"); 
-		
-//		HashSet<String> processedInProvider=new HashSet<String>();
-//		HashSet<String> processedInEuropeana=new HashSet<String>();
-		HashSet<String> processed=new HashSet<String>();
-
-		public boolean contains(Source source, String uri) {
-			return processed.contains(simplifyURI(uri));
-		}
-		
-		public void add(Source source, String uri) {
-			processed.add(simplifyURI(uri));
-		}
-		
-		private static String simplifyURI(String uri) {
-			Matcher m = simplifyPattern.matcher(uri);
-			if(m.matches()) {
-				return intToString(m.group(1).hashCode())+m.group(2);
-			} else
-				return uri;
-		}
-		
-		private static String intToString(int i) {
-			ByteBuffer b = ByteBuffer.allocate(4);
-			b.putInt(i);
-			return new String(b.array(), StandardCharsets.UTF_8);
-		}
-		
-		public static void test() {
-			String testURI="http://wikidataorg/123";
-			System.out.println(testURI); 
-			System.out.println(simplifyURI(testURI)); 
-		}
-	}
-	
-	public static void main(String[] args) throws Exception {
-		EntityTracker.test();
-	}
-	
-	
 //record URI:
 //	class property tagvalue count
 	
 	LanguageJsonWriter jsonWriter;
-	EntityTracker entityTracker=new EntityTracker();
+	EntityTrackerOnDisk entityTracker;
+//	EntityTracker entityTracker=new EntityTracker();
 	
-	public LanguageHandler(String outputFolder) {
+	public LanguageHandler(String outputFolder) throws IOException {
 		super();
 		this.jsonWriter = new LanguageJsonWriter(outputFolder);
+		File setFolder = new File(outputFolder, "entity-tracker");
+		if (setFolder.exists()) 
+			FileUtils.deleteDirectory(setFolder);
+		setFolder.mkdir();
+		entityTracker=new EntityTrackerOnDisk(setFolder);
 	}
 
 	public void handle(Model edm, int recCnt) throws IOException {
 		LanguageInRecord res = getLanguageInRecord(edm, entityTracker);
-		jsonWriter.write(res);
+		jsonWriter.write(res); 
 	}
 	
 	public static LanguageInRecord getDatesInRecordSingleRecord(Model edm) {
-		return getLanguageInRecord(edm, new EntityTracker());
+		return getLanguageInRecord(edm, new EntityTrackerOnMemory());
 	}
 
 	private static LanguageInRecord getLanguageInRecord(Model edm, EntityTracker entityTracker) {

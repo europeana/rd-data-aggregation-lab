@@ -24,7 +24,6 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.riot.system.StreamRDFBase;
-import org.mapdb.DBException.GetVoid;
 
 import inescid.dataaggregation.casestudies.coreference.Consts;
 import inescid.dataaggregation.casestudies.coreference.semanticweb.AgentVocabsIntelinkingStudy.AgentVocabulary;

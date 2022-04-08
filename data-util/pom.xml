@@ -38,7 +38,12 @@
 			<artifactId>jena-arq</artifactId>
 			<version>3.11.0</version>
 		</dependency>
-
+		
+		<dependency>
+		    <groupId>org.mapdb</groupId>
+		    <artifactId>mapdb</artifactId>
+		    <version>3.0.8</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
