@@ -9,8 +9,6 @@ import java.util.regex.Pattern;
 class EntityTrackerOnMemory implements EntityTracker{
 		static Pattern simplifyPattern=Pattern.compile("^https?://([^/]+)/(.*)"); 
 		
-//		HashSet<String> processedInProvider=new HashSet<String>();
-//		HashSet<String> processedInEuropeana=new HashSet<String>();
 		HashSet<String> processed=new HashSet<String>();
 
 		public boolean contains(Source source, String uri) {

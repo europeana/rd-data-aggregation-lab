@@ -15,7 +15,7 @@ class EntityTrackerOnDisk implements EntityTracker {
 		BigSet<String> processed;
 		
 		public EntityTrackerOnDisk(File setFolder) {
-			BigSet<String> processed=new BigSet<String>("EntityTrackerOnDisk",setFolder);
+			processed=new BigSet<String>("EntityTrackerOnDisk",setFolder);
 		}
 
 		public boolean contains(Source source, String uri) {

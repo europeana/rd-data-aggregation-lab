@@ -40,6 +40,7 @@ public final class Edm {
 		put("http://www.ebu.ch/metadata/ontologies/ebucore/ebucore#", "ebucore");
 		put("http://www.loa-cnr.it/ontologies/DOLCE-Lite.owl#", "dolce-lite");
 		put("http://www.w3.org/ns/dqv#", "dqv");
+		put("http://creativecommons.org/ns#", "cc");
 	}};
 	public static Map<String, String> NS_EXTERNAL_PREFERRED_BY_PREFIXES=new HashMap<String, String>() {{
 		for(Entry<String, String> e : NS_EXTERNAL_PREFERRED_BY_NS.entrySet()) 
