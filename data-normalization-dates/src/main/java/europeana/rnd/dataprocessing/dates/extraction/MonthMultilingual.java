@@ -49,10 +49,6 @@ public class MonthMultilingual {
 	}
 
 	
-	public static void main(String[] args) throws Exception {
-		new MonthMultilingual();
-	}
-
 	public Integer parse(String monthName) {
 		for(Month month: Month.values()) {
 			HashMap<Language, HashSet<String>> monthValues=monthStringsByLanguage.get(month);
@@ -64,4 +60,17 @@ public class MonthMultilingual {
 		return null;
 	}
 	
+	public static void main(String[] args) throws Exception {
+		new MonthMultilingual();
+		for(Month month: Month.values()) {
+			System.out.println("MONTH: "+month);
+			for(Language l: Language.values()) {
+				System.out.println("LANG: "+l);
+				System.out.println(month.getDisplayName(TextStyle.SHORT, l.getLocale()));
+				System.out.println(month.getDisplayName(TextStyle.SHORT_STANDALONE, l.getLocale()));
+				System.out.println(month.getDisplayName(TextStyle.FULL, l.getLocale()));
+				System.out.println(month.getDisplayName(TextStyle.FULL_STANDALONE, l.getLocale()));
+			}
+		}
+	}
 }

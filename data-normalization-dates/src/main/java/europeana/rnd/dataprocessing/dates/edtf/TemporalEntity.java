@@ -16,4 +16,9 @@ public abstract class TemporalEntity {
 	public abstract void setUncertain(boolean uncertain);
 
 	public abstract boolean isTimeOnly();
+
+	public abstract void switchDayMonth();
+
+	public abstract TemporalEntity copy();
+	
 }

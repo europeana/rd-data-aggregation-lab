@@ -1,6 +1,13 @@
 package europeana.rnd.dataprocessing.dates.edtf;
 
-public class Time {
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class Time implements Serializable {
 	Integer hour;
 	Integer minute;
 	Integer second;
@@ -85,6 +92,8 @@ public class Time {
 	public void setTimezone(Integer timezone) {
 		this.timezone = timezone;
 	}
+
+
 	
 	
 	

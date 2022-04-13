@@ -13,9 +13,11 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringUtils;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
+import europeana.rnd.dataprocessing.dates.edtf.Date;
 import europeana.rnd.dataprocessing.dates.edtf.EdtfValidator;
 import europeana.rnd.dataprocessing.dates.edtf.Instant;
 import europeana.rnd.dataprocessing.dates.edtf.Interval;
+import europeana.rnd.dataprocessing.dates.edtf.TemporalEntity;
 import europeana.rnd.dataprocessing.dates.extraction.CleanId;
 import europeana.rnd.dataprocessing.dates.extraction.Cleaner;
 import europeana.rnd.dataprocessing.dates.extraction.DateExtractor;
@@ -29,6 +31,7 @@ import europeana.rnd.dataprocessing.dates.extraction.PatternDateExtractorYyyyMmD
 import europeana.rnd.dataprocessing.dates.extraction.PatternDecade;
 import europeana.rnd.dataprocessing.dates.extraction.PatternEdtf;
 import europeana.rnd.dataprocessing.dates.extraction.PatternFormatedFullDate;
+import europeana.rnd.dataprocessing.dates.extraction.PatternLongNegativeYear;
 import europeana.rnd.dataprocessing.dates.extraction.PatternMonthName;
 import europeana.rnd.dataprocessing.dates.extraction.PatternNumericDateExtractorWithMissingParts;
 import europeana.rnd.dataprocessing.dates.extraction.PatternNumericDateExtractorWithMissingPartsAndXx;
@@ -72,6 +75,7 @@ public class DatesExtractorHandler {
 //		add(new PatternIso8601Date(false));
 //		add(new PatternIso8601DateRange(false));
 		add(new PatternBcAd());
+		add(new PatternLongNegativeYear());
 	}};
 	
 	public DatesExtractorHandler(File outputFolder) {
@@ -84,7 +88,7 @@ public class DatesExtractorHandler {
 	public static void runDateNormalization(DatesInRecord rec) throws Exception {
 		for(Match val: rec.getAllValues(Source.ANY)) {
 			try {
-				Match extracted=runDateNormalization(val.getInput()); 
+				Match extracted=runDateNormalization(val.getInput(), true); 
 				if(extracted.getMatchId()!=MatchId.NO_MATCH) {
 					if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
 						if(extracted.getExtracted() instanceof Interval) {
@@ -114,7 +118,7 @@ public class DatesExtractorHandler {
 			}
 		}
 	}
-	public static Match runDateNormalization(String val) throws Exception {
+	public static Match runDateNormalization(String val, boolean validateAndFix) throws Exception {
 		String valTrim=val.trim();
 		valTrim=valTrim.replace('\u00a0', ' '); //replace non-breaking spaces by normal spaces
 		valTrim=valTrim.replace('\u2013', '-'); //replace en dash by normal dash
@@ -172,9 +176,53 @@ public class DatesExtractorHandler {
 				extracted.getExtracted().setUncertain(true);
 			}
 		}
+		if(validateAndFix)
+			validateAndFix(extracted);
 		return extracted;
 	}
-	
+
+	private static void validateAndFix(Match extracted) {
+		boolean trySwitchDayMonth=true;
+		if(extracted.getMatchId()!=MatchId.NO_MATCH) {
+			if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
+				if(extracted.getExtracted() instanceof Interval) {
+					//lets try to invert the start and end dates and see if it validates
+					Interval i=(Interval)extracted.getExtracted();
+					Instant start = i.getStart();
+					i.setStart(i.getEnd());
+					i.setEnd(start);
+					if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
+						i.setEnd(i.getStart());
+						i.setStart(start);
+						
+						if(trySwitchDayMonth) {
+							TemporalEntity copy = extracted.getExtracted().copy();
+							copy.switchDayMonth();
+							if(!EdtfValidator.validate(copy, false)) {
+								extracted.setMatchId(MatchId.INVALID);
+							} else 
+								extracted.setExtracted(copy);
+						}else
+							extracted.setMatchId(MatchId.INVALID);
+					}
+				} else {
+					if(trySwitchDayMonth) {
+						TemporalEntity copy = extracted.getExtracted().copy();
+						copy.switchDayMonth();
+						if(!EdtfValidator.validate(copy, false)) {
+							extracted.setMatchId(MatchId.INVALID);
+						} else 
+							extracted.setExtracted(copy);
+					}else
+						extracted.setMatchId(MatchId.INVALID);
+				}
+			}
+			if(extracted.getMatchId()!=MatchId.NO_MATCH && extracted.getMatchId()!=MatchId.INVALID) {
+				if(extracted.getExtracted().isTimeOnly())
+					extracted.setMatchId(MatchId.NO_MATCH);
+			}
+		}
+	}
 	
 	public void handle(DatesInRecord rec) throws Exception {
 		runDateNormalization(rec);

@@ -21,16 +21,16 @@ public class PatternMonthName implements DateExtractor {
 			String monthNamesPattern=null;
 			for(String m:months.getMonthStrings(month)) {
 				if(monthNamesPattern==null)
-					monthNamesPattern="(";
+					monthNamesPattern="(?<month>";
 				else
 					monthNamesPattern+="|";
 				monthNamesPattern+=m.replaceAll("\\.", "\\.");
 			}
 			monthNamesPattern+=")";
 
-			patternDayMonthYear.put(month, Pattern.compile("[\\s\\[]*(\\d\\d?)[\\sa-zA-Z_\\.,]{1,4}"+monthNamesPattern+"[\\s\\.,a-zA-Z_]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
-			patternMonthDayYear.put(month, Pattern.compile("[\\s\\[]*"+monthNamesPattern+"[\\s\\.a-zA-Z_,]{1,4}(\\d\\d?)[\\s\\.,a-zA-Z_]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
-			patternMonthYear.put(month, Pattern.compile("[\\s\\[]*"+monthNamesPattern+"[\\s\\.,a-zA-Z_]{1,4}(\\d{4})[\\s\\]]*",Pattern.CASE_INSENSITIVE));
+			patternDayMonthYear.put(month, Pattern.compile("\\s*(?<day>\\d\\d?)[ \\.,_]([a-zA-Z]{0,2}[ \\.,_])?"+monthNamesPattern+"[ \\.,_]([a-zA-Z]{0,2}[ \\.,_])?(?<year>\\d{4})\\s*",Pattern.CASE_INSENSITIVE));
+			patternMonthDayYear.put(month, Pattern.compile("\\s*"+monthNamesPattern+"[ \\.,_]([a-zA-Z]{0,2}[ \\.,_])?(?<day>\\d\\d?)[ \\.,_][a-zA-Z]{0,2}[ \\.,_](?<year>\\d{4})\\s*",Pattern.CASE_INSENSITIVE));
+			patternMonthYear.put(month, Pattern.compile("\\s*"+monthNamesPattern+"[ \\.,_]([a-zA-Z]{0,2}[ \\.,_])?(?<year>\\d{4})\\s*",Pattern.CASE_INSENSITIVE));
 		}
 	}
 	
@@ -40,23 +40,23 @@ public class PatternMonthName implements DateExtractor {
 			Matcher m=patternDayMonthYear.get(month).matcher(inputValue); 
 			if(m.matches()) {
 				Date d=new Date();
-				d.setYear(Integer.parseInt(m.group(3)));
+				d.setYear(Integer.parseInt(m.group("year")));
 				d.setMonth(month.getValue());
-				d.setDay(Integer.parseInt(m.group(1)));
+				d.setDay(Integer.parseInt(m.group("day")));
 				return new Match(MatchId.MONTH_NAME, inputValue, new Instant(d));
 			}
 			m=patternMonthDayYear.get(month).matcher(inputValue); 
 			if(m.matches()) {
 				Date d=new Date();
-				d.setYear(Integer.parseInt(m.group(3)));
+				d.setYear(Integer.parseInt(m.group("year")));
 				d.setMonth(month.getValue());
-				d.setDay(Integer.parseInt(m.group(2)));
+				d.setDay(Integer.parseInt(m.group("day")));
 				return new Match(MatchId.MONTH_NAME, inputValue, new Instant(d));
 			}
 			m=patternMonthYear.get(month).matcher(inputValue); 
 			if(m.matches()) {
 				Date d=new Date();
-				d.setYear(Integer.parseInt(m.group(2)));
+				d.setYear(Integer.parseInt(m.group("year")));
 				d.setMonth(month.getValue());
 				return new Match(MatchId.MONTH_NAME, inputValue, new Instant(d));
 			}

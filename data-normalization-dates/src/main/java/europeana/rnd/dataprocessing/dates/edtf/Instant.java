@@ -1,9 +1,15 @@
 package europeana.rnd.dataprocessing.dates.edtf;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class Instant extends TemporalEntity {
+public class Instant extends TemporalEntity implements Serializable {
 	Date date;
 	Time time;
 	
@@ -67,4 +73,26 @@ public class Instant extends TemporalEntity {
 	public void setUncertain(boolean uncertain) {
 		date.setUncertain(uncertain);
 	}
+	
+	@Override
+	public void switchDayMonth() {
+		if(date!=null) 
+			date.switchDayMonth();
+	}
+	
+	@Override
+	public TemporalEntity copy() {
+		try {
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			ObjectOutputStream out=new ObjectOutputStream(bytes);
+			out.writeObject(this);
+			out.close();
+			ObjectInputStream in=new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()));
+			Instant copy=(Instant)in.readObject();
+			return copy;
+		} catch (ClassNotFoundException | IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
+	}
+	
 }

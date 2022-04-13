@@ -1,6 +1,13 @@
 package europeana.rnd.dataprocessing.dates.edtf;
 
-public class Date {
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public class Date implements Serializable {
 	public enum YearPrecision { MILLENIUM, CENTURY, DECADE };
 	
 	public static final Date UNKNOWN=new Date() {
@@ -73,6 +80,26 @@ public class Date {
 	}
 	public void setYearPrecision(YearPrecision yearPrecision) {
 		this.yearPrecision = yearPrecision;
+	}
+	public void switchDayMonth() {
+		if(day!=null) {
+			int dayTmp=day;
+			setDay(month);
+			setMonth(dayTmp);			
+		}
+	}
+	public Date copy() {
+		try {
+			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+			ObjectOutputStream out=new ObjectOutputStream(bytes);
+			out.writeObject(this);
+			out.close();
+			ObjectInputStream in=new ObjectInputStream(new ByteArrayInputStream(bytes.toByteArray()));
+			Date copy=(Date)in.readObject();
+			return copy;
+		} catch (ClassNotFoundException | IOException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 
 	

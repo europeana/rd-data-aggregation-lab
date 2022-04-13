@@ -156,11 +156,14 @@ public class ScriptDebugNormalizeDates {
 //				"1985-10-xx",
 //				"14:27",
 //				"SEC",
-				"11.11.1947",
+//				"11.11.1947",
+//				"c.6 Nov 1902"
+//				"1941-22-06"
+				"-1941234"
 		}) {
 			datesInRec.addTo(Source.EUROPEANA, Ore.Proxy, Dc.date, Jena.createLiteral(test).asLiteral());
 			System.out.println(test);
-			r = DatesExtractorHandler.runDateNormalization(test);
+			r = DatesExtractorHandler.runDateNormalization(test, true);
 			System.out.println(r.getCleanOperation());
 			System.out.println(r.getMatchId());
 			System.out.println(r.getExtracted());
