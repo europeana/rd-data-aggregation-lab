@@ -1,5 +1,7 @@
 package europeana.rnd.dataprocessing.dates.extraction;
 
+import europeana.rnd.dataprocessing.dates.edtf.Instant;
+import europeana.rnd.dataprocessing.dates.edtf.Interval;
 import europeana.rnd.dataprocessing.dates.edtf.TemporalEntity;
 
 public class Match {
@@ -67,7 +69,27 @@ public class Match {
 		return "Match [matchId=" + matchId + ", cleanOperation=" + cleanOperation + ", input=" + input + ", extracted="
 				+ extracted + "]";
 	}
-	
-	
-	
+	public boolean isCompleteDate() {
+		if(extracted==null || extracted.isTimeOnly() )
+			return false;
+		if(extracted instanceof Instant) {
+			return ((Instant)extracted).getDate().getDay()!=null;
+		} else {
+			Interval interval=(Interval)extracted;
+			if (interval.getStart()!=null && interval.getEnd()!=null) {
+				if(interval.getStart().getDate().isUnkown() || interval.getStart().getDate().isUnspecified() )
+					return false;
+				if(interval.getEnd().getDate().isUnkown() || interval.getEnd().getDate().isUnspecified() )
+					return false;
+				if(interval.getStart().getDate().getYearPrecision()!=null || interval.getEnd().getDate().getYearPrecision()!=null)
+					return false;
+				if(interval.getStart().getDate().getDay()!=null && interval.getStart().getDate().getDay()!=null)
+					return true;
+				if(interval.getStart().getDate().getMonth()==null && interval.getStart().getDate().getMonth()==null)
+					return true;
+			}
+			return false;
+		}
+	}
+		
 }

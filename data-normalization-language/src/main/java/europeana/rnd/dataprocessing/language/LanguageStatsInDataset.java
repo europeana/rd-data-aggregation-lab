@@ -101,17 +101,17 @@ public class LanguageStatsInDataset {
 		}
 
 		public double normalizedPercent() {
-			return (double)cntNormalized / (double)withLangTags * 100;
+			return (double)cntNormalized / (double)(withLangTags==0 ? total : withLangTags)* 100;
 		}
 
 		public double normalizablePercent() {
-			return (double)cntNormalizable / (double)withLangTags * 100;
+			return (double)cntNormalizable / (double)(withLangTags==0 ? total : withLangTags) * 100;
 		}
 		public double notNormalizablePercent() {
-			return (double)cntNotNormalizable / (double)withLangTags * 100;
+			return (double)cntNotNormalizable / (double)(withLangTags==0 ? total : withLangTags) * 100;
 		}
 		public double subtagsPercent() {
-			return (double)cntSubtags / (double)withLangTags * 100;
+			return (double)cntSubtags / (double)(withLangTags==0 ? total : withLangTags) * 100;
 		}
 
 		public void incrementWithoutLangTag(int count) {

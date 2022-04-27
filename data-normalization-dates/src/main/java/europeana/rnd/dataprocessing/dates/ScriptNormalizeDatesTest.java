@@ -15,7 +15,6 @@ public class ScriptNormalizeDatesTest {
 
 	File folder;
 	DatesExtractorHandler handler;
-	DatesAgentHandler handlerAgents;
 	
 	public ScriptNormalizeDatesTest(File folder, File outputFolder) {
 		super();

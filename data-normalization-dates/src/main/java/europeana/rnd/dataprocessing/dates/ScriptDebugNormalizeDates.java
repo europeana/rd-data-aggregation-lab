@@ -159,7 +159,12 @@ public class ScriptDebugNormalizeDates {
 //				"11.11.1947",
 //				"c.6 Nov 1902"
 //				"1941-22-06"
-				"-1941234"
+//				"-1234",
+//				"(17--?)",
+//				"20/09/18XX",
+//				"-123456/-12345"
+//				"23.02.[18--]",
+				"0 2 1980",
 		}) {
 			datesInRec.addTo(Source.EUROPEANA, Ore.Proxy, Dc.date, Jena.createLiteral(test).asLiteral());
 			System.out.println(test);

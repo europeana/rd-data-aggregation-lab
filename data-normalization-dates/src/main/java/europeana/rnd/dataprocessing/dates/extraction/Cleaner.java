@@ -86,4 +86,23 @@ public class Cleaner {
 			return new CleanResult(CleanId.PARENTHESES_FULL_VALUE, m.replaceAll("$1"));
 		return null;
 	}
+	public CleanResult cleanGenericProperty(String value) {
+		Matcher m = patSquareBracketsAndCa.matcher(value);
+		if(m.find()) 
+			return new CleanResult(CleanId.SQUARE_BRACKETS_AND_CIRCA, m.replaceAll("$2"));
+		m = patSquareBrackets.matcher(value);
+		if(m.find()) 
+			return new CleanResult(CleanId.SQUARE_BRACKETS, m.replaceAll("$1"));
+		m = patCa.matcher(value);
+		if(m.find()) 
+			return new CleanResult(CleanId.CIRCA, m.replaceAll(""));
+		m = patEndingDot.matcher(value);
+		if(m.find() ) {
+			String cleanedVal = m.replaceFirst("");		
+			if(!StringUtils.isEmpty(cleanedVal))
+				return new CleanResult(CleanId.ENDING_TEXT, cleanedVal);
+		}
+		return null;
+	}
+
 }

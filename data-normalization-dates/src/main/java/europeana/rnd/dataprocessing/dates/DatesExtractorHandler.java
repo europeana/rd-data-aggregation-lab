@@ -77,6 +77,21 @@ public class DatesExtractorHandler {
 		add(new PatternBcAd());
 		add(new PatternLongNegativeYear());
 	}};
+	static ArrayList<Class> extractorsExcludedForGenericProperties=new ArrayList<Class>() {{
+		add(PatternBriefDateRange.class);
+	}};
+//	static ArrayList<DateExtractor> extractorsGenericProperties=new ArrayList<DateExtractor>() {{
+//		add(new PatternEdtf());
+//		add(new PatternDateExtractorYyyyMmDdSpaces());
+//		add(new DcmiPeriodExtractor());
+//		add(new PatternMonthName());
+//		add(new PatternFormatedFullDate());
+//		add(new PatternNumericDateExtractorWithMissingParts());
+//		add(new PatternNumericDateExtractorWithMissingPartsAndXx());
+//		add(new PatternNumericDateRangeExtractorWithMissingParts());
+//		add(new PatternNumericDateRangeExtractorWithMissingPartsAndXx());
+//		add(new PatternLongNegativeYear());
+//	}};
 	
 	public DatesExtractorHandler(File outputFolder) {
 		this.outputFolder = outputFolder;
@@ -86,35 +101,44 @@ public class DatesExtractorHandler {
 	}
 	
 	public static void runDateNormalization(DatesInRecord rec) throws Exception {
-		for(Match val: rec.getAllValues(Source.ANY)) {
+		for(DateValue dateValue: rec.getAllValuesDetailed(Source.ANY)) {
 			try {
-				Match extracted=runDateNormalization(val.getInput(), true); 
-				if(extracted.getMatchId()!=MatchId.NO_MATCH) {
-					if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
-						if(extracted.getExtracted() instanceof Interval) {
-							//lets try to invert the start and end dates and see if it validates
-							Interval i=(Interval)extracted.getExtracted();
-							Instant start = i.getStart();
-							i.setStart(i.getEnd());
-							i.setEnd(start);
-							if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
-								i.setEnd(i.getStart());
-								i.setStart(start);
-								extracted.setMatchId(MatchId.INVALID);
-							}
-						} else
+				Match extracted=null;
+				if(dateValue.property.equals("coverage") || dateValue.property.equals("subject")) {
+					extracted=runDateNormalizationOnGenericProperty(dateValue.match.getInput()); 
+					if(extracted.getMatchId()!=MatchId.NO_MATCH) {
+						if(!EdtfValidator.validate(extracted.getExtracted(), false)) 
 							extracted.setMatchId(MatchId.INVALID);
 					}
-					if(extracted.getMatchId()!=MatchId.NO_MATCH && extracted.getMatchId()!=MatchId.INVALID) {
-						if(extracted.getExtracted().isTimeOnly())
-							extracted.setMatchId(MatchId.NO_MATCH);
+				} else {
+					extracted=runDateNormalization(dateValue.match.getInput(), true); 
+					if(extracted.getMatchId()!=MatchId.NO_MATCH) {
+						if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
+							if(extracted.getExtracted() instanceof Interval) {
+								//lets try to invert the start and end dates and see if it validates
+								Interval i=(Interval)extracted.getExtracted();
+								Instant start = i.getStart();
+								i.setStart(i.getEnd());
+								i.setEnd(start);
+								if(!EdtfValidator.validate(extracted.getExtracted(), false)) {
+									i.setEnd(i.getStart());
+									i.setStart(start);
+									extracted.setMatchId(MatchId.INVALID);
+								}
+							} else
+								extracted.setMatchId(MatchId.INVALID);
+						}
+						if(extracted.getMatchId()!=MatchId.NO_MATCH && extracted.getMatchId()!=MatchId.INVALID) {
+							if(extracted.getExtracted().isTimeOnly())
+								extracted.setMatchId(MatchId.NO_MATCH);
+						}
 					}
 				}
-				val.setResult(extracted);
+				dateValue.match.setResult(extracted);
 			} catch (Exception e) {
-				System.err.println("Error in value: "+val.getInput());
+				System.err.println("Error in value: "+dateValue.match.getInput());
 				e.printStackTrace();
-				val.setResult(new Match(MatchId.NO_MATCH, val.getInput(), null));
+				dateValue.match.setResult(new Match(MatchId.NO_MATCH, dateValue.match.getInput(), null));
 			}
 		}
 	}
@@ -123,12 +147,11 @@ public class DatesExtractorHandler {
 		valTrim=valTrim.replace('\u00a0', ' '); //replace non-breaking spaces by normal spaces
 		valTrim=valTrim.replace('\u2013', '-'); //replace en dash by normal dash
 		
-		Match extracted=null; 
+		Match extracted=null;
 		for(DateExtractor extractor: extractors) {
 			extracted = extractor.extract(valTrim);
-			if (extracted!=null) {
+			if (extracted!=null) 
 				break;
-			}
 		}
 		if(extracted==null) {
 			//Trying patterns after cleaning 
@@ -178,6 +201,60 @@ public class DatesExtractorHandler {
 		}
 		if(validateAndFix)
 			validateAndFix(extracted);
+
+		if(extracted.getMatchId()==MatchId.Edtf && extracted.getCleanOperation()!=null) 
+			extracted.setMatchId(MatchId.Edtf_Cleaned);
+		
+		return extracted;
+	}
+	public static Match runDateNormalizationOnGenericProperty(String val) throws Exception {
+		String valTrim=val.trim();
+		valTrim=valTrim.replace('\u00a0', ' '); //replace non-breaking spaces by normal spaces
+		valTrim=valTrim.replace('\u2013', '-'); //replace en dash by normal dash
+		
+		Match extracted=null;
+		for(DateExtractor extractor: extractors) {
+			if(extractorsExcludedForGenericProperties.contains(extractor.getClass()))
+				continue;
+			extracted = extractor.extract(valTrim);
+			if (extracted!=null) 
+				break;
+		}
+		if(extracted==null) {
+			//Trying patterns after cleaning 
+			CleanResult cleanResult = cleaner.cleanGenericProperty(valTrim);
+			if (cleanResult!=null && !StringUtils.isEmpty(cleanResult.getCleanedValue())) {
+				for(DateExtractor extractor: extractors) {
+					if(extractorsExcludedForGenericProperties.contains(extractor.getClass()))
+						continue;
+					extracted = extractor.extract(cleanResult.getCleanedValue());
+					if (extracted!=null) {
+						extracted.setCleanOperation(cleanResult.getCleanOperation());
+						break;
+					}
+				}										
+			}
+		}
+		if(extracted==null || !extracted.isCompleteDate())
+			return new Match(MatchId.NO_MATCH, val, null);
+		else 
+			extracted.setInput(val);
+		
+		if(extracted.getCleanOperation()!=null) {
+			if(extracted.getCleanOperation()==CleanId.CIRCA) {
+				extracted.getExtracted().setApproximate(true);
+			} else if(extracted.getCleanOperation()==CleanId.SQUARE_BRACKETS) {
+				extracted.getExtracted().setUncertain(true);
+			} else if(extracted.getCleanOperation()==CleanId.SQUARE_BRACKETS_AND_CIRCA) {
+				extracted.getExtracted().setUncertain(true);
+				extracted.getExtracted().setApproximate(true);
+			}
+		}
+		
+		if(extracted.getMatchId()==MatchId.Edtf && extracted.getCleanOperation()!=null) {
+			extracted.setMatchId(MatchId.Edtf_Cleaned);
+		}
+		
 		return extracted;
 	}
 

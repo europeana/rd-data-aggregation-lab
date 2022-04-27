@@ -36,7 +36,7 @@ public class LanguageHandler {
 		if (setFolder.exists()) 
 			FileUtils.deleteDirectory(setFolder);
 		setFolder.mkdir();
-		entityTracker=new EntityTrackerOnDisk(setFolder);
+		entityTracker=new EntityTrackerOnDisk(setFolder, Source.EUROPEANA);
 	}
 
 	public void handle(Model edm, int recCnt) throws IOException {
@@ -45,7 +45,7 @@ public class LanguageHandler {
 	}
 	
 	public static LanguageInRecord getDatesInRecordSingleRecord(Model edm) {
-		return getLanguageInRecord(edm, new EntityTrackerOnMemory());
+		return getLanguageInRecord(edm, new EntityTrackerOnMemory(Source.EUROPEANA));
 	}
 
 	private static LanguageInRecord getLanguageInRecord(Model edm, EntityTracker entityTracker) {

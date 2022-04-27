@@ -109,7 +109,7 @@ public class ScriptNormalizeLanguageReport {
 		if(langValue.match.getNormalized()!=null) {
 			subTags=new LangSubtagsAnalysis(langValue.match.getNormalized());
 			if(langValue.match.getNormalized().length()!=2) {
-				System.out.println("normalized value with unusual length: "+langValue.match.getNormalized());
+				System.out.println("normalized value with unusual length: "+langValue.match.getInput()+" -> "+langValue.match.getNormalized());
 			}
 		}
 		stats.addLangTagCase(langValue, subTags);

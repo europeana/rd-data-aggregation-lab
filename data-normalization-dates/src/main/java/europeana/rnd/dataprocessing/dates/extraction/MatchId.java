@@ -13,7 +13,7 @@ public enum MatchId {
 	Numeric_Range_AllVariants, Numeric_Range_AllVariants_Xx,
 	Numeric_AllVariants, Decade, Numeric_AllVariants_Xx, 
 	Iso8601Date, Iso8601BriefDate, Iso8601BriefDateRange, Iso8601DateRange, 
-	YYYY_MM_DD_Spaces, BcAd, Edtf, INVALID, Brief_Date_Range, LongYear;
+	YYYY_MM_DD_Spaces, BcAd, Edtf, Edtf_Cleaned, INVALID, Brief_Date_Range, LongYear;
 
 	public String getLabel() {
 		switch (this) {
@@ -27,6 +27,7 @@ public enum MatchId {
 		case DD_MM_YYYY: return "normalisable: dd-mm-yyyy";
 		case Decade: return "normalisable: decade";
 		case Edtf: return "already normalised in EDTF";
+		case Edtf_Cleaned: return "normalisable: EDTF with data cleaning";
 		case FormatedFullDate: return "normalisable: formated timestamp";
 		case Iso8601BriefDate: return "normalisable: ISO 8601 brief";
 		case Iso8601BriefDateRange: return "normalisable: ISO 8601 brief (interval)";

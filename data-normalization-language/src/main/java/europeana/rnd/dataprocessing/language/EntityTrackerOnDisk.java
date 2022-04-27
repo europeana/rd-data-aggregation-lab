@@ -13,12 +13,16 @@ class EntityTrackerOnDisk implements EntityTracker {
 		static Pattern simplifyPattern=Pattern.compile("^https?://([^/]+)/(.*)"); 
 		
 		BigSet<String> processed;
+		Source detectFor;
 		
-		public EntityTrackerOnDisk(File setFolder) {
+		public EntityTrackerOnDisk(File setFolder, Source detectFor) {
 			processed=new BigSet<String>("EntityTrackerOnDisk",setFolder);
+			this.detectFor = detectFor;
 		}
 
 		public boolean contains(Source source, String uri) {
+			if(detectFor != Source.ANY && source!=detectFor)
+				return false;
 			try {
 				return processed.containsSynchronized(simplifyURI(uri));
 			} catch (InterruptedException e) {
@@ -27,6 +31,8 @@ class EntityTrackerOnDisk implements EntityTracker {
 		}
 		
 		public boolean add(Source source, String uri) {
+			if(detectFor != Source.ANY && source!=detectFor)
+				return false;
 			try {
 				return processed.addSynchronized(simplifyURI(uri));
 			} catch (InterruptedException e) {

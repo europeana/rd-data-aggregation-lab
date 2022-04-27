@@ -188,7 +188,8 @@ public class HtmlExporter {
 				writer.append("<br /> - With <i>xml:lang</i> with subtags "+countFormat.format(statsOfItem.cntSubtags)+ " ("+percentFormat.format(statsOfItem.subtagsPercent()) +"%)");
 		}
 		writer.append("</td>\r\n"
-				+ "<td><a href=\"Language_Europeana_xml_lang_not_normalizable.txt\">Europeana_xml_lang_not_normalizable.txt</a></p>"
+				+ "<td valign=\"top\">"
+				+ (statsOfItem.cntNotNormalizable >0 ? "<a href=\"Language_Europeana_xml_lang_not_normalizable.txt\">Europeana_xml_lang_not_normalizable.txt</a>" : "&nbsp;" )
 				+ "</td>\r\n"
 			+ "</tr>\n");
 
@@ -210,7 +211,8 @@ public class HtmlExporter {
 				writer.append("<br /> - With <i>xml:lang</i> with subtags "+countFormat.format(statsOfItem.cntSubtags)+ " ("+percentFormat.format(statsOfItem.subtagsPercent()) +"%)");
 		}						
 		writer.append("</td>\r\n"
-				+ "<td><a href=\"Language_Provider_xml_lang_not_normalizable.txt\">Provider_xml_lang_not_normalizable.txt</a></p>"
+				+ "<td valign=\"top\">"
+				+ (statsOfItem.cntNotNormalizable >0 ? "<a href=\"Language_Provider_xml_lang_not_normalizable.txt\">Provider_xml_lang_not_normalizable.txt</a>" : "&nbsp;" )
 				+ "</td>\r\n"
 			+ "</tr>\n");
 		
@@ -237,7 +239,8 @@ public class HtmlExporter {
 			if(statsOfItem.cntSubtags>0)
 				writer.append("<br /> - With values containing subtags "+countFormat.format(statsOfItem.cntSubtags)+ " ("+percentFormat.format(statsOfItem.subtagsPercent()) +"%)");
 			writer.append("</td>\r\n"
-					+ "<td><a href=\"Language_Europeana_dc_language_not_normalizable.txt\">Europeana_dc_language_not_normalizable.txt</a></p>"
+					+ "<td valign=\"top\">"
+					+ (statsOfItem.cntNotNormalizable >0 ? "<a href=\"Language_Europeana_dc_language_not_normalizable.txt\">Europeana_dc_language_not_normalizable.txt</a>" : "&nbsp;" )
 					+ "</td>\r\n"
 				+ "</tr>\n");
 
@@ -255,7 +258,8 @@ public class HtmlExporter {
 				if(statsOfItem.cntSubtags>0)
 					writer.append("<br /> - With values containing subtags "+countFormat.format(statsOfItem.cntSubtags)+ " ("+percentFormat.format(statsOfItem.subtagsPercent()) +"%)");
 		writer.append("</td>\r\n"
-				+ "<td><a href=\"Language_Provider_dc_language_not_normalizable.txt\">Provider_dc_language_not_normalizable.txt</a></p>"
+				+ "<td valign=\"top\">"
+				+ (statsOfItem.cntNotNormalizable >0 ? "<a href=\"Language_Provider_dc_language_not_normalizable.txt\">Provider_dc_language_not_normalizable.txt</a>" : "&nbsp;")
 				+ "</td>\r\n"
 			+ "</tr>\n");
 		

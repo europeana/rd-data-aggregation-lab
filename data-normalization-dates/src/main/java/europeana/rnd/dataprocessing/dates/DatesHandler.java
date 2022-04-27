@@ -47,7 +47,7 @@ public class DatesHandler {
 	public static Set<Resource> edmClassesToProcess=new HashSet<Resource>() {{
 		add(Ore.Proxy);
 		add(Edm.Agent);
-//		add(Edm.WebResource);
+		add(Edm.WebResource);
 		add(Edm.TimeSpan);
 	}};
 	

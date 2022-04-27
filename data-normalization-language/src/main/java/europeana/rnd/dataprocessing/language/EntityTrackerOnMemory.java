@@ -10,12 +10,22 @@ class EntityTrackerOnMemory implements EntityTracker{
 		static Pattern simplifyPattern=Pattern.compile("^https?://([^/]+)/(.*)"); 
 		
 		HashSet<String> processed=new HashSet<String>();
+		Source detectFor;
+		
+		public EntityTrackerOnMemory(Source detectFor) {
+			super();
+			this.detectFor = detectFor;
+		}
 
 		public boolean contains(Source source, String uri) {
+			if(detectFor != Source.ANY && source!=detectFor)
+				return false;
 			return processed.contains(simplifyURI(uri));
 		}
 		
 		public boolean add(Source source, String uri) {
+			if(detectFor != Source.ANY && source!=detectFor)
+				return false;
 			return processed.add(simplifyURI(uri));
 		}
 		
