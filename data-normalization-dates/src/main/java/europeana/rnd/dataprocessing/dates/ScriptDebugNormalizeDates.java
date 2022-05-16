@@ -164,7 +164,17 @@ public class ScriptDebugNormalizeDates {
 //				"20/09/18XX",
 //				"-123456/-12345"
 //				"23.02.[18--]",
-				"0 2 1980",
+//				"0 2 1980",
+//				"168 B.C.-135 A.D.",
+//				"02?-1915",
+//				"1.1848/49[?]",
+//				
+//				"12//1790" , "[19uu]" , ,"18??]"
+//				,"[19--?]","[18??]"
+				
+				"?/1807"
+				
+				
 		}) {
 			datesInRec.addTo(Source.EUROPEANA, Ore.Proxy, Dc.date, Jena.createLiteral(test).asLiteral());
 			System.out.println(test);

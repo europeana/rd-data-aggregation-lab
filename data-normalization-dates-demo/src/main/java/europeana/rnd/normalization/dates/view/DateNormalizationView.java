@@ -47,7 +47,7 @@ public class DateNormalizationView {
 			return name;
 		}
 
-		public List<Match> getValues() {
+		public List<MatchView> getValues() {
 			return values;
 		}
 	}

@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.Year;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -73,6 +74,16 @@ public class Instant extends TemporalEntity implements Serializable {
 	public void setUncertain(boolean uncertain) {
 		date.setUncertain(uncertain);
 	}
+
+	@Override
+	public boolean isApproximate() {
+		return date.isApproximate();
+	}
+	
+	@Override
+	public boolean isUncertain() {
+		return date.isUncertain();
+	}
 	
 	@Override
 	public void switchDayMonth() {
@@ -95,4 +106,56 @@ public class Instant extends TemporalEntity implements Serializable {
 		}
 	}
 	
+	@Override
+	public Instant getFirstDay() {
+		Instant firstDay=null;
+		if(getDate()!=null) {
+			if(!getDate().isUnkown() && !getDate().isUnspecified()) {
+				firstDay=(Instant) this.copy();
+				firstDay.setTime(null);
+				if(getDate().getYear()>-9999 && getDate().getYear()<9999) {
+					if (getDate().getMonth()!=null && getDate().getMonth()>0) 
+						firstDay.getDate().setDay(1);
+					else {
+						firstDay.getDate().setMonth(1);
+						firstDay.getDate().setDay(1);
+					}
+				}
+			}
+		}
+		return firstDay;
+	}
+	
+	@Override
+	public Instant getLastDay() {
+		Instant lastDay=null;
+		if(getDate()!=null) {
+			if(!getDate().isUnkown() && !getDate().isUnspecified()) {
+				lastDay=(Instant) this.copy();
+				lastDay.setTime(null);
+				if(getDate().getYear()>-9999 && getDate().getYear()<9999) {
+					if (getDate().getMonth()!=null && getDate().getMonth()>0) {
+						if(EdtfValidator.isMonthOf31Days(getDate().getMonth()))
+							lastDay.getDate().setDay(31);
+						else if(getDate().getMonth()==2) {
+							if(Year.isLeap(getDate().getYear()))
+								lastDay.getDate().setDay(29);
+							else
+								lastDay.getDate().setDay(28);
+						} else
+							lastDay.getDate().setDay(30);
+					} else {
+						lastDay.getDate().setMonth(12);
+						lastDay.getDate().setDay(31);
+					}
+				}
+			}
+		}
+		return lastDay;
+	}
+	
+	@Override
+	public void removeTime() {
+		time=null;
+	}
 }

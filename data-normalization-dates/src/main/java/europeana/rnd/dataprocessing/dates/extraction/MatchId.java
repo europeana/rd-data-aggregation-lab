@@ -29,10 +29,10 @@ public enum MatchId {
 		case Edtf: return "already normalised in EDTF";
 		case Edtf_Cleaned: return "normalisable: EDTF with data cleaning";
 		case FormatedFullDate: return "normalisable: formated timestamp";
-		case Iso8601BriefDate: return "normalisable: ISO 8601 brief";
-		case Iso8601BriefDateRange: return "normalisable: ISO 8601 brief (interval)";
-		case Iso8601Date: return "normalisable: ISO 8601";
-		case Iso8601DateRange: return "normalisable: ISO 8601 (interval)";
+//		case Iso8601BriefDate: return "normalisable: ISO 8601 brief";
+//		case Iso8601BriefDateRange: return "normalisable: ISO 8601 brief (interval)";
+//		case Iso8601Date: return "normalisable: ISO 8601";
+//		case Iso8601DateRange: return "normalisable: ISO 8601 (interval)";
 //		case MONTH_NAME_DAY_YEAR: return "month name, day and year";
 		case MONTH_NAME: return "normalisable: date with month name";
 		case Numeric_AllVariants: return "normalisable: numeric date (various separators)";

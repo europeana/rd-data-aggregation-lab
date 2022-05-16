@@ -66,15 +66,15 @@ public class DatesHandler {
 	}
 	
 	@SuppressWarnings("serial")
-	private static HashSet<Property> temporalProperties = new HashSet<Property>() {
+	public static HashSet<Property> temporalProperties = new HashSet<Property>() {
 		{
 			add(Dc.subject);
 			add(Dc.coverage);
 			add(Dc.date);
-			add(DcTerms.subject);
-			add(DcTerms.coverage);
+//			add(DcTerms.subject);
+//			add(DcTerms.coverage);
 			add(DcTerms.temporal);
-			add(DcTerms.date);
+//			add(DcTerms.date);
 			add(DcTerms.issued);
 			add(DcTerms.available);
 			add(DcTerms.created);

@@ -39,7 +39,10 @@ import inescid.util.datastruct.MapOfLists;
 public class LanguageStatsInDataset {
 	
 	public static class LangStatsOfItem {
-		Examples notNormalizable;
+		Cases normalizable;
+		HashMap<String, String> normalizableTo;
+		Cases notNormalizable;
+		Cases subtags;
 		
 		int total=0;
 		
@@ -55,11 +58,14 @@ public class LanguageStatsInDataset {
 		int withLangTags=0;
 		int withoutLangTag=0;
 		
-		public LangStatsOfItem(Examples notNormalizable) {
+		public LangStatsOfItem(Cases normalizable, Cases notNormalizable, Cases subtags, HashMap<String, String> normalizableTo) {
 			this.notNormalizable=notNormalizable;
+			this.normalizable = normalizable;
+			this.normalizableTo = normalizableTo;
+			this.subtags=subtags;
 		}
 
-		private void addSubtags(LangSubtagsAnalysis subTags) {
+		private void addSubtags(LangSubtagsAnalysis subTags, String input) {
 			if(subTags.country)
 				cntCountry++;
 			if(subTags.variant)
@@ -68,8 +74,10 @@ public class LanguageStatsInDataset {
 				cntScript++;
 			if(subTags.extention)
 				cntExtension++;
-			if(subTags.subTag)
+			if(subTags.subTag) {
 				cntSubtags++;
+				this.subtags.add(input);
+			}
 		}
 
 		public void addCase(LangValue langValue, LangSubtagsAnalysis subTags, boolean isLangTag) {
@@ -79,9 +87,12 @@ public class LanguageStatsInDataset {
 			if(langValue.match.getNormalized()!=null) {
 				if(langValue.match.getNormalized().equals(langValue.match.getInput())) 
 					cntNormalized++;
-				else 
+				else {
 					cntNormalizable++;
-				addSubtags(subTags);
+					normalizable.add(langValue.match.getInput());				
+					normalizableTo.put(langValue.match.getInput(), langValue.match.getNormalized());				
+				}
+				addSubtags(subTags, langValue.match.getInput());
 			} else {
 				cntNotNormalizable++;
 				notNormalizable.add(langValue.match.getInput());				
@@ -138,12 +149,24 @@ public class LanguageStatsInDataset {
 		Map<String, LangStatsOfItem> langTagStatsByField=new HashMap<String, LangStatsOfItem>();
 		MapOfInts<String> withoutLangTagStatsByField= new MapOfInts<String>();
 		Map<String, LangStatsOfItem> propertyStatsByField=new HashMap<String, LangStatsOfItem>();//in principle this will be used only for dc:language
-		Examples notNormalizableXmlLang;
-		Examples notNormalizableDcLanguage;
+		Cases notNormalizableXmlLang;
+		Cases normalizableXmlLang;
+		HashMap<String, String> normalizableToXmlLang;
+		HashMap<String, String> normalizableToDcLanguage;
+		Cases subtagsXmlLang;
+		Cases notNormalizableDcLanguage;
+		Cases normalizableDcLanguage;
+		Cases subtagsXmlDcLanguage;
 		
-		public LanguageStatsInClass(Examples notNormalizable, Examples notNormalizableDcLanguage) {
-			this.notNormalizableXmlLang=notNormalizable;
+		public LanguageStatsInClass(Cases normalizableXmlLang, Cases notNormalizableXmlLang, Cases subtagsXmlLang, Cases normalizableDcLanguage, Cases notNormalizableDcLanguage, Cases subtagsDcLanguage, HashMap<String, String> normalizableToXmlLang, HashMap<String,String> normalizableToDcLanguage) {
+			this.notNormalizableXmlLang=notNormalizableXmlLang;
+			this.normalizableXmlLang=normalizableXmlLang;
+			this.subtagsXmlLang= subtagsXmlLang;
 			this.notNormalizableDcLanguage= notNormalizableDcLanguage;
+			this.normalizableDcLanguage= normalizableDcLanguage;
+			this.subtagsXmlDcLanguage= subtagsDcLanguage;
+			this.normalizableToXmlLang=normalizableToXmlLang;
+			this.normalizableToDcLanguage=normalizableToDcLanguage;
 		}
 
 		public void addLangTagCase(LangValue langValue, LangSubtagsAnalysis subTags) {
@@ -159,7 +182,10 @@ public class LanguageStatsInDataset {
 				Map<String, LangStatsOfItem> langTagStatsByField, boolean isLangTag) {
 			LangStatsOfItem langStatsOfItem = langTagStatsByField.get(field);
 			if(langStatsOfItem==null) {
-				langStatsOfItem=new LangStatsOfItem(isLangTag ? notNormalizableXmlLang : notNormalizableDcLanguage);
+				if (isLangTag)
+					langStatsOfItem=new LangStatsOfItem(normalizableXmlLang, notNormalizableXmlLang, subtagsXmlLang, normalizableToXmlLang);
+				else
+					langStatsOfItem=new LangStatsOfItem(normalizableDcLanguage, notNormalizableDcLanguage, subtagsXmlDcLanguage, normalizableToDcLanguage);
 				langTagStatsByField.put(field, langStatsOfItem);
 			}
 			return langStatsOfItem;
@@ -169,117 +195,37 @@ public class LanguageStatsInDataset {
 			LangStatsOfItem statOfItem = getLangStatsOfItem(propCount.property, langTagStatsByField, true);			
 			statOfItem.incrementWithoutLangTag(propCount.count);
 		}
-
-		
-//		public LanguageInClass(JsonObject jsonObj) {
-//			if (jsonObj.containsKey("langTags")) {
-//				JsonObject joLangTags = jsonObj.getJsonObject("langTags");
-//				for(Entry<String, JsonValue> field: joLangTags.entrySet()) {
-//					String prop=field.getKey();
-//					JsonArray jaVals = field.getValue().asJsonArray();
-//					for(JsonValue jv: jaVals) {
-//						String val=((JsonString)jv).getString();
-//						langTagValuesByField.put(prop, new Match(val));
-//					}
-//				}
-//			}
-//			if (jsonObj.containsKey("withoutLangTags")) {
-//				JsonObject joWithoutLangTags = jsonObj.getJsonObject("withoutLangTags");
-//				for(Entry<String, JsonValue> field: joWithoutLangTags.entrySet()) {
-//					String prop=field.getKey();
-//					Integer val=((JsonNumber)field.getValue()).intValue();
-//					withoutLangTagByField.addTo(prop, val);
-//				}
-//			}
-//			if (jsonObj.containsKey("propertyValues")) {
-//				JsonObject joProps = jsonObj.getJsonObject("propertyValues");
-//				for(Entry<String, JsonValue> field: joProps.entrySet()) {
-//					String prop=field.getKey();
-//					JsonArray jaVals = field.getValue().asJsonArray();
-//					for(JsonValue jv: jaVals) {
-//						String val=((JsonString)jv).getString();
-//						propertyValuesByField.put(prop, new Match(val));
-//					}
-//				}
-//			}
-//		}
-//
-//
-//		public JsonValue toJson() {
-//			JsonObjectBuilder valsObj=Json.createObjectBuilder();
-//			if(!langTagValuesByField.isEmpty()) {
-//				JsonObjectBuilder propsObj=Json.createObjectBuilder();
-//				for(String prop: langTagValuesByField.keySet()) {
-//					JsonArrayBuilder values=Json.createArrayBuilder();
-//					for(Match val: langTagValuesByField.get(prop)) 
-//						values.add(Json.createValue(val.getInput()));
-//					propsObj.add(prop, values.build());
-//				}
-//				valsObj.add("langTags", propsObj.build());
-//			}
-//			if(!withoutLangTagByField.isEmpty()) {
-//				JsonObjectBuilder propsObj=Json.createObjectBuilder();
-//				for(String prop: withoutLangTagByField.keySet()) 
-//					propsObj.add(prop, withoutLangTagByField.get(prop));
-//				valsObj.add("withoutLangTags", propsObj.build());
-//			}
-//			if(!propertyValuesByField.isEmpty()) {
-//				JsonObjectBuilder propsObj=Json.createObjectBuilder();
-//				for(String prop: propertyValuesByField.keySet()) {
-//					JsonArrayBuilder values=Json.createArrayBuilder();
-//					for(Match val: propertyValuesByField.get(prop)) 
-//						values.add(Json.createValue(val.getInput()));
-//					propsObj.add(prop, values.build());
-//				}
-//				valsObj.add("propertyValues", propsObj.build());
-//			}
-//			return valsObj.build();
-//		}
 	}
 	
 	public static class LanguageStatsFromSource {
 		HashMap<Resource, LanguageStatsInClass> statsByClassAndField;
-		Examples notNormalizableXmlLang;
-		Examples notNormalizableDcLanguage;
+		Cases notNormalizableXmlLang;
+		Cases normalizableXmlLang;
+		Cases subtagsXmlLang;
+		Cases notNormalizableDcLanguage;
+		Cases normalizableDcLanguage;
+		Cases subtagsDcLanguage;
+		HashMap<String, String> normalizableToXmlLang;
+		HashMap<String, String> normalizableToDcLanguage;
 		
 		public LanguageStatsFromSource() {
 			statsByClassAndField=new HashMap<Resource, LanguageStatsInClass>();
-			notNormalizableXmlLang=new Examples(5000);
-			notNormalizableDcLanguage=new Examples(5000);
+			notNormalizableXmlLang=new Cases();
+			normalizableXmlLang=new Cases();
+			notNormalizableDcLanguage=new Cases();
+			normalizableDcLanguage=new Cases();
+			subtagsXmlLang=new Cases();
+			subtagsDcLanguage=new Cases();
+			normalizableToXmlLang=new HashMap<String, String>();
+			normalizableToDcLanguage=new HashMap<String, String>();
 		}
 		
-//		public void readValuesOfSourceFromJson(JsonObject jv) {
-//			for(Entry<String, JsonValue> field: jv.entrySet()) {
-//				Resource cls=Edm.getResourceFromPrefixedName(field.getKey());
-//				statsByClassAndField.put(cls, new LanguageStatsInClass(field.getValue().asJsonObject()));
-//			}
-//		}
-		
-
-		public void addTo(Resource cls, Property property, Literal value) {
-			LanguageStatsInClass classEntry = getClassEntry(cls);
-//			if (StringUtils.isEmpty(value.getLanguage())) {
-//				classEntry.withoutLangTagByField.incrementTo(Edm.getPrefixedName(property));
-//			} else {
-//				classEntry.langTagValuesByField.put(Edm.getPrefixedName(property), new Match(value.getLanguage()));				
-//			}
-//			if(property.equals(Dc.language)) 
-//				classEntry.propertyValuesByField.put(Edm.getPrefixedName(property), new Match(value.getValue().toString()) );
-		}
-
-//		public JsonObject toJson() {
-//			JsonObjectBuilder ret=Json.createObjectBuilder();
-//			for(Resource cls: statsByClassAndField.keySet()) {
-//				ret.add(Edm.getPrefixedName(cls), statsByClassAndField.get(cls).toJson());
-//			}
-//			return ret.build();
-//		}
 
 
 		private LanguageStatsInClass getClassEntry(Resource cls) {
 			LanguageStatsInClass inClass = statsByClassAndField.get(cls);
 			if(inClass==null) {
-				inClass=new LanguageStatsInClass(notNormalizableXmlLang, notNormalizableDcLanguage);
+				inClass=new LanguageStatsInClass(normalizableXmlLang, notNormalizableXmlLang, subtagsXmlLang, normalizableDcLanguage, notNormalizableDcLanguage, subtagsDcLanguage, normalizableToXmlLang, normalizableToDcLanguage);
 				statsByClassAndField.put(cls, inClass);
 			}
 			return inClass;
@@ -288,11 +234,6 @@ public class LanguageStatsInDataset {
 		public LanguageStatsInClass getStatsFor(Resource cls) {
 			return statsByClassAndField.get(cls);
 		}
-
-//		public void add(Resource cls, LanguageInClass values) {
-//			LanguageStatsInClass statsOfClass = getStatsFor(cls);
-//			statsOfClass.add(values);
-//		}
 
 		public void addLangTagCase(LangValue langValue, LangSubtagsAnalysis subTags) {
 			LanguageStatsInClass statsOfClass = getClassEntry(langValue.cls);
@@ -309,7 +250,7 @@ public class LanguageStatsInDataset {
 		}
 
 		public LangStatsOfItem calculateGlobalStatsLangTags() {
-			LangStatsOfItem gStats=new LangStatsOfItem(null);
+			LangStatsOfItem gStats=new LangStatsOfItem(null, null, null, null);
 			for(LanguageStatsInClass statsForClass: statsByClassAndField.values()) {
 				for(LangStatsOfItem statsOfItem : statsForClass.langTagStatsByField.values()) {
 					gStats.add(statsOfItem);
@@ -319,7 +260,7 @@ public class LanguageStatsInDataset {
 		}
 
 		public LangStatsOfItem calculateGlobalStatsDcLanguage() {
-			LangStatsOfItem gStats=new LangStatsOfItem(null);
+			LangStatsOfItem gStats=new LangStatsOfItem(null, null, null, null);
 			for(LanguageStatsInClass statsForClass: statsByClassAndField.values()) {
 				for(LangStatsOfItem statsOfItem : statsForClass.propertyStatsByField.values()) {
 					gStats.add(statsOfItem);
@@ -333,7 +274,6 @@ public class LanguageStatsInDataset {
 	LanguageStatsFromSource fromProvider=new LanguageStatsFromSource();
 	LanguageStatsFromSource fromEuropeana=new LanguageStatsFromSource();
 	
-	
 	public LanguageStatsInDataset(String dataset) {
 		super();
 		this.dataset = dataset;
@@ -341,38 +281,8 @@ public class LanguageStatsInDataset {
 		fromEuropeana=new LanguageStatsFromSource();
 	}
 
-//	public LanguageStatsInDataset(JsonObject jv) {
-//		this(jv.getString("id"));
-//		JsonObject fromProviderJson = jv.getJsonObject("fromProvider");
-//		JsonObject fromEuropeanaJson = jv.getJsonObject("fromEuropeana");
-//		fromProvider.readValuesOfSourceFromJson(fromProviderJson);
-//		fromEuropeana.readValuesOfSourceFromJson(fromEuropeanaJson);
-//	}
-
-	public void addTo(Source src, Resource cls, Property property, Literal value) {
-		switch (src) {
-		case PROVIDER:
-			fromProvider.addTo(cls, property, value);
-			break;
-		case EUROPEANA:
-			fromEuropeana.addTo(cls, property, value);
-			break;
-		}
-	}
-	
-//	public JsonObject toJson() {
-//		JsonObjectBuilder ret=Json.createObjectBuilder();
-//		ret.add("id", Json.createValue(dataset));
-//		ret.add("fromEuropeana", fromEuropeana.toJson());
-//		ret.add("fromProvider", fromProvider.toJson());
-//		return ret.build();
-//	}
-
 	public String getDataset() {
 		return dataset;
 	}
-
-
-
 
 }

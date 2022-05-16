@@ -43,7 +43,7 @@ public class ValueNormalizationForm extends View {
 
 	public void normalize() {
 		try {
-			match=DatesExtractorHandler.runDateNormalization(match.getInput());
+			match=DatesExtractorHandler.runDateNormalization(match.getInput(), true);
 			System.out.println(match.getMatchId());
 		} catch (Exception e) {
 			message=e.getMessage();
@@ -51,7 +51,7 @@ public class ValueNormalizationForm extends View {
 		}
 	}
 
-	public Match getMatch() {
+	public MatchView getMatch() {
 		return match;
 	}
 	

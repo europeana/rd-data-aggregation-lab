@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.joda.time.format.ISODateTimeFormat;
 
 import europeana.rnd.dataprocessing.dates.edtf.EdtfParser;
 import europeana.rnd.dataprocessing.dates.edtf.Instant;

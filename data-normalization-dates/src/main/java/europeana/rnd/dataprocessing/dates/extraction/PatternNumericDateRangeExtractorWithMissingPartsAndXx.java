@@ -26,7 +26,7 @@ public class PatternNumericDateRangeExtractorWithMissingPartsAndXx implements Da
 	public PatternNumericDateRangeExtractorWithMissingPartsAndXx() {
 		String dateSep="\\s*[\\/\\|]\\s*";
 		String componentSep="[\\-]";
-		String componentMissing="[\\?Xu]";
+		String componentMissing="[Xu]";
 		
 		String dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
 		String dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
@@ -34,7 +34,7 @@ public class PatternNumericDateRangeExtractorWithMissingPartsAndXx implements Da
 		patterns.add(Pattern.compile(dateDmy+dateSep+dateDmy.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
 
 		componentSep="[\\.]";
-		componentMissing="[\\-\\?Xu]";
+		componentMissing="[\\-Xu]";
 		dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
 		dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
@@ -42,7 +42,7 @@ public class PatternNumericDateRangeExtractorWithMissingPartsAndXx implements Da
 
 		dateSep="\\s+[\\-\\|]\\s+";
 		componentSep="[\\./]";
-		componentMissing="[\\-\\?Xu]";
+		componentMissing="[\\-Xu]";
 		dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
 		dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("uncertain", "uncertain2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
@@ -50,7 +50,7 @@ public class PatternNumericDateRangeExtractorWithMissingPartsAndXx implements Da
 
 		dateSep="\\s+-\\s+";
 		componentSep="[\\-]";
-		componentMissing="[\\?Xu]";
+		componentMissing="[Xu]";
 		dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
 		dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));
@@ -58,7 +58,7 @@ public class PatternNumericDateRangeExtractorWithMissingPartsAndXx implements Da
 		
 		dateSep="-";
 		componentSep="[\\./]";
-		componentMissing="[\\?Xu]";
+		componentMissing="[Xu]";
 		dateYmd="\\s*((?<year>\\d\\d\\d\\d?|\\d\\d\\d"+componentMissing+"?|\\d\\d+"+componentMissing+componentMissing+"?)("+componentSep+"(?<month>\\d\\d?|\\d"+componentMissing+"?))?("+componentSep+"(?<day>\\d\\d?|\\d"+componentMissing+"?))?|(?<unspecified>\\?))\\s*";
 		dateDmy="\\s*(((?<day>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?((?<month>\\d\\d?|\\d"+componentMissing+"?)"+componentSep+")?(?<year>\\d\\d\\d\\d?|\\d\\d"+componentMissing+componentMissing+"?)|(?<unspecified>\\?))\\s*";
 		patterns.add(Pattern.compile(dateYmd+dateSep+dateYmd.replace("year", "year2").replace("month", "month2").replace("day", "day2").replace("unspecified", "unspecified2"),Pattern.CASE_INSENSITIVE));

@@ -150,7 +150,7 @@ public class EdtfValidator {
 		throw new IllegalArgumentException("This should never occour");
 	}	
 	
-	private static boolean isMonthOf31Days(Integer month) {
+	public static boolean isMonthOf31Days(Integer month) {
 		month-=1;//java Calendar starts at month 0
         return ((month == Calendar.JANUARY) || 
                 (month == Calendar.MARCH) || 

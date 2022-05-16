@@ -139,8 +139,8 @@ public class DatesInRecord {
 	String choUri;
 	boolean isNewspaperTitle;
 	boolean isNewspaperIssue;
-	DatesFromSource fromProvider=new DatesFromSource();
-	DatesFromSource fromEuropeana=new DatesFromSource();
+	public DatesFromSource fromProvider=new DatesFromSource();
+	public DatesFromSource fromEuropeana=new DatesFromSource();
 	
 	public DatesInRecord(String choUri) {
 		this(choUri, false, false);

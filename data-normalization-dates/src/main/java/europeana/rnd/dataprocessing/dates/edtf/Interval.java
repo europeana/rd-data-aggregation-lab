@@ -57,6 +57,16 @@ public class Interval extends TemporalEntity implements Serializable {
 	}
 	
 	@Override
+	public boolean isApproximate() {
+		return (start!=null && start.isApproximate()) || (end!=null && end.isApproximate());
+	}
+	
+	@Override
+	public boolean isUncertain() {
+		return (start!=null && start.isUncertain()) || (end!=null && end.isUncertain());
+	}
+	
+	@Override
 	public void switchDayMonth() {
 		if (start!=null) 
 			start.switchDayMonth();
@@ -79,4 +89,21 @@ public class Interval extends TemporalEntity implements Serializable {
 		}
 	}
 	
+	@Override
+	public Instant getFirstDay() {
+		return start==null ? null : start.getFirstDay();
+	}
+	
+	@Override
+	public Instant getLastDay() {
+		return end==null ? null : end.getLastDay();
+	}
+	
+	@Override
+	public void removeTime() {
+		if(start!=null)
+			start.removeTime();
+		if(end!=null)
+			end.removeTime();
+	}
 }

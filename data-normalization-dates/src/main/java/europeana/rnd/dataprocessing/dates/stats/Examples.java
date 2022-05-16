@@ -7,10 +7,10 @@ import java.util.Random;
 import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 
 public class Examples {
-	HashSet<String> sample=new HashSet<String>();
+	public HashSet<String> sample=new HashSet<String>();
 	Random random=new Random();
 	int sampleSize=100;
-	int totalFound=0;
+	public int totalFound=0;
 
 	public Examples() {
 	}
