@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-import europeana.rnd.dataprocessing.dates.extraction.MatchId;
+import europeana.rnd.dataprocessing.dates.MatchId;
 
 public class Examples {
 	public HashSet<String> sample=new HashSet<String>();

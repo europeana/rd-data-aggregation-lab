@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class EntityTrackerOnMemory implements EntityTracker{
+public class EntityTrackerOnMemory implements EntityTracker{
 		static Pattern simplifyPattern=Pattern.compile("^https?://([^/]+)/(.*)"); 
 		
 		HashSet<String> processed=new HashSet<String>();

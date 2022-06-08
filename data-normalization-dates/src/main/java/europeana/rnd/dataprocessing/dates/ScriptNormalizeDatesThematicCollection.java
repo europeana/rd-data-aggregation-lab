@@ -15,8 +15,6 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
 
-import europeana.rnd.dataprocessing.dates.extraction.Match;
-import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
 import europeana.rnd.dataprocessing.dates.stats.NewspapersIssuedStats;
 import europeana.rnd.dataprocessing.dates.stats.ThematicCollectionIssuedStats;

@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import inescid.util.datastruct.BigSet;
 
-class EntityTrackerOnDisk implements EntityTracker {
+public class EntityTrackerOnDisk implements EntityTracker {
 		static Pattern simplifyPattern=Pattern.compile("^https?://([^/]+)/(.*)"); 
 		
 		BigSet<String> processed;

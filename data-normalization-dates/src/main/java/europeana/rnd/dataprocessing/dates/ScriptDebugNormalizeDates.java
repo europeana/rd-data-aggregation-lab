@@ -4,8 +4,6 @@ import java.io.File;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
 import europeana.rnd.dataprocessing.dates.edtf.EdtfValidator;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
-import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 import europeana.rnd.dataprocessing.dates.stats.DateExtractionStatistics;
 import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
 import inescid.dataaggregation.data.model.Dc;
@@ -172,24 +170,36 @@ public class ScriptDebugNormalizeDates {
 //				"12//1790" , "[19uu]" , ,"18??]"
 //				,"[19--?]","[18??]"
 				
-				"?/1807"
+//				"?/1807"
+//				"197-?"
+//				"23.02.[18--]"
+//				"192?"
+				
+//				"1995.??.10",
+//				"---1903 (gathering)",
+//				"1937-10-??",
+//				 "09..1972 (gathering)",
+				 "1871?-1999?"
 				
 				
 		}) {
+			DatesNormaliser normaliser = new DatesNormaliser();
 			datesInRec.addTo(Source.EUROPEANA, Ore.Proxy, Dc.date, Jena.createLiteral(test).asLiteral());
+			System.out.println("-----");
 			System.out.println(test);
-			r = DatesExtractorHandler.runDateNormalization(test, true);
+			r = normaliser.normaliseDateProperty(test);
 			System.out.println(r.getCleanOperation());
 			System.out.println(r.getMatchId());
 			System.out.println(r.getExtracted());
 			if (r.getMatchId()!=MatchId.NO_MATCH) {
-				System.out.println("valid: "+EdtfValidator.validate(r.getExtracted(), false));
+				System.out.println("valid: "+EdtfValidator.validate(r.getExtracted().getEdtf(), false));
+				System.out.println("EDTF: "+r.getExtracted().getEdtf());
 			}
 		}
 		DatesExtractorHandler.runDateNormalization(datesInRec);
 		for(DateValue dv: datesInRec.getAllValuesDetailed(Source.ANY)) 
 			des.add(datesInRec.getChoUri(), Source.EUROPEANA, dv);
-//		des.save(new File("target"));	
+//		des.save(new File("target"));
 		HtmlExporter.export(des, desSubCov, new File("target"));
 	}
 }

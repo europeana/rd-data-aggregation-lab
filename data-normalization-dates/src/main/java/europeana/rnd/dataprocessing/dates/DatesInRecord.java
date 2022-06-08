@@ -20,7 +20,6 @@ import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
-import europeana.rnd.dataprocessing.dates.extraction.Match;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Ore;
 import inescid.util.datastruct.MapOfLists;

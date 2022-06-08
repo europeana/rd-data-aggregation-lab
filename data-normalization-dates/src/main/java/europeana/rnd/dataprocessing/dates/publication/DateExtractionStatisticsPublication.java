@@ -12,10 +12,10 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
+import europeana.rnd.dataprocessing.dates.CleanId;
 import europeana.rnd.dataprocessing.dates.DatesInRecord;
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
 import europeana.rnd.dataprocessing.dates.Source;
-import europeana.rnd.dataprocessing.dates.extraction.CleanId;
 import europeana.rnd.dataprocessing.dates.stats.Examples;
 import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfMaps;

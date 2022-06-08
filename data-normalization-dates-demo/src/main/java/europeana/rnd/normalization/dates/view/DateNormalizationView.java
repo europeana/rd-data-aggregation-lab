@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord;
+import europeana.rnd.dataprocessing.dates.Match;
 import europeana.rnd.dataprocessing.dates.Source;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Ore;
 import inescid.util.datastruct.MapOfLists;
@@ -35,12 +35,15 @@ public class DateNormalizationView {
 
 	public class PropertyWithDates {
 		String name;
-		List<Match> values;
+		List<MatchView> values;
 		
 		public PropertyWithDates(String name, List<Match> values) {
 			super();
 			this.name = name;
-			this.values = values;
+			this.values = new ArrayList<MatchView>(values.size());
+			for(Match m: values) {
+				this.values.add(new MatchView(m));
+			}
 		}
 
 		public String getName() {

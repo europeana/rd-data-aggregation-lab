@@ -16,7 +16,7 @@ import org.apache.jena.riot.system.StreamRDFWriter;
 
 import europeana.rnd.dataprocessing.dates.DatesHandler;
 import europeana.rnd.dataprocessing.dates.DatesInRecord;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
+import europeana.rnd.dataprocessing.dates.Match;
 import inescid.dataaggregation.data.model.Dc;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.util.RdfUtil.Jena;

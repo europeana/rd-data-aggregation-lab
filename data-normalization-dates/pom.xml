@@ -61,6 +61,11 @@
 			<artifactId>data-europeana-dataset</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>europeana-rnd</groupId>
+			<artifactId>data-normalization-dates-prototype</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<dependency>
 			<groupId>inescid.dal</groupId>
 			<version>0.1</version>
 			<artifactId>data-util</artifactId>

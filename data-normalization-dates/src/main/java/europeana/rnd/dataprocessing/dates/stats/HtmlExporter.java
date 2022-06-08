@@ -13,7 +13,7 @@ import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.jena.ext.com.google.common.math.Stats;
 
-import europeana.rnd.dataprocessing.dates.extraction.MatchId;
+import europeana.rnd.dataprocessing.dates.MatchId;
 import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfMaps;
 

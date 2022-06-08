@@ -3,13 +3,13 @@ package europeana.rnd.dataprocessing.dates.extraction.trash;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import europeana.rnd.dataprocessing.dates.Match;
+import europeana.rnd.dataprocessing.dates.MatchId;
 import europeana.rnd.dataprocessing.dates.edtf.Date;
 import europeana.rnd.dataprocessing.dates.edtf.Instant;
 import europeana.rnd.dataprocessing.dates.edtf.Interval;
 import europeana.rnd.dataprocessing.dates.edtf.Time;
 import europeana.rnd.dataprocessing.dates.extraction.DateExtractor;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
-import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 
 public class PatternIso8601DateRange extends PatternIso8601Date implements DateExtractor {
 	Pattern patIsoDateRangeBrief=Pattern.compile(patIsoDateBriefString+"/"+patIsoDateBriefString

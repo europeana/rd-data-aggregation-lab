@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
+
+import europeana.rnd.dataprocessing.dates.DatesNormaliser;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateExceptionHandler;
 import inescid.http.HttpRequestService;
@@ -18,7 +20,7 @@ public class GlobalUi {
 //	public static String GOOGLE_API_CREDENTIALS = ""; 
 	
 	private static File webappRoot=null;
-	
+	private static DatesNormaliser datesNormaliser=null;
 	
 	static {
 		GlobalUi.FREE_MARKER.setClassLoaderForTemplateLoading(DateNormalizationServlet.class.getClassLoader(), "europeana/rnd/normalization/dates/view/template");
@@ -31,6 +33,8 @@ public class GlobalUi {
 			System.out.println("Normalization webapp initializing");
 			String webappRootPath = prop.getProperty("normalization.webapp.root-folder");
 			webappRoot=new File(webappRootPath);
+			
+			datesNormaliser=new DatesNormaliser();
 		}
 	}
 	public static synchronized void shutdown() throws IOException {
@@ -43,8 +47,9 @@ public class GlobalUi {
 		init(props);
 	}
 	
-
-
+	public static DatesNormaliser getDatesNormaliser() {
+		return datesNormaliser;
+	}
 //	private static void initLogging() {
 //        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
 //        final org.apache.logging.log4j.core.config.Configuration config = ctx.getConfiguration();

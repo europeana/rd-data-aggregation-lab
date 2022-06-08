@@ -11,12 +11,12 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
 import europeana.rnd.dataprocessing.dates.DatesInRecord;
+import europeana.rnd.dataprocessing.dates.Match;
+import europeana.rnd.dataprocessing.dates.MatchId;
 import europeana.rnd.dataprocessing.dates.Source;
 import europeana.rnd.dataprocessing.dates.edtf.EdtfValidator;
 import europeana.rnd.dataprocessing.dates.edtf.Instant;
 import europeana.rnd.dataprocessing.dates.edtf.Interval;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
-import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 import europeana.rnd.dataprocessing.dates.stats.HtmlExporter;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.RdaGr2;

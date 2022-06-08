@@ -41,14 +41,14 @@ public class HtmlExporter {
 			htmlFile=new File(outFolder, "Language_ProvidersDataReport.html");
 			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
 			writeStart(writer);
-			writeStatsOfSource(writer, stats.fromProvider, "Report about use of xml:lang in Europeana (data providers' data)", Source.PROVIDER);
+			writeStatsOfSource(writer, stats.fromProvider, "Report about use of xml:lang in Europeana (data providers' data)", Source.PROVIDER, "Language_Provider_xml_lang");
 			writeEnd(writer);	
 			writer.close();
 			
 			htmlFile=new File(outFolder, "Language_EuropeanaDataReport.html");
 			writer=new FileWriterWithEncoding(htmlFile, StandardCharsets.UTF_8);
 			writeStart(writer);
-			writeStatsOfSource(writer, stats.fromEuropeana,"Report about use of xml:lang in Europeana (Europeana's data)", Source.EUROPEANA);
+			writeStatsOfSource(writer, stats.fromEuropeana,"Report about use of xml:lang in Europeana (Europeana's data)", Source.EUROPEANA, "Language_Europeana_xml_lang");
 			writeEnd(writer);	
 			writer.close();
 
@@ -160,7 +160,7 @@ public class HtmlExporter {
 	}
 
 	
-	private static void writeStatsOfSource(Appendable writer,  LanguageStatsFromSource stats, String title, Source source) throws IOException {
+	private static void writeStatsOfSource(Appendable writer,  LanguageStatsFromSource stats, String title, Source source, String filenamePrefix) throws IOException {
 		ArrayList<Resource> sortedClasses=new ArrayList<Resource>(stats.statsByClassAndField.keySet());
 		
 		//HACK: Aggregation and EuropeanaAggregation were not processed correctly on this first phase of extrcting language from the records
@@ -199,7 +199,16 @@ public class HtmlExporter {
 				+ "</li> \r\n"
 				+ "</ul>\r\n"
 				+ "</li> \r\n"
-				+ "</ul>");
+				+ "</ul>\r\n"
+
+				+ "<p>Lists of values in xml:lang tags:</p>\r\n"
+				+ "<ul>\r\n"
+				+ "<li><a href=\""+filenamePrefix+"_not_normalizable.txt\">not_normalisable.txt</a> - a text file containing all the distinct values that the current language normalization of Metis is unable to normalize.</li>\r\n"
+				+ "<li><a href=\""+filenamePrefix+"_normalizable.txt\">normalisable.txt</a> - a text file containing all the distinct values that the current language normalization of Metis is able to normalize along with and their normalised values.</li>\r\n"
+				+ "<li><a href=\""+filenamePrefix+"_subtags.txt\">subtags.txt</a> - a text file containing all the distinct values that contain subtags.</li>\r\n"
+				+ "</ul>\r\n"
+				+ "</br>\r\n");
+		
 		
 		writer.append("<table id=\"top\">\r\n"
 				+ "<tr>\r\n"
@@ -255,6 +264,7 @@ public class HtmlExporter {
 				+ "<li>Files:\r\n"
 				+ "<ul>\r\n"
 				+ "<li style=\"margin-left: 20px;\">not_normalisable.txt - a text file containing all the distinct values that the current language normalization of Metis is unable to normalize.</li>\r\n"
+				+ "<li style=\"margin-left: 20px;\">normalisable.txt - a text file containing all the distinct values that the current language normalization of Metis is able to normalize along with and their normalised values.</li>\r\n"
 				+ "<li style=\"margin-left: 20px;\">subtags.txt - a text file containing all the distinct values that contain subtags.</li>\r\n"
 				+ "</ul>\r\n"
 				+ "</li> \r\n"

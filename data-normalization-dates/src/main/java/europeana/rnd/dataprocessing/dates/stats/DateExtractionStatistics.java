@@ -12,12 +12,12 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.output.FileWriterWithEncoding;
 
+import europeana.rnd.dataprocessing.dates.CleanId;
 import europeana.rnd.dataprocessing.dates.DatesInRecord;
+import europeana.rnd.dataprocessing.dates.Match;
+import europeana.rnd.dataprocessing.dates.MatchId;
 import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
 import europeana.rnd.dataprocessing.dates.Source;
-import europeana.rnd.dataprocessing.dates.extraction.CleanId;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
-import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfMaps;
 import inescid.util.datastruct.MapOfMapsOfInts;

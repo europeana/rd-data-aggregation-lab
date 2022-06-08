@@ -1,7 +1,7 @@
 package europeana.rnd.dataprocessing.dates.publication;
 
+import europeana.rnd.dataprocessing.dates.Match;
 import europeana.rnd.dataprocessing.dates.edtf.Instant;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
 
 public enum PatternId {
 	NO_MATCH,
@@ -45,23 +45,23 @@ public enum PatternId {
 		switch (m.getMatchId()) {
 		case NO_MATCH: return PatternId.NO_MATCH;
 		case INVALID: return PatternId.NO_MATCH;
-		case BcAd: return (m.getExtracted() instanceof Instant ? PatternId.BcAd : PatternId.BcAd_Range);
-		case Century_Numeric: return (m.getExtracted() instanceof Instant ? PatternId.Century_Decade_Numeric : PatternId.Century_Decade_Numeric_Range);
+		case BcAd: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.BcAd : PatternId.BcAd_Range);
+		case Century_Numeric: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.Century_Decade_Numeric : PatternId.Century_Decade_Numeric_Range);
 		case Century_Range_Roman: return PatternId.Century_Roman_Range;
 		case Century_Roman: return PatternId.Century_Roman;
 		case DCMIPeriod: return PatternId.DCMIPeriod;
-		case Decade: return (m.getExtracted() instanceof Instant ? PatternId.Century_Decade_Numeric : PatternId.Century_Decade_Numeric_Range);
-		case Edtf: return (m.getExtracted() instanceof Instant ? PatternId.ISO8601 : PatternId.ISO8601_Range);
-		case Edtf_Cleaned: return (m.getExtracted() instanceof Instant ? PatternId.ISO8601_Cleaned : PatternId.ISO8601_Cleaned_Range);
+		case Decade: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.Century_Decade_Numeric : PatternId.Century_Decade_Numeric_Range);
+		case Edtf: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.ISO8601 : PatternId.ISO8601_Range);
+		case Edtf_Cleaned: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.ISO8601_Cleaned : PatternId.ISO8601_Cleaned_Range);
 		case FormatedFullDate: return PatternId.FormatedFullDate;
-		case MONTH_NAME: return (m.getExtracted() instanceof Instant ? PatternId.MONTH_NAME : PatternId.MONTH_NAME_Range);
-		case Numeric_AllVariants: return (m.getExtracted() instanceof Instant ? PatternId.Numeric_AllVariants : PatternId.Numeric_AllVariants_Range);
-		case Numeric_AllVariants_Xx: return (m.getExtracted() instanceof Instant ? PatternId.Numeric_AllVariants : PatternId.Numeric_AllVariants_Range);
+		case MONTH_NAME: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.MONTH_NAME : PatternId.MONTH_NAME_Range);
+		case Numeric_AllVariants: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.Numeric_AllVariants : PatternId.Numeric_AllVariants_Range);
+		case Numeric_AllVariants_Xx: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.Numeric_AllVariants : PatternId.Numeric_AllVariants_Range);
 		case Numeric_Range_AllVariants: return PatternId.Numeric_AllVariants_Range;
 		case Numeric_Range_AllVariants_Xx: return PatternId.Numeric_AllVariants_Range;
-		case YYYY_MM_DD_Spaces: return (m.getExtracted() instanceof Instant ? PatternId.Numeric_AllVariants : PatternId.Numeric_AllVariants_Range);
+		case YYYY_MM_DD_Spaces: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.Numeric_AllVariants : PatternId.Numeric_AllVariants_Range);
 		case Brief_Date_Range: return PatternId.Brief_Date_Range;
-		case LongYear: return (m.getExtracted() instanceof Instant ? PatternId.LongYear : PatternId.LongYear_Range);
+		case LongYear: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.LongYear : PatternId.LongYear_Range);
 		default:
 			throw new IllegalArgumentException(m.getMatchId().getLabel().toString());
 		}

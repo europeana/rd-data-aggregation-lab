@@ -3,9 +3,9 @@ package europeana.rnd.dataprocessing.dates.extraction.trash;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import europeana.rnd.dataprocessing.dates.Match;
+import europeana.rnd.dataprocessing.dates.MatchId;
 import europeana.rnd.dataprocessing.dates.extraction.DateExtractor;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
-import europeana.rnd.dataprocessing.dates.extraction.MatchId;
 
 public class PatternDateExtractorYyyyMm {}
 //public class PatternDateExtractorYyyyMm implements DateExtractor {

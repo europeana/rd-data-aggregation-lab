@@ -16,7 +16,7 @@ import org.apache.jena.riot.RiotException;
 import europeana.rnd.dataprocessing.dates.DatesExtractorHandler;
 import europeana.rnd.dataprocessing.dates.DatesHandler;
 import europeana.rnd.dataprocessing.dates.DatesInRecord;
-import europeana.rnd.dataprocessing.dates.extraction.Match;
+import europeana.rnd.dataprocessing.dates.Match;
 import europeana.rnd.normalization.dates.view.ResourceView.DataModel;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.util.AccessException;
@@ -43,7 +43,7 @@ public class ValueNormalizationForm extends View {
 
 	public void normalize() {
 		try {
-			match=DatesExtractorHandler.runDateNormalization(match.getInput(), true);
+			match=GlobalUi.getDatesNormaliser().normaliseDateProperty(match.getInput());
 			System.out.println(match.getMatchId());
 		} catch (Exception e) {
 			message=e.getMessage();
@@ -52,7 +52,7 @@ public class ValueNormalizationForm extends View {
 	}
 
 	public MatchView getMatch() {
-		return match;
+		return new MatchView(match);
 	}
 	
 }
