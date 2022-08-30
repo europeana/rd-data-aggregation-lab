@@ -141,7 +141,7 @@ public class DataProfileDetector {
 		System.out.println( result.format);
 		result = dtc.detect(JSON_STRING);
 		System.out.println( result.format);
-	}
+	} 
 
 	public static DataTypeResult detect(String datasetUri, Repository repo) throws IOException{
 //		public static DataTypeResult detect(Dataset dataset, Repository repo) throws IOException{

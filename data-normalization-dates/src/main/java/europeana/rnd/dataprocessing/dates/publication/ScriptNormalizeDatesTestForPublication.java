@@ -65,7 +65,8 @@ public class ScriptNormalizeDatesTestForPublication {
 	}
 
 	public static void main(String[] args) throws Exception {
-		String sourceFolder = "c://users/nfrei/desktop/data/dates";
+//		String sourceFolder = "c://users/nfrei/desktop/data/dates";
+		String sourceFolder = "c://users/nfrei/desktop/data/dates/test-set";
 
 		if (args != null) {
 			if (args.length >= 1) {

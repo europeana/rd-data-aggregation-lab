@@ -12,7 +12,10 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.StringUtils;
 
+import europeana.rnd.dataprocessing.language.iana.LangTagValidator;
+
 public class LangSubtagsAnalysis {
+	
 	boolean subTag=false;
 	boolean country=false;
 	boolean variant=false;
@@ -27,4 +30,5 @@ public class LangSubtagsAnalysis {
 		extention=!loc.getExtensionKeys().isEmpty();
 		subTag=country || variant || script || extention;
 	}
+	
 }

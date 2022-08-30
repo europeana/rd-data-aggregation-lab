@@ -65,11 +65,15 @@ public class ScriptDetectLanguageOfNonNormalisableLangTags {
 		langDetector.loadModels();
 		
 		try {
-			SheetsPrinter sheetsPrinter=new SheetsPrinter("1uWBFwVQS9Z0S-7IYHRAFuipRo64TbKCZxctemHnILis", "tags");
-			sheetsPrinter.printRecord("xml:lang value", "detected language", "# of cases", "# detected with high confidence");
+//			SheetsPrinter sheetsPrinter=new SheetsPrinter("1uWBFwVQS9Z0S-7IYHRAFuipRo64TbKCZxctemHnILis", "tags");
+			SheetsPrinter sheetsPrinter=new SheetsPrinter("1uWBFwVQS9Z0S-7IYHRAFuipRo64TbKCZxctemHnILis", "test");
+			sheetsPrinter.printRecord("xml:lang value", "detected language", "# of distinct cases", "# of cases", "# detected with high confidence");
 			
 			for(File codeFile: new File(inputFolder).listFiles()) {
-				HashSet<String> alreadyProcessed=new HashSet<String>();
+				if(!codeFile.isFile() || codeFile.getName().startsWith("EUROPEANA"))
+					continue;
+				HashMap<String,String> alreadyProcessed=new HashMap<String,String>();
+				MapOfInts<String> detectedLanguagesDistinct=new MapOfInts<String>();
 				MapOfInts<String> detectedLanguages=new MapOfInts<String>();
 				MapOfInts<String> detectedLanguagesHigh=new MapOfInts<String>();
 				
@@ -77,25 +81,26 @@ public class ScriptDetectLanguageOfNonNormalisableLangTags {
 				CSVParser csvParser=new CSVParser(fileReader, CSVFormat.DEFAULT);
 				for(CSVRecord rec: csvParser) {
 					String text = rec.get(2);
-					if(!alreadyProcessed.contains(text)) {
-						alreadyProcessed.add(text);
+					if(!alreadyProcessed.containsKey(text)) {
 						LanguageResult detect = langDetector.detect(text);
+						detectedLanguagesDistinct.incrementTo(detect.getLanguage());
 						detectedLanguages.incrementTo(detect.getLanguage());
 						if(detect.isReasonablyCertain())
 							detectedLanguagesHigh.incrementTo(detect.getLanguage());
-						
+						alreadyProcessed.put(text, detect.getLanguage());
 //						System.out.println(detect.getLanguage() + " - certain? "+detect.isReasonablyCertain()+ " - conf: "+ detect.getConfidence());
-					}					
+					} else {
+						detectedLanguages.incrementTo(alreadyProcessed.get(text));
+					}
 				}
+				csvParser.close();
 				System.out.println("---");
 				System.out.println(codeFile.getName()+":");
 
-				for( Entry<String, Integer> lang : detectedLanguages.getSortedEntries()) {
+				for( Entry<String, Integer> lang : detectedLanguagesDistinct.getSortedEntries()) {
 					System.out.println(" - "+ lang.getKey()+" - "+lang.getValue() + "("+ (detectedLanguagesHigh.containsKey(lang.getKey()) ? detectedLanguagesHigh.get(lang.getKey()) : 0 ) +")");
-					
-					sheetsPrinter.printRecord(codeFile.getName().substring(0, codeFile.getName().length()-4) , lang.getKey(), lang.getValue() , (detectedLanguagesHigh.containsKey(lang.getKey()) ? detectedLanguagesHigh.get(lang.getKey()) : 0 ));
+					sheetsPrinter.printRecord(codeFile.getName().substring(codeFile.getName().indexOf('_')+1, codeFile.getName().length()-4) , lang.getKey(), lang.getValue(), detectedLanguages.get(lang.getKey()), (detectedLanguagesHigh.containsKey(lang.getKey()) ? detectedLanguagesHigh.get(lang.getKey()) : 0 ));
 				}
-				
 			}
 			sheetsPrinter.close();
 		} finally {

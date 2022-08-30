@@ -148,6 +148,12 @@
         </dependency>
 
 		<dependency>
+		    <groupId>org.eclipse.collections</groupId>
+		    <artifactId>eclipse-collections</artifactId>
+		    <version>11.1.0</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>nfreire</groupId>
 			<artifactId>google-apis-client</artifactId>
 			<version>0.1</version>

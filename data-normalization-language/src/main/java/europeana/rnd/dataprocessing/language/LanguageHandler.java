@@ -2,6 +2,7 @@ package europeana.rnd.dataprocessing.language;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -49,7 +50,7 @@ public class LanguageHandler {
 	}
 
 	private static LanguageInRecord getLanguageInRecord(Model edm, EntityTracker entityTracker) {
-//			HashSet<String> processedResources=new HashSet<String>();
+		HashSet<Resource> processedResources=new HashSet<Resource>();
 		Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 		String choUri = choRes.getURI();
 		
@@ -65,11 +66,12 @@ public class LanguageHandler {
 					Statement typeSt = st.getObject().asResource().getProperty(Rdf.type);
 					if(typeSt!=null && typeSt.getObject().isResource()) {
 						Resource resType=typeSt.getObject().asResource();
-						getLanguageInResource(res, isEuropeanaProxy, resType, st.getObject().asResource(), entityTracker);
+						getLanguageInResource(res, isEuropeanaProxy, resType, st.getObject().asResource(), entityTracker, processedResources);
 					}						
 				}
 			}
 		}
+		
 		for (Resource webRes : edm.listResourcesWithProperty(Rdf.type, Edm.WebResource).toList()) {
 			for (Statement st : webRes.listProperties().toList()) {
 				if (st.getObject().isLiteral()) {
@@ -78,7 +80,7 @@ public class LanguageHandler {
 					Statement typeSt = st.getObject().asResource().getProperty(Rdf.type);
 					if(typeSt!=null && typeSt.getObject().isResource()) {
 						Resource resType=typeSt.getObject().asResource();
-						getLanguageInResource(res, Source.PROVIDER, resType, st.getObject().asResource(), entityTracker);
+						getLanguageInResource(res, Source.PROVIDER, resType, st.getObject().asResource(), entityTracker, processedResources);
 					}						
 				}
 			}
@@ -86,9 +88,12 @@ public class LanguageHandler {
 		return res;
 	}
 
-	private static  void getLanguageInResource(LanguageInRecord res, Source source, Resource resType, Resource resource, EntityTracker entityTracker) {
+	private static  void getLanguageInResource(LanguageInRecord res, Source source, Resource resType, Resource resource, EntityTracker entityTracker, HashSet<Resource> processedResources) {
 		if(resType.equals(Ore.Proxy) || resType.equals(Edm.ProvidedCHO) || resType.equals(Edm.WebResource)) 
 			return;
+		if(processedResources.contains(resource))
+			return;
+		processedResources.add(resource);
 		if(resource.isURIResource()) {
 			if(entityTracker.contains(source, resource.getURI()))
 				return;
@@ -101,7 +106,7 @@ public class LanguageHandler {
 				Statement typeSt = st.getObject().asResource().getProperty(Rdf.type);
 				if(typeSt!=null && typeSt.getObject().isResource()) {
 					Resource subResType=typeSt.getObject().asResource();
-					getLanguageInResource(res, source, subResType, st.getObject().asResource(), entityTracker);
+					getLanguageInResource(res, source, subResType, st.getObject().asResource(), entityTracker, processedResources);
 				}
 			}
 		}

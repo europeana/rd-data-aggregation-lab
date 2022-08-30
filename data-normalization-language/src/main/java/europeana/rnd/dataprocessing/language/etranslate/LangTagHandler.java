@@ -64,14 +64,23 @@ public class LangTagHandler {
 			}
 		}
 		for (Resource webRes : edm.listResourcesWithProperty(Rdf.type, Edm.WebResource).toList()) {
+//			boolean isFullText=false;
+//			for (Statement st : webRes.listProperties(Rdf.type).toList()) {
+//				if(st.getObject().equals(Edm.FullTextResource)) {
+//					isFullText=true;
+//					break;
+//				}
+//			}
+//			Source source = isFullText ? Source.EUROPEANA : Source.PROVIDER;  
+			Source source = Source.PROVIDER;  
 			for (Statement st : webRes.listProperties().toList()) {
 				if (st.getObject().isLiteral()) {
-					testLiteral(Source.PROVIDER, st);
+					testLiteral(source, st);
 				} else if(st.getObject().isResource()) {
 					Statement typeSt = st.getObject().asResource().getProperty(Rdf.type);
 					if(typeSt!=null && typeSt.getObject().isResource()) {
 						Resource resType=typeSt.getObject().asResource();
-						getLanguageInResource(Source.PROVIDER, resType, st.getObject().asResource(), processedResources);
+						getLanguageInResource(source, resType, st.getObject().asResource(), processedResources);
 					}						
 				}
 			}
@@ -105,7 +114,7 @@ public class LangTagHandler {
 	
 	private void testLiteral(Source source, Statement st) throws IOException {
 		Literal lit=st.getObject().asLiteral();
-		if(!StringUtils.isEmpty(lit.getLanguage()) && NotNormalizableTags.TAG_SET.contains(lit.getLanguage())) {
+		if(!StringUtils.isEmpty(lit.getLanguage()) && NotNormalizableTags.TAG_SET.contains(lit.getLanguage())) {			
 			if(st.getSubject().isURIResource())
 				valueWriter.write(source, st.getSubject().asResource().getURI(),  Edm.getPrefixedName(st.getPredicate()), lit.getLanguage(), lit.getString());
 			else

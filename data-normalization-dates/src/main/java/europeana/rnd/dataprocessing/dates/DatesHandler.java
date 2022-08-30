@@ -10,6 +10,7 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 import europeana.rnd.dataprocessing.dates.ThematicCollections.NewspaperRecordType;
 import inescid.dataaggregation.data.model.Dc;
@@ -54,7 +55,7 @@ public class DatesHandler {
 	static class EntityTracker {
 //		HashSet<String> processedInProvider=new HashSet<String>();
 //		HashSet<String> processedInEuropeana=new HashSet<String>();
-		HashSet<String> processed=new HashSet<String>();
+		UnifiedSet<String> processed=new UnifiedSet<String>();
 
 		public boolean contains(Source source, String uri) {
 			return processed.contains(uri);

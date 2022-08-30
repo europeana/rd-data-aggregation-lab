@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -44,7 +45,7 @@ public class ScriptUpdateLangTagsInDatadump {
 		String outputFolder = null;
 		String inputFolder = null;
 
-		if (args != null && args.length >= 3) {
+		if (args != null && args.length >= 2) {
 			inputFolder = args[0];
 			outputFolder = args[1];
 		}else {
@@ -67,7 +68,8 @@ public class ScriptUpdateLangTagsInDatadump {
 			
 			ZipEntry entry = zip.getNextEntry();
 			while (entry != null) {
-				String edmRdfXml=IOUtils.toString(zip, StandardCharsets.UTF_8);
+				String edmRdfXmlOrig=IOUtils.toString(zip, StandardCharsets.UTF_8);
+				String edmRdfXml=removeSubtags(edmRdfXmlOrig);
 				edmRdfXml=NormalisableTags.applyPatterns(edmRdfXml);
 				zipOut.putNextEntry(new ZipEntry(entry.getName()));
 				IOUtils.write(edmRdfXml, zipOut, StandardCharsets.UTF_8);
@@ -81,4 +83,13 @@ public class ScriptUpdateLangTagsInDatadump {
 			zipFileOutputStream.close();
 		}
 	}
+
+	private static Pattern subtagPattern=Pattern.compile("( xml:lang\\s*=\\s*\")([^-\"]+)\\-[^\"]+(\")");
+	private static String removeSubtags(String edmRdfXml) {
+		return subtagPattern.matcher(edmRdfXml).replaceAll("$1$2$3");
+	}
+	
+	
+	
+	
 }

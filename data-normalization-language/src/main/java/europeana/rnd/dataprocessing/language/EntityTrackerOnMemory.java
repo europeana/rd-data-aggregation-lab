@@ -5,11 +5,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.collections.impl.set.mutable.UnifiedSet;
 
 public class EntityTrackerOnMemory implements EntityTracker{
 		static Pattern simplifyPattern=Pattern.compile("^https?://([^/]+)/(.*)"); 
 		
-		HashSet<String> processed=new HashSet<String>();
+		UnifiedSet<String> processed=new UnifiedSet<String>();
 		Source detectFor;
 		
 		public EntityTrackerOnMemory(Source detectFor) {

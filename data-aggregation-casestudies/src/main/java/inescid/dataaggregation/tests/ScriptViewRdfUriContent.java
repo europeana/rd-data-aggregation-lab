@@ -63,7 +63,8 @@ public class ScriptViewRdfUriContent {
 			
 //			req = HttpUtil.makeRequest("https://arche.acdh.oeaw.ac.at/browser/oeaw_detail/id.acdh.oeaw.ac.at/uuid/3380a45c-3c81-d9a7-e258-737ff9e7d4c0", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
 //			req = HttpUtil.makeRequest("https://arche.acdh.oeaw.ac.at/rest/b1/02/7d/f6/b1027df6-90b6-4fd2-a878-3921c9897618/fcr:metadata", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
-			req = HttpUtil.makeRequest("http://data.europeana.eu/item/2051943/data_euscreenXL_EUS_2BAA81D23D6F41578CB2C2071D0325FC", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
+//			req = HttpUtil.makeRequest("http://data.europeana.eu/item/2048701/object_HA_232", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
+			req = HttpUtil.makeRequest("http://data.europeana.eu/item/9200333/BibliographicResource_3000058955043", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
 			
 			String content = req.getResponseContentAsString();
 			System.out.println(content);

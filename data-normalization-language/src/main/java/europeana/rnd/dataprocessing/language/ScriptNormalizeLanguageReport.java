@@ -29,14 +29,17 @@ import eu.europeana.normalization.settings.NormalizerSettings;
 import eu.europeana.normalization.util.NormalizationConfigurationException;
 import europeana.rnd.dataprocessing.language.LanguageInRecord.LangValue;
 import europeana.rnd.dataprocessing.language.LanguageInRecord.PropertyCount;
-import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LangStatsOfItem;
 import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LanguageStatsFromSource;
-import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LanguageStatsInClass;
 
 public class ScriptNormalizeLanguageReport {
 
 	File folder;
 	File outputFolder;
+	
+	LanguageStatsInDataset stats=new LanguageStatsInDataset("Europeana");
+
+	LanguageMatcher langTagMatcher;
+	LanguageMatcher dcLanguageMatcher; 
 	
 	public ScriptNormalizeLanguageReport(File folder, File outputFolder) {
 		super();
@@ -46,14 +49,13 @@ public class ScriptNormalizeLanguageReport {
 
 	public void process() throws IOException, NormalizationConfigurationException {
 		NormalizerSettings settings=new NormalizerSettings();
-		LanguageMatcher langTagMatcher = new LanguageMatcher(
+		langTagMatcher = new LanguageMatcher(
 				settings.getMinLanguageLabelLength(), settings.getLanguageAmbiguityHandling(),
 				settings.getTargetXmlLangVocabularies());
-		LanguageMatcher dcLanguageMatcher = new LanguageMatcher(
+		dcLanguageMatcher = new LanguageMatcher(
 				settings.getMinLanguageLabelLength(), settings.getLanguageAmbiguityHandling(),
 				settings.getTargetDcLanguageVocabularies());
 
-		LanguageStatsInDataset stats=new LanguageStatsInDataset("Europeana");
 		if(folder.getName().endsWith(".zip")) {
 			try (FileInputStream fis = new FileInputStream(folder);
 	                BufferedInputStream bis = new BufferedInputStream(fis);
@@ -62,7 +64,7 @@ public class ScriptNormalizeLanguageReport {
 	            while ((ze = zis.getNextEntry()) != null) {
 	                if(ze.isDirectory()) continue;
 					System.out.println(ze.getName());
-					processFile(zis, langTagMatcher, dcLanguageMatcher, stats);
+					processFile(zis);
 	            }
 			}
 		} else {
@@ -73,7 +75,7 @@ public class ScriptNormalizeLanguageReport {
 					if(jsonFile.isDirectory()) continue;
 					System.out.println(jsonFile.getAbsolutePath());
 					FileInputStream is = new FileInputStream(jsonFile);
-					processFile(is, langTagMatcher, dcLanguageMatcher, stats);
+					processFile(is);
 					is.close();
 				}
 			}
@@ -81,7 +83,7 @@ public class ScriptNormalizeLanguageReport {
 		HtmlExporter.export(stats, outputFolder);
 	}
 
-	private void processFile(InputStream is, LanguageMatcher langTagMatcher, LanguageMatcher dcLanguageMatcher, LanguageStatsInDataset stats) {
+	private void processFile(InputStream is) {
 		JsonParser parser = Json.createParser(is);
 		parser.next();
 		Stream<JsonValue> arrayStream = parser.getArrayStream();
@@ -90,23 +92,23 @@ public class ScriptNormalizeLanguageReport {
 			LanguageInRecord record=new LanguageInRecord(jv);
 			try {
 				for(LangValue langValue : record.fromEuropeana.getAllLangTagValues()) {
-					normalizeLangTag(langValue, langTagMatcher, stats.fromEuropeana);
+					normalizeLangTag(langValue, stats.fromEuropeana);
 				}
 				for(PropertyCount propCount : record.fromEuropeana.getAllCountWithoutLangTag()) {
 					stats.fromEuropeana.incrementWithoutLangTag(propCount);
 				}						
 				for(LangValue langValue : record.fromEuropeana.getAllPropertyValues()) {
-					normalizeProperty(langValue, dcLanguageMatcher, stats.fromEuropeana);
+					normalizeProperty(langValue, stats.fromEuropeana);
 				}
 				
 				for(LangValue langValue : record.fromProvider.getAllLangTagValues()) {
-					normalizeLangTag(langValue, langTagMatcher, stats.fromProvider);
+					normalizeLangTag(langValue, stats.fromProvider);
 				}
 				for(PropertyCount propCount : record.fromProvider.getAllCountWithoutLangTag()) {
 					stats.fromProvider.incrementWithoutLangTag(propCount);
 				}						
 				for(LangValue langValue : record.fromProvider.getAllPropertyValues()) {
-					normalizeProperty(langValue, dcLanguageMatcher, stats.fromProvider);
+					normalizeProperty(langValue, stats.fromProvider);
 				}
 //						System.out.println(record);
 			} catch (Exception e) {
@@ -117,7 +119,7 @@ public class ScriptNormalizeLanguageReport {
 	}
 	
 	
-	private void normalizeLangTag(LangValue langValue, LanguageMatcher langTagMatcher, LanguageStatsFromSource stats) {
+	private void normalizeLangTag(LangValue langValue, LanguageStatsFromSource stats) {
 		List<LanguageMatch> langMatches = langTagMatcher.match(langValue.match.getInput());
 		if(!langMatches.isEmpty()) {
 			for(LanguageMatch lm : langMatches) {
@@ -127,17 +129,16 @@ public class ScriptNormalizeLanguageReport {
 				}
 			}
 		}
-		LangSubtagsAnalysis subTags=null;
 		if(langValue.match.getNormalized()!=null) {
-			subTags=new LangSubtagsAnalysis(langValue.match.getNormalized());
+			LangSubtagsAnalysis subTags=new LangSubtagsAnalysis(langValue.match.getNormalized());
 			if(langValue.match.getNormalized().length()>3 && subTags.subTag==false) {
 				System.out.println("normalized value with unusual length: "+langValue.match.getInput()+" -> "+langValue.match.getNormalized());
 			}
 		}
-		stats.addLangTagCase(langValue, subTags);
+		stats.addLangTagCase(langValue);
 	}
-	private void normalizeProperty(LangValue langValue, LanguageMatcher langMatcher, LanguageStatsFromSource stats) {
-		List<LanguageMatch> langMatches = langMatcher.match(langValue.match.getInput());
+	private void normalizeProperty(LangValue langValue, LanguageStatsFromSource stats) {
+		List<LanguageMatch> langMatches = dcLanguageMatcher.match(langValue.match.getInput());
 		if(!langMatches.isEmpty()) {
 			for(LanguageMatch lm : langMatches) {
 				if(lm.getType()!=Type.NO_MATCH) {
@@ -146,15 +147,13 @@ public class ScriptNormalizeLanguageReport {
 				}
 			}
 		}
-		LangSubtagsAnalysis subTags=null;
-		if(langValue.match.getNormalized()!=null) 
-			subTags=new LangSubtagsAnalysis(langValue.match.getNormalized());
-		stats.addPropertyCase(langValue, subTags);
+		stats.addPropertyCase(langValue);
 	}
 
 	public static void main(String[] args) throws Exception {
 //		String sourceFolder = "c://users/nfrei/desktop/data/language";
 		String sourceFolderStr = "c://users/nfrei/desktop/data/language/language-export.zip";
+//		String sourceFolderStr = "c://users/nfrei/desktop/data/language/language-export-small.zip";
 
 		if (args != null) {
 			if (args.length >= 1) {

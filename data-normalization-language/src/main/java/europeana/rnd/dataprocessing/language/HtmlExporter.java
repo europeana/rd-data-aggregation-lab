@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -15,18 +17,18 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.jena.ext.com.google.common.math.Stats;
 import org.apache.jena.rdf.model.Resource;
 
-import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LangStatsOfItem;
 import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LanguageStatsFromSource;
-import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LanguageStatsInClass;
+import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LanguageStatsFromSource.LangStatsOfItem;
+import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LanguageStatsFromSource.LanguageStatsInClass;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Ore;
 import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfMaps;
 
 public class HtmlExporter {
-	private static final DecimalFormat countFormat = new DecimalFormat("#,##0");
-	private static final DecimalFormat percentFormat = new DecimalFormat("#,##0.##");
-
+	private static final DecimalFormat countFormat = new DecimalFormat("#,##0", DecimalFormatSymbols.getInstance(Locale.UK));
+	private static final DecimalFormat percentFormat = new DecimalFormat("#,##0.##", DecimalFormatSymbols.getInstance(Locale.UK));
+	
 	public static void export(LanguageStatsInDataset stats, File outFolder) throws IOException {
 		{
 			File htmlFile;
@@ -75,6 +77,16 @@ public class HtmlExporter {
 				writer.append(val.getKey()+","+val.getValue()+","+stats.fromEuropeana.normalizableToXmlLang.get(val.getKey())+"\n");			
 			}
 			writer.close();
+
+			txtFile=new File(outFolder, "Language_Europeana_xml_lang_all.txt");
+			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
+			writer.append("All xml:lang values in data from Europeana\n\n");
+			for(Entry<String, Integer> val: stats.fromEuropeana.allXmlLang.getCases()) {
+				writer.append(val.getKey()+","+val.getValue()+","+stats.fromEuropeana.normalizableToXmlLang.get(val.getKey())+"\n");			
+			}
+			writer.close();
+			
+			
 			
 			txtFile=new File(outFolder, "Language_Provider_xml_lang_not_normalizable.txt");
 			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
@@ -91,6 +103,16 @@ public class HtmlExporter {
 				writer.append(val.getKey()+","+val.getValue()+","+stats.fromProvider.normalizableToXmlLang.get(val.getKey())+"\n");			
 			}
 			writer.close();			
+
+			txtFile=new File(outFolder, "Language_Provider_xml_lang_all.txt");
+			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
+			writer.append("All xml:lang values in data from data providers\n\n");
+			for(Entry<String, Integer> val: stats.fromProvider.allXmlLang.getCases()) {
+				writer.append(val.getKey()+","+val.getValue()+"\n");			
+			}
+			writer.close();			
+		
+			
 			
 			txtFile=new File(outFolder, "Language_Europeana_dc_language_not_normalizable.txt");
 			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
@@ -107,6 +129,16 @@ public class HtmlExporter {
 				writer.append(val.getKey()+","+val.getValue()+","+stats.fromEuropeana.normalizableToDcLanguage.get(val.getKey())+"\n");			
 			}
 			writer.close();
+
+			txtFile=new File(outFolder, "Language_Europeana_dc_language_all.txt");
+			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
+			writer.append("All dc:language values in data from Europeana\n\n");
+			for(Entry<String, Integer> val: stats.fromEuropeana.allDcLanguage.getCases()) {
+				writer.append(val.getKey()+","+val.getValue()+"\n");			
+			}
+			writer.close();
+			
+			
 			
 			txtFile=new File(outFolder, "Language_Provider_dc_language_not_normalizable.txt");
 			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
@@ -121,6 +153,14 @@ public class HtmlExporter {
 			writer.append("Normalisable dc:language values in data from data providers\n\n");
 			for(Entry<String, Integer> val: stats.fromProvider.normalizableDcLanguage.getCases()) {
 				writer.append(val.getKey()+","+val.getValue()+","+stats.fromProvider.normalizableToDcLanguage.get(val.getKey())+"\n");			
+			}
+			writer.close();		
+			
+			txtFile=new File(outFolder, "Language_Provider_dc_language_all.txt");
+			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
+			writer.append("All dc:language values in data from data providers\n\n");
+			for(Entry<String, Integer> val: stats.fromProvider.allDcLanguage.getCases()) {
+				writer.append(val.getKey()+","+val.getValue()+"\n");			
 			}
 			writer.close();			
 
@@ -203,6 +243,7 @@ public class HtmlExporter {
 
 				+ "<p>Lists of values in xml:lang tags:</p>\r\n"
 				+ "<ul>\r\n"
+				+ "<li><a href=\""+filenamePrefix+"_all.txt\">all.txt</a> - a text file containing all the distinct values.</li>\r\n"
 				+ "<li><a href=\""+filenamePrefix+"_not_normalizable.txt\">not_normalisable.txt</a> - a text file containing all the distinct values that the current language normalization of Metis is unable to normalize.</li>\r\n"
 				+ "<li><a href=\""+filenamePrefix+"_normalizable.txt\">normalisable.txt</a> - a text file containing all the distinct values that the current language normalization of Metis is able to normalize along with and their normalised values.</li>\r\n"
 				+ "<li><a href=\""+filenamePrefix+"_subtags.txt\">subtags.txt</a> - a text file containing all the distinct values that contain subtags.</li>\r\n"
@@ -263,6 +304,7 @@ public class HtmlExporter {
 				+ "</li> \r\n"
 				+ "<li>Files:\r\n"
 				+ "<ul>\r\n"
+				+ "<li style=\"margin-left: 20px;\">all.txt - a text file containing all the existing values and their number of occurrences.</li>\r\n"
 				+ "<li style=\"margin-left: 20px;\">not_normalisable.txt - a text file containing all the distinct values that the current language normalization of Metis is unable to normalize.</li>\r\n"
 				+ "<li style=\"margin-left: 20px;\">normalisable.txt - a text file containing all the distinct values that the current language normalization of Metis is able to normalize along with and their normalised values.</li>\r\n"
 				+ "<li style=\"margin-left: 20px;\">subtags.txt - a text file containing all the distinct values that contain subtags.</li>\r\n"
@@ -298,6 +340,10 @@ public class HtmlExporter {
 				+ "<td>Without <i>xml:lang</i>: "+countFormat.format(statsOfItem.withoutLangTag)+ " ("+percentFormat.format(statsOfItem.withoutLangTagsPercent()) +"%)" );
 		writer.append("</td>\r\n"
 				+ "<td rowspan=\"2\" valign=\"top\">");
+
+		writer.append("<a href=\""+filename+"_all.txt\">all.txt</a>");			
+		if(statsOfItem.cntNotNormalizable >0 || statsOfItem.cntSubtags>0 || statsOfItem.cntNormalizable>0) 
+			writer.append("<br />");
 
 		if(statsOfItem.cntNotNormalizable >0 || statsOfItem.cntSubtags>0 || statsOfItem.cntNormalizable>0) {
 			if(statsOfItem.cntNotNormalizable >0) {
@@ -368,6 +414,12 @@ public class HtmlExporter {
 		writer.append("</td></tr>");
 		
 		writer.append("</td><td rowspan=\"2\" valign=\"top\">");
+
+		
+		writer.append("<a href=\""+filename+"_all.txt\">all.txt</a>");			
+		if(statsOfItem.cntNotNormalizable >0 || statsOfItem.cntSubtags>0 || statsOfItem.cntNormalizable>0) 
+			writer.append("<br />");
+		
 		if(statsOfItem.cntNotNormalizable >0 || statsOfItem.cntSubtags>0 || statsOfItem.cntNormalizable>0) {
 			if(statsOfItem.cntNotNormalizable >0) {
 				writer.append("<a href=\""+filename+"_not_normalizable.txt\">not_normalizable.txt</a>");			
@@ -391,6 +443,7 @@ public class HtmlExporter {
 	private static void writeStart(Appendable writer) throws IOException {
 		writer.append("<html>\r\n"
 				+ "<head>\r\n"
+				+ "<meta charset=\"UTF-8\">\r\n"
 				+ "<style>\r\n"
 				+ "table {\r\n"
 				+ "    border-collapse: collapse;\r\n"

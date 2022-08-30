@@ -104,6 +104,7 @@ public final class Edm {
 	public static final Property rights = ResourceFactory.createProperty("http://www.europeana.eu/schemas/edm/rights");
 	public static final Property europeanaProxy = ResourceFactory.createProperty("http://www.europeana.eu/schemas/edm/europeanaProxy");
 	public static final Resource Agent = ResourceFactory.createResource("http://www.europeana.eu/schemas/edm/Agent");
+	public static final Resource FullTextResource = ResourceFactory.createResource("http://www.europeana.eu/schemas/edm/FullTextResource");
 
 	public static String getPrefixedName(Resource propertyOrClass) {
 		String prefix = NS_EXTERNAL_PREFERRED_BY_NS.get(propertyOrClass.getNameSpace());
