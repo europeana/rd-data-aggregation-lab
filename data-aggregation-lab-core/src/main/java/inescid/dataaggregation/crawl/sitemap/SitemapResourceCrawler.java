@@ -16,7 +16,7 @@ import inescid.dataaggregation.crawl.http.HttpRequestService;
 import inescid.dataaggregation.crawl.http.UrlRequest;
 import inescid.dataaggregation.dataset.Global;
 import inescid.dataaggregation.dataset.job.JobObserver;
-import inescid.util.DevelopementSingleton;
+import inescid.util.GlobalSingleton;
 
 public class SitemapResourceCrawler {
 
@@ -80,17 +80,17 @@ public class SitemapResourceCrawler {
 		if (siteMap.isIndex()) {
 			SiteMapIndex smIdx=(SiteMapIndex) siteMap;
 			for(AbstractSiteMap subSm : smIdx.getSitemaps()) {
-				if(DevelopementSingleton.DEVEL_TEST) {	
-					if(DevelopementSingleton.RESOURCE_HARVEST_CNT > 5) break;
+				if(GlobalSingleton.DEVEL_TEST) {	
+					if(GlobalSingleton.RESOURCE_HARVEST_CNT > 5) break;
 				}
 				fetchSitemap(subSm.getUrl().toString());
 			}
 		} else {
 			SiteMap smIdx=(SiteMap) siteMap;
 			for(SiteMapURL subSm : smIdx.getSiteMapUrls()) {
-				if(DevelopementSingleton.DEVEL_TEST) {	
-					DevelopementSingleton.RESOURCE_HARVEST_CNT++;
-					if(DevelopementSingleton.stopHarvest()) break;
+				if(GlobalSingleton.DEVEL_TEST) {	
+					GlobalSingleton.RESOURCE_HARVEST_CNT++;
+					if(GlobalSingleton.stopHarvest()) break;
 				}
 				try {
 					handler.handleUrl(subSm);

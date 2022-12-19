@@ -1,10 +1,8 @@
-package inescid.dataaggregation.tests;
+package inesc.util.testing;
 
 import org.apache.jena.riot.Lang;
 
-import inescid.dataaggregation.data.model.Rdf;
-import inescid.dataaggregation.dataset.Global;
-import inescid.dataaggregation.crawl.http.HttpRequest;
+import inescid.http.HttpRequest;
 import inescid.util.HttpUtil;
 import inescid.util.RdfUtil;
 
@@ -16,7 +14,7 @@ public class ScriptViewRdfUriContent {
 	public static void main(String[] args) {
 		http://www.wikidata.org/entity.json
 		try { 
-			Global.init_componentHttpRequestService();
+			
 			HttpRequest req = null;
 //			req = HttpUtil.makeRequest("http://schema.org/", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
 //			req = HttpUtil.makeRequest("http://dbpedia.org/ontology/", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
@@ -64,10 +62,16 @@ public class ScriptViewRdfUriContent {
 //			req = HttpUtil.makeRequest("https://arche.acdh.oeaw.ac.at/browser/oeaw_detail/id.acdh.oeaw.ac.at/uuid/3380a45c-3c81-d9a7-e258-737ff9e7d4c0", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
 //			req = HttpUtil.makeRequest("https://arche.acdh.oeaw.ac.at/rest/b1/02/7d/f6/b1027df6-90b6-4fd2-a878-3921c9897618/fcr:metadata", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
 //			req = HttpUtil.makeRequest("http://data.europeana.eu/item/2048701/object_HA_232", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
-//			req = HttpUtil.makeRequest("http://data.europeana.eu/proxy/europeana/00718/plink__f_1_358350", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
+			req = HttpUtil.makeRequest("http://rdvocab.info/ElementsGr2/dateOfBirth", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
+//			req = HttpUtil.makeRequest("http://data.europeana.eu/item/90402/SK_A_948", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
 //			req = HttpUtil.makeRequest("http://data.europeana.eu/item/2059209/item_92037__http___www_bl_uk_onlinegallery_onlineex_crace_t_zoomify87870_html", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
-			req = HttpUtil.makeRequest("http://data.europeana.eu/item/90402/RP_T_1940_508A", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
+//			req = HttpUtil.makeRequest("http://data.europeana.eu/item/91622/raa_kmb_16000200000050", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
 
+//			req = HttpUtil.makeRequest("http://data.europeana.eu/organization/1482250000001617026", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
+//			req = HttpUtil.makeRequest("http://iconclass.org/47I221", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
+//			req = HttpUtil.makeRequest("http://data.europeana.eu/.well-known", RdfUtil.CONTENT_TYPES_ACCEPT_HEADER);
+			
+			
 			String content = req.getResponseContentAsString();
 			System.out.println(content);
 			System.out.println("HTTP code: "+req.getResponseStatusCode());

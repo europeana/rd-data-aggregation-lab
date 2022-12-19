@@ -15,6 +15,7 @@ import org.apache.jena.rdf.model.RDFReader;
 import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 
 import inescid.dataaggregation.data.model.RdfReg;
 import inescid.http.HttpRequest;
@@ -162,4 +163,16 @@ public class EdmRdfUtil {
 		return null;
 	}
 
+	public static RDFNode getPropertyOfProxy(Model edm, Property prop, boolean europeanaProxy) {
+		Resource proxy = europeanaProxy ? getProxyOfEuropeana(edm) : getProxyOfProvider(edm);
+		Statement st = proxy.getProperty(prop);
+		return st==null ? null : st.getObject();
+	}
+
+	public static StmtIterator listPropertyOfProxy(Model edm, Property prop, boolean europeanaProxy) {
+		Resource proxy = europeanaProxy ? getProxyOfEuropeana(edm) : getProxyOfProvider(edm);
+		StmtIterator st = proxy.listProperties(prop);
+		return st==null ? null : st;
+	}
+	
 }

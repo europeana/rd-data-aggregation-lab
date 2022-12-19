@@ -38,8 +38,7 @@ public class ScriptNormalizeLanguageReport {
 	
 	LanguageStatsInDataset stats=new LanguageStatsInDataset("Europeana");
 
-	LanguageMatcher langTagMatcher;
-	LanguageMatcher dcLanguageMatcher; 
+	MetisLanguageNormaliser normaliser;
 	
 	public ScriptNormalizeLanguageReport(File folder, File outputFolder) {
 		super();
@@ -48,13 +47,7 @@ public class ScriptNormalizeLanguageReport {
 	}
 
 	public void process() throws IOException, NormalizationConfigurationException {
-		NormalizerSettings settings=new NormalizerSettings();
-		langTagMatcher = new LanguageMatcher(
-				settings.getMinLanguageLabelLength(), settings.getLanguageAmbiguityHandling(),
-				settings.getTargetXmlLangVocabularies());
-		dcLanguageMatcher = new LanguageMatcher(
-				settings.getMinLanguageLabelLength(), settings.getLanguageAmbiguityHandling(),
-				settings.getTargetDcLanguageVocabularies());
+		normaliser=new MetisLanguageNormaliser();
 
 		if(folder.getName().endsWith(".zip")) {
 			try (FileInputStream fis = new FileInputStream(folder);
@@ -120,7 +113,7 @@ public class ScriptNormalizeLanguageReport {
 	
 	
 	private void normalizeLangTag(LangValue langValue, LanguageStatsFromSource stats) {
-		List<LanguageMatch> langMatches = langTagMatcher.match(langValue.match.getInput());
+		List<LanguageMatch> langMatches = normaliser.normaliseLangTag(langValue.match.getInput());
 		if(!langMatches.isEmpty()) {
 			for(LanguageMatch lm : langMatches) {
 				if(lm.getType()!=Type.NO_MATCH) {
@@ -138,7 +131,7 @@ public class ScriptNormalizeLanguageReport {
 		stats.addLangTagCase(langValue);
 	}
 	private void normalizeProperty(LangValue langValue, LanguageStatsFromSource stats) {
-		List<LanguageMatch> langMatches = dcLanguageMatcher.match(langValue.match.getInput());
+		List<LanguageMatch> langMatches = normaliser.normaliseDcLanguage(langValue.match.getInput());
 		if(!langMatches.isEmpty()) {
 			for(LanguageMatch lm : langMatches) {
 				if(lm.getType()!=Type.NO_MATCH) {
@@ -152,7 +145,8 @@ public class ScriptNormalizeLanguageReport {
 
 	public static void main(String[] args) throws Exception {
 //		String sourceFolder = "c://users/nfrei/desktop/data/language";
-		String sourceFolderStr = "c://users/nfrei/desktop/data/language/language-export.zip";
+//		String sourceFolderStr = "c://users/nfrei/desktop/data/language/language-export.zip";
+		String sourceFolderStr = "c://users/nfrei/desktop/data/language/language-export-sep2022.zip";
 //		String sourceFolderStr = "c://users/nfrei/desktop/data/language/language-export-small.zip";
 
 		if (args != null) {

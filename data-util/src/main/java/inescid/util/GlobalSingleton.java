@@ -8,7 +8,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Properties;
 
-public class DevelopementSingleton {
+public class GlobalSingleton {
 
 	public static class Chronometer{
 		long start;
@@ -38,7 +38,7 @@ public class DevelopementSingleton {
 		File configFile=new File("src/config/development.properties");
 		if(configFile.exists()) {
 			try {
-				System.out.println("Reading DEVELOPMENT configuration properties from "+configFile.getPath());
+				System.out.println("inescid.util.GlobalSingleton: reading configuration properties from "+configFile.getPath());
 				
 				Properties p=new Properties();
 				FileInputStream inStream = new FileInputStream(configFile);
@@ -54,6 +54,8 @@ public class DevelopementSingleton {
 				System.err.println("WARNING: Problem parsing development configuration");
 				e.printStackTrace();
 			}
+		} else {
+			System.out.println("inescid.util.GlobalSingleton: no configuration properties found at "+configFile.getPath()+" - using defaults for production");
 		}
 	}
 

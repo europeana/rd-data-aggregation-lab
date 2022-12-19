@@ -81,6 +81,10 @@ public class UrisInRecord {
 			}
 			return uris;
 		}
+
+		public Set<Property> propertySet() {
+			return urisInProperty.keySet();
+		}
 	}
 
 	

@@ -35,7 +35,7 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContextBuilder;
 
 import inescid.http.UrlRequest.HttpMethod;
-import inescid.util.DevelopementSingleton;
+import inescid.util.GlobalSingleton;
 import inescid.util.RetryExec;
 
 public class HttpRequestService {
@@ -62,7 +62,7 @@ public class HttpRequestService {
 	}
 
 	public void init(String username, File credentials) {
-		if (DevelopementSingleton.DEVEL_TEST && DevelopementSingleton.HTTP_REQUEST_TIME_STATS)
+		if (GlobalSingleton.DEVEL_TEST && GlobalSingleton.HTTP_REQUEST_TIME_STATS)
 			requestTimeStats = new Vector<>();
 
 		SSLContextBuilder builder = new SSLContextBuilder();

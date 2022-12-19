@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -463,7 +465,8 @@ public class HtmlExporter {
 	}
 	
 	private static void writeEnd(Appendable writer) throws IOException {
-		writer.append("\n</body>\r\n"
+		writer.append("\n<p>(Report creation date: "+ new SimpleDateFormat("d MMM yyyy").format(new Date())+")</p>"
+				+ "\n</body>\r\n"
 				+ "</html>");
 	}
 

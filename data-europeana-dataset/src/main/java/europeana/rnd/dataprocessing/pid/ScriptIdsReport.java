@@ -1,11 +1,13 @@
-package europeana.rnd.dataprocessing.dates.publication;
+package europeana.rnd.dataprocessing.pid;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -15,22 +17,17 @@ import javax.json.JsonObject;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
 
-import europeana.rnd.dataprocessing.dates.DatesExtractorHandler;
-import europeana.rnd.dataprocessing.dates.DatesInRecord;
-import europeana.rnd.dataprocessing.dates.DatesInRecord.DatesFromSource;
-
-public class ScriptNormalizeDatesTestForPublication {
+public class ScriptIdsReport {
 
 	File folder;
-	DatesExtractorForPublicationHandler handler;
-	RawDataExporter dataExporter;
+	File outputFolder;
 	
-	public ScriptNormalizeDatesTestForPublication(File folder, File outputFolder) {
+	IdStats stats=new IdStats();
+	
+	public ScriptIdsReport(File folder, File outputFolder) {
 		super();
 		this.folder = folder;
-		this.handler = new DatesExtractorForPublicationHandler(outputFolder);
-		dataExporter=new RawDataExporter(outputFolder);
-//		this.handlerAgents = new DatesAgentHandler(outputFolder);
+		this.outputFolder = outputFolder;
 	}
 
 	public void process() throws IOException {
@@ -48,7 +45,7 @@ public class ScriptNormalizeDatesTestForPublication {
 		} else {
 			for(File innerFolder: folder.listFiles()) {
 				if(innerFolder.isFile()) continue;
-				if(!innerFolder.getName().startsWith("dates_export_")) continue;
+				if(!innerFolder.getName().startsWith("ids_export_")) continue;
 				for(File jsonFile: innerFolder.listFiles()) {
 					if(jsonFile.isDirectory()) continue;
 					System.out.println(jsonFile.getAbsolutePath());
@@ -58,10 +55,9 @@ public class ScriptNormalizeDatesTestForPublication {
 				}
 			}
 		}
-		handler.close();
-		dataExporter.close();
+		System.out.println(stats);
+//		HtmlExporter.export(stats, outputFolder);
 	}
-
 
 	private void processFile(InputStream is) {
 		JsonParser parser = Json.createParser(is);
@@ -69,39 +65,39 @@ public class ScriptNormalizeDatesTestForPublication {
 		Stream<JsonValue> arrayStream = parser.getArrayStream();
 		for(Iterator<JsonValue> it=arrayStream.iterator() ; it.hasNext() ;) {
 			JsonObject jv=it.next().asJsonObject();
-			String choUri = jv.getString("id");
-			DatesInRecord record=new DatesInRecord(jv);
-			filterValuesForProviderDataOnly(record);
+			IdsInRecord record=new IdsInRecord(jv);
 			try {
-				dataExporter.export(record);
-				handler.handle(record);
+//				System.out.println(record);
+				for(String id: record.getAllValues()) 
+					stats.add(id);
 			} catch (Exception e) {
 				e.printStackTrace();
+				System.exit(0);
 			}
 		}
 	}
 	
-
-	private void filterValuesForProviderDataOnly(DatesInRecord record) {
-		record.fromEuropeana=new DatesFromSource();
-	}
-
+	
 	public static void main(String[] args) throws Exception {
-//		String sourceFolder = "c://users/nfrei/desktop/data/dates";
-//		String sourceFolder = "c://users/nfrei/desktop/data/dates/test-set";
-		String sourceFolder = "c://users/nfrei/desktop/data/dates/test-set/dates_export.zip";
+		String sourceFolderStr = "c://users/nfrei/desktop/data/pid";
+//		String sourceFolderStr = "c://users/nfrei/desktop/data/pid/ids-export.zip";
 
 		if (args != null) {
 			if (args.length >= 1) {
-				sourceFolder = args[0];
+				sourceFolderStr = args[0];
 			}
 		}
-		File sourceFolderObj=new File(sourceFolder);
-		File outFolder=sourceFolder.endsWith(".zip") ? new File(sourceFolderObj.getParentFile(), "extraction-paper") : new File(sourceFolder+"/extraction-paper");
+		File sourceFolder = new File(sourceFolderStr);
+		File outFolder=new File(sourceFolderStr.endsWith(".zip") ? sourceFolder.getParentFile() : sourceFolder, "extraction");
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
 		
-		ScriptNormalizeDatesTestForPublication processor=new ScriptNormalizeDatesTestForPublication(sourceFolderObj, outFolder);
+		ScriptIdsReport processor=new ScriptIdsReport(sourceFolder, outFolder);
 		processor.process();
 	}
+	
+	
+
+	
+	
 }

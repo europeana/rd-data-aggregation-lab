@@ -46,19 +46,19 @@ public class LanguageStatsInDataset {
 			Cases notNormalizable;
 			Cases subtags;
 			
-			int total=0;
+			long total=0;
 			
-			int cntNormalizable=0;
-			int cntNotNormalizable=0;
-			int cntNormalized=0;
-			int cntCountry=0;
-			int cntVariant=0;
-			int cntScript=0;
-			int cntExtension=0;
-			int cntSubtags=0;
+			long cntNormalizable=0;
+			long cntNotNormalizable=0;
+			long cntNormalized=0;
+			long cntCountry=0;
+			long cntVariant=0;
+			long cntScript=0;
+			long cntExtension=0;
+			long cntSubtags=0;
 			
-			int withLangTags=0;
-			int withoutLangTag=0;
+			long withLangTags=0;
+			long withoutLangTag=0;
 			
 			public LangStatsOfItem(Cases normalizable, Cases notNormalizable, Cases subtags, HashMap<String, String> normalizableTo) {
 				this.notNormalizable=notNormalizable;
@@ -102,7 +102,7 @@ public class LanguageStatsInDataset {
 				}
 			}
 	
-			public int total() {
+			public long total() {
 				return total;
 			}
 	

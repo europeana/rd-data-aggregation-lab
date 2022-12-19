@@ -58,10 +58,14 @@ public class DatesHandler {
 		UnifiedSet<String> processed=new UnifiedSet<String>();
 
 		public boolean contains(Source source, String uri) {
+			if(!uri.startsWith("http"))
+				return false;
 			return processed.contains(uri);
 		}
 		
 		public void add(Source source, String uri) {
+			if(!uri.startsWith("http"))
+				return;
 			processed.add(uri);
 		}
 	}

@@ -21,11 +21,15 @@ public class EntityTrackerOnMemory implements EntityTracker{
 		public boolean contains(Source source, String uri) {
 			if(detectFor != Source.ANY && source!=detectFor)
 				return false;
+			if(!uri.startsWith("http"))
+				return false;
 			return processed.contains(simplifyURI(uri));
 		}
 		
 		public boolean add(Source source, String uri) {
 			if(detectFor != Source.ANY && source!=detectFor)
+				return false;
+			if(!uri.startsWith("http"))
 				return false;
 			return processed.add(simplifyURI(uri));
 		}

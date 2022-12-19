@@ -23,6 +23,8 @@ public class EntityTrackerOnDisk implements EntityTracker {
 		public boolean contains(Source source, String uri) {
 			if(detectFor != Source.ANY && source!=detectFor)
 				return false;
+			if(!uri.startsWith("http"))
+				return false;
 			try {
 				return processed.containsSynchronized(simplifyURI(uri));
 			} catch (InterruptedException e) {
@@ -32,6 +34,8 @@ public class EntityTrackerOnDisk implements EntityTracker {
 		
 		public boolean add(Source source, String uri) {
 			if(detectFor != Source.ANY && source!=detectFor)
+				return false;
+			if(!uri.startsWith("http"))
 				return false;
 			try {
 				return processed.addSynchronized(simplifyURI(uri));

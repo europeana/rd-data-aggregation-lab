@@ -9,9 +9,9 @@ public enum PatternId {
 //	Edtf, 
 //	Edtf_Range, 
 	ISO8601, 
-	ISO8601_Range, 
+//	ISO8601_Range, 
 	ISO8601_Cleaned,
-	ISO8601_Cleaned_Range,
+//	ISO8601_Cleaned_Range,
 
 //	MONTH_NAME_Range,
 
@@ -79,8 +79,10 @@ public enum PatternId {
 		case Century_Roman: return PatternId.Century_Roman_6;
 		case DCMIPeriod: return PatternId.DCMIPeriod_8;
 		case Decade: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.Numeric_AllVariants_1 : PatternId.Numeric_AllVariants_Range_3);
-		case Edtf: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.ISO8601 : PatternId.ISO8601_Range);
-		case Edtf_Cleaned: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.ISO8601_Cleaned : PatternId.ISO8601_Cleaned_Range);
+		case Edtf: return PatternId.ISO8601;
+//		case Edtf: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.ISO8601 : PatternId.ISO8601_Range);
+		case Edtf_Cleaned: return PatternId.ISO8601_Cleaned;
+//		case Edtf_Cleaned: return (m.getExtracted().getEdtf() instanceof Instant ? PatternId.ISO8601_Cleaned : PatternId.ISO8601_Cleaned_Range);
 		case FormatedFullDate: return PatternId.FormatedFullDate_14;
 		case MONTH_NAME: { 
 			if (m.getExtracted().getEdtf() instanceof Instant){

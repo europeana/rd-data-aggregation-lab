@@ -86,7 +86,8 @@ public class ScriptExportEntityUrisToTxt {
 			try {
 				Set<Entry<Resource, UrisInProperty>> entries = rec.fromProvider.urisByClass.entrySet();
 				for(Entry<Resource, UrisInProperty> clsEntry: entries) {
-					export(clsEntry.getKey().getLocalName(), clsEntry.getValue());
+//					exportByClass(clsEntry.getKey().getLocalName(), clsEntry.getValue());
+					exportByProperty(clsEntry.getKey().getLocalName(), clsEntry.getValue());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -95,15 +96,29 @@ public class ScriptExportEntityUrisToTxt {
 		}
 	}
 
-	private void export(String className, UrisInProperty urisInProperty ) {
+	private void exportByClass(String className, UrisInProperty urisInProperty ) {
 		for(String uri: urisInProperty.getAllUrisInProperties(selectedProperties)) {
 			if(! uri.startsWith("http"))
 				return;
 			try {
-				FileUtils.write(new File(outputFolder, className+"-uris.txt"), urisInProperty+"\n", StandardCharsets.UTF_8, true);
+				FileUtils.write(new File(outputFolder, className+"-uris.txt"), uri+"\n", StandardCharsets.UTF_8, true);
 			} catch (IOException e) {
 				throw new RuntimeException(e.getMessage(), e);
 			}
+		}
+	}
+	
+	private void exportByProperty(String className, UrisInProperty urisInProperty ) {
+		for(Property prop : urisInProperty.propertySet()) {
+			for(String uri: urisInProperty.getValuesFor(prop)) {
+				if(! uri.startsWith("http"))
+					return;
+				try {
+					FileUtils.write(new File(outputFolder, prop.getLocalName()+"-uris.txt"), uri+"\n", StandardCharsets.UTF_8, true);
+				} catch (IOException e) {
+					throw new RuntimeException(e.getMessage(), e);
+				}
+			}			
 		}
 	}
 	

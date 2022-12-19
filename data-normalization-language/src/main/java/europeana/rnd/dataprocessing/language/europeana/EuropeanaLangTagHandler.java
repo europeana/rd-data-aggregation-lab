@@ -54,7 +54,7 @@ public class EuropeanaLangTagHandler {
 					Statement typeSt = st.getObject().asResource().getProperty(Rdf.type);
 					if(typeSt!=null && typeSt.getObject().isResource()) {
 						Resource resType=typeSt.getObject().asResource();
-						System.out.println(resType);
+//						System.out.println(resType);
 						getLanguageInResource(choRes.getURI(), source, resType, st.getObject().asResource(),processedResources);
 					}						
 				}
