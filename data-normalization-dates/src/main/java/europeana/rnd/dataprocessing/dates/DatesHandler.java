@@ -192,7 +192,7 @@ public class DatesHandler {
 		}
 	}
 
-	private static boolean isTemporalProp(Property predicate) {
+	public static boolean isTemporalProp(Property predicate) {
 		return temporalProperties.contains(predicate);
 	}
 

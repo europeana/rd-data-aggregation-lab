@@ -22,6 +22,7 @@ import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfMaps;
 import inescid.util.datastruct.MapOfMapsOfInts;
 import inescid.util.datastruct.MapOfSets;
+import inescid.util.datastruct.MapOfInts.Sort;
 
 public class DateExtractionStatistics {
 	MapOfMaps<String, MatchId, Examples> statsByCollection;
@@ -115,11 +116,11 @@ public class DateExtractionStatistics {
 		File classesAndPropertiesToFileEuropeana=new File(toFolder, "stats-class-and-property-europeana.csv");
 		
 		FileWriterWithEncoding writer=new FileWriterWithEncoding(globalToFile, StandardCharsets.UTF_8);
-		MapOfInts.writeCsv(statsGlobal, writer);
+		statsGlobal.writeCsv(writer, Sort.BY_KEY_ASCENDING);
 		writer.close();
 		
 		writer=new FileWriterWithEncoding(globalCleanToFile, StandardCharsets.UTF_8);
-		MapOfInts.writeCsv(statsGlobalClean, writer);
+		statsGlobalClean.writeCsv(writer, Sort.BY_KEY_ASCENDING);
 		writer.close();
 		
 		writer=new FileWriterWithEncoding(collectionsToFile, StandardCharsets.UTF_8);

@@ -18,6 +18,7 @@ import europeana.rnd.dataprocessing.dates.DatesInRecord.DateValue;
 import europeana.rnd.dataprocessing.dates.Source;
 import europeana.rnd.dataprocessing.dates.stats.Examples;
 import inescid.util.datastruct.MapOfInts;
+import inescid.util.datastruct.MapOfInts.Sort;
 import inescid.util.datastruct.MapOfMaps;
 import inescid.util.datastruct.MapOfMapsOfInts;
 import inescid.util.datastruct.MapOfSets;
@@ -104,11 +105,11 @@ public class DateExtractionStatisticsPublication {
 		File classesAndPropertiesToFileEuropeana=new File(toFolder, "stats-class-and-property-europeana.csv");
 		
 		FileWriterWithEncoding writer=new FileWriterWithEncoding(globalToFile, StandardCharsets.UTF_8);
-		MapOfInts.writeCsv(statsGlobal, writer);
+		statsGlobal.writeCsv(writer, Sort.BY_KEY_ASCENDING);
 		writer.close();
 		
 		writer=new FileWriterWithEncoding(globalCleanToFile, StandardCharsets.UTF_8);
-		MapOfInts.writeCsv(statsGlobalClean, writer);
+		statsGlobalClean.writeCsv(writer, Sort.BY_KEY_ASCENDING);
 		writer.close();
 		
 		writer=new FileWriterWithEncoding(matchToFile, StandardCharsets.UTF_8);
