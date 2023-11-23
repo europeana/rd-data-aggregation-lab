@@ -43,7 +43,7 @@ public class ChatGptApiClient extends Detector {
 	}
 	
 	String baseUrl="https://api.openai.com/v1/chat/completions";
-	String apiKey="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";
+	String apiKey="";
 	String model = "gpt-3.5-turbo";
 	HttpRequestService httpService;
 	Instant lastRequestTs;
