@@ -36,6 +36,7 @@ import inescid.dataaggregation.data.model.Rdf;
 import inescid.util.Handler;
 import inescid.util.RdfUtil;
 import inescid.util.datastruct.MapOfInts;
+import inescid.util.datastruct.MapOfInts.Sort;
 
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.language.detect.LanguageDetector;
@@ -97,7 +98,7 @@ public class ScriptDetectLanguageOfNonNormalisableLangTags {
 				System.out.println("---");
 				System.out.println(codeFile.getName()+":");
 
-				for( Entry<String, Integer> lang : detectedLanguagesDistinct.getSortedEntries()) {
+				for( Entry<String, Integer> lang : detectedLanguagesDistinct.getSortedEntries(Sort.BY_VALUE_ASCENDING)) {
 					System.out.println(" - "+ lang.getKey()+" - "+lang.getValue() + "("+ (detectedLanguagesHigh.containsKey(lang.getKey()) ? detectedLanguagesHigh.get(lang.getKey()) : 0 ) +")");
 					sheetsPrinter.printRecord(codeFile.getName().substring(codeFile.getName().indexOf('_')+1, codeFile.getName().length()-4) , lang.getKey(), lang.getValue(), detectedLanguages.get(lang.getKey()), (detectedLanguagesHigh.containsKey(lang.getKey()) ? detectedLanguagesHigh.get(lang.getKey()) : 0 ));
 				}

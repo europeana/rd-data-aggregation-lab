@@ -33,7 +33,7 @@ import europeana.rnd.dataprocessing.language.iana.Registry;
 import inescid.dataaggregation.data.model.Dc;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Ore;
-import inescid.util.MapOfInts;
+import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfLists;
 
 public class LanguageStatsInDataset {
@@ -42,6 +42,7 @@ public class LanguageStatsInDataset {
 		
 		public class LangStatsOfItem {
 			Cases normalizable;
+			Cases normalizableDataset;
 			HashMap<String, String> normalizableTo;
 			Cases notNormalizable;
 			Cases subtags;
@@ -60,9 +61,10 @@ public class LanguageStatsInDataset {
 			long withLangTags=0;
 			long withoutLangTag=0;
 			
-			public LangStatsOfItem(Cases normalizable, Cases notNormalizable, Cases subtags, HashMap<String, String> normalizableTo) {
+			public LangStatsOfItem(Cases normalizable, Cases normalizableDatasets, Cases notNormalizable, Cases subtags, HashMap<String, String> normalizableTo) {
 				this.notNormalizable=notNormalizable;
 				this.normalizable = normalizable;
+				this.normalizableDataset = normalizableDatasets;
 				this.normalizableTo = normalizableTo;
 				this.subtags=subtags;
 			}
@@ -83,7 +85,7 @@ public class LanguageStatsInDataset {
 				}
 			}
 	
-			public void addCase(LangValue langValue, boolean isLangTag) {
+			public void addCase(LangValue langValue, boolean isLangTag, String dataset) {
 				total++;
 				if(isLangTag)
 					withLangTags++;
@@ -92,7 +94,9 @@ public class LanguageStatsInDataset {
 						cntNormalized++;
 					else {
 						cntNormalizable++;
-						normalizable.add(langValue.match.getInput());				
+						normalizable.add(langValue.match.getInput());
+						if(normalizableDataset!=null)
+							normalizableDataset.add(dataset);	
 						normalizableTo.put(langValue.match.getInput(), langValue.match.getNormalized());				
 					}
 					addSubtags(langValue.match.getInput());
@@ -160,13 +164,13 @@ public class LanguageStatsInDataset {
 //				this.normalizableToDcLanguage=normalizableToDcLanguage;
 			}
 	
-			public void addLangTagCase(LangValue langValue) {
+			public void addLangTagCase(LangValue langValue, String dataset) {
 				LangStatsOfItem statOfItem = getLangStatsOfItem(langValue.property, langTagStatsByField, true);			
-				statOfItem.addCase(langValue, true);
+				statOfItem.addCase(langValue, true, dataset);
 			}
-			public void addPropertyCase(LangValue langValue) {
+			public void addPropertyCase(LangValue langValue, String dataset) {
 				LangStatsOfItem statOfItem = getLangStatsOfItem(langValue.property, propertyStatsByField, false);			
-				statOfItem.addCase(langValue, false);
+				statOfItem.addCase(langValue, false, dataset);
 			}
 	
 			private LangStatsOfItem getLangStatsOfItem(String field,
@@ -174,9 +178,9 @@ public class LanguageStatsInDataset {
 				LangStatsOfItem langStatsOfItem = langTagStatsByField.get(field);
 				if(langStatsOfItem==null) {
 					if (isLangTag)
-						langStatsOfItem=new LangStatsOfItem(normalizableXmlLang, notNormalizableXmlLang, subtagsXmlLang, normalizableToXmlLang);
+						langStatsOfItem=new LangStatsOfItem(normalizableXmlLang, null, notNormalizableXmlLang, subtagsXmlLang, normalizableToXmlLang);
 					else
-						langStatsOfItem=new LangStatsOfItem(normalizableDcLanguage, notNormalizableDcLanguage, subtagsDcLanguage, normalizableToDcLanguage);
+						langStatsOfItem=new LangStatsOfItem(normalizableDcLanguage, normalizableDcLanguageDatasets, notNormalizableDcLanguage, subtagsDcLanguage, normalizableToDcLanguage);
 					langTagStatsByField.put(field, langStatsOfItem);
 				}
 				return langStatsOfItem;
@@ -194,8 +198,10 @@ public class LanguageStatsInDataset {
 		Cases normalizableXmlLang;
 		Cases subtagsXmlLang;
 		Cases allDcLanguage;
+		Cases allDcLanguageDatasets;
 		Cases notNormalizableDcLanguage;
 		Cases normalizableDcLanguage;
+		Cases normalizableDcLanguageDatasets;
 		Cases subtagsDcLanguage;
 		HashMap<String, String> normalizableToXmlLang;
 		HashMap<String, String> normalizableToDcLanguage;
@@ -208,6 +214,7 @@ public class LanguageStatsInDataset {
 			allDcLanguage=new Cases();
 			notNormalizableDcLanguage=new Cases();
 			normalizableDcLanguage=new Cases();
+			normalizableDcLanguageDatasets=new Cases();
 			subtagsXmlLang=new Cases();
 			subtagsDcLanguage=new Cases();
 			normalizableToXmlLang=new HashMap<String, String>();
@@ -227,14 +234,14 @@ public class LanguageStatsInDataset {
 			return statsByClassAndField.get(cls);
 		}
 
-		public void addLangTagCase(LangValue langValue) {
+		public void addLangTagCase(LangValue langValue, String dataset) {
 			LanguageStatsInClass statsOfClass = getClassEntry(langValue.cls);
-			statsOfClass.addLangTagCase(langValue);
+			statsOfClass.addLangTagCase(langValue, dataset);
 			allXmlLang.add(langValue.match.getInput().toLowerCase());
 		}
-		public void addPropertyCase(LangValue langValue) {
+		public void addPropertyCase(LangValue langValue, String dataset) {
 			LanguageStatsInClass statsOfClass = getClassEntry(langValue.cls);
-			statsOfClass.addPropertyCase(langValue);
+			statsOfClass.addPropertyCase(langValue, dataset);
 			allDcLanguage.add(langValue.match.getInput().toLowerCase());
 		}
 
@@ -244,7 +251,7 @@ public class LanguageStatsInDataset {
 		}
 
 		public LangStatsOfItem calculateGlobalStatsLangTags() {
-			LangStatsOfItem gStats=new LangStatsOfItem(null, null, null, null);
+			LangStatsOfItem gStats=new LangStatsOfItem(null, null, null, null, null);
 			for(LanguageStatsInClass statsForClass: statsByClassAndField.values()) {
 				for(LangStatsOfItem statsOfItem : statsForClass.langTagStatsByField.values()) {
 					gStats.add(statsOfItem);
@@ -254,7 +261,7 @@ public class LanguageStatsInDataset {
 		}
 
 		public LangStatsOfItem calculateGlobalStatsDcLanguage() {
-			LangStatsOfItem gStats=new LangStatsOfItem(null, null, null, null);
+			LangStatsOfItem gStats=new LangStatsOfItem(null, null, null, null, null);
 			for(LanguageStatsInClass statsForClass: statsByClassAndField.values()) {
 				for(LangStatsOfItem statsOfItem : statsForClass.propertyStatsByField.values()) {
 					gStats.add(statsOfItem);

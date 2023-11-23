@@ -16,7 +16,7 @@ public class EntityTrackerOnDisk implements EntityTracker {
 		Source detectFor;
 		
 		public EntityTrackerOnDisk(File setFolder, Source detectFor) {
-			processed=new BigSet<String>("EntityTrackerOnDisk",setFolder);
+			processed=new BigSet<String>("EntityTrackerOnDisk",setFolder, true);
 			this.detectFor = detectFor;
 		}
 

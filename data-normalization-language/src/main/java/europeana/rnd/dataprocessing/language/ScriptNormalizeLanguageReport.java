@@ -30,6 +30,7 @@ import eu.europeana.normalization.util.NormalizationConfigurationException;
 import europeana.rnd.dataprocessing.language.LanguageInRecord.LangValue;
 import europeana.rnd.dataprocessing.language.LanguageInRecord.PropertyCount;
 import europeana.rnd.dataprocessing.language.LanguageStatsInDataset.LanguageStatsFromSource;
+import inescid.util.europeana.EdmRdfUtil;
 
 public class ScriptNormalizeLanguageReport {
 
@@ -83,25 +84,26 @@ public class ScriptNormalizeLanguageReport {
 		for(Iterator<JsonValue> it=arrayStream.iterator() ; it.hasNext() ;) {
 			JsonObject jv=it.next().asJsonObject();
 			LanguageInRecord record=new LanguageInRecord(jv);
+			String dataset=EdmRdfUtil.getDatasetFromApiIdOrUri(record.choUri);
 			try {
 				for(LangValue langValue : record.fromEuropeana.getAllLangTagValues()) {
-					normalizeLangTag(langValue, stats.fromEuropeana);
+					normalizeLangTag(langValue, stats.fromEuropeana, dataset);
 				}
 				for(PropertyCount propCount : record.fromEuropeana.getAllCountWithoutLangTag()) {
 					stats.fromEuropeana.incrementWithoutLangTag(propCount);
 				}						
 				for(LangValue langValue : record.fromEuropeana.getAllPropertyValues()) {
-					normalizeProperty(langValue, stats.fromEuropeana);
+					normalizeProperty(dataset, langValue, stats.fromEuropeana);
 				}
 				
 				for(LangValue langValue : record.fromProvider.getAllLangTagValues()) {
-					normalizeLangTag(langValue, stats.fromProvider);
+					normalizeLangTag(langValue, stats.fromProvider, dataset);
 				}
 				for(PropertyCount propCount : record.fromProvider.getAllCountWithoutLangTag()) {
 					stats.fromProvider.incrementWithoutLangTag(propCount);
 				}						
 				for(LangValue langValue : record.fromProvider.getAllPropertyValues()) {
-					normalizeProperty(langValue, stats.fromProvider);
+					normalizeProperty(dataset, langValue, stats.fromProvider);
 				}
 //						System.out.println(record);
 			} catch (Exception e) {
@@ -112,7 +114,7 @@ public class ScriptNormalizeLanguageReport {
 	}
 	
 	
-	private void normalizeLangTag(LangValue langValue, LanguageStatsFromSource stats) {
+	private void normalizeLangTag(LangValue langValue, LanguageStatsFromSource stats, String dataset) {
 		List<LanguageMatch> langMatches = normaliser.normaliseLangTag(langValue.match.getInput());
 		if(!langMatches.isEmpty()) {
 			for(LanguageMatch lm : langMatches) {
@@ -128,9 +130,9 @@ public class ScriptNormalizeLanguageReport {
 				System.out.println("normalized value with unusual length: "+langValue.match.getInput()+" -> "+langValue.match.getNormalized());
 			}
 		}
-		stats.addLangTagCase(langValue);
+		stats.addLangTagCase(langValue, dataset);
 	}
-	private void normalizeProperty(LangValue langValue, LanguageStatsFromSource stats) {
+	private void normalizeProperty(String dataset, LangValue langValue, LanguageStatsFromSource stats) {
 		List<LanguageMatch> langMatches = normaliser.normaliseDcLanguage(langValue.match.getInput());
 		if(!langMatches.isEmpty()) {
 			for(LanguageMatch lm : langMatches) {
@@ -140,7 +142,7 @@ public class ScriptNormalizeLanguageReport {
 				}
 			}
 		}
-		stats.addPropertyCase(langValue);
+		stats.addPropertyCase(langValue, dataset);
 	}
 
 	public static void main(String[] args) throws Exception {

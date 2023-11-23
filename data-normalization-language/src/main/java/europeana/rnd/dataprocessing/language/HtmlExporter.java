@@ -149,14 +149,23 @@ public class HtmlExporter {
 				writer.append(val.getKey()+","+val.getValue()+"\n");			
 			}
 			writer.close();			
-			
+
 			txtFile=new File(outFolder, "Language_Provider_dc_language_normalizable.txt");
 			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
 			writer.append("Normalisable dc:language values in data from data providers\n\n");
 			for(Entry<String, Integer> val: stats.fromProvider.normalizableDcLanguage.getCases()) {
 				writer.append(val.getKey()+","+val.getValue()+","+stats.fromProvider.normalizableToDcLanguage.get(val.getKey())+"\n");			
 			}
-			writer.close();		
+			writer.close();	
+			
+
+			txtFile=new File(outFolder, "Language_Provider_dc_language_normalizable_datasets.txt");
+			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);
+			writer.append("Datasets with normalisable dc:language values in data from data providers\n\n");
+			for(Entry<String, Integer> val: stats.fromProvider.normalizableDcLanguageDatasets.getCases()) {
+				writer.append(val.getKey()+","+val.getValue()+"\n");			
+			}
+			writer.close();	
 			
 			txtFile=new File(outFolder, "Language_Provider_dc_language_all.txt");
 			writer=new FileWriterWithEncoding(txtFile, StandardCharsets.UTF_8);

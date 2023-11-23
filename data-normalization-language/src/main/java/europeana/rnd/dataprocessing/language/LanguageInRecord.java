@@ -26,7 +26,7 @@ import org.apache.jena.rdf.model.Resource;
 import inescid.dataaggregation.data.model.Dc;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Ore;
-import inescid.util.MapOfInts;
+import inescid.util.datastruct.MapOfInts;
 import inescid.util.datastruct.MapOfLists;
 
 public class LanguageInRecord {
