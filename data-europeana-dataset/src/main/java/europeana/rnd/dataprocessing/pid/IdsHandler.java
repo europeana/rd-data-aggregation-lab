@@ -14,11 +14,13 @@ import org.apache.jena.rdf.model.Statement;
 
 import inescid.dataaggregation.data.model.Dc;
 import inescid.dataaggregation.data.model.DcTerms;
+import inescid.dataaggregation.data.model.Dqv;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Ore;
 import inescid.dataaggregation.data.model.RdaGr2;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.dataaggregation.data.model.Skos;
+import inescid.dataaggregation.data.model.WebAnnotation;
 import inescid.util.RdfUtil;
 
 public class IdsHandler {
@@ -41,6 +43,12 @@ public class IdsHandler {
 		String choUri = choRes.getURI();
 		
 		IdsInRecord res = new IdsInRecord(choUri);
+		for (Resource anno : edm.listResourcesWithProperty(Rdf.type, Dqv.QualityAnnotation).toList()) {
+			if(anno.getURI()==null || !anno.getURI().endsWith("#contentTier"))
+				continue;
+			String tierUri = anno.getProperty(WebAnnotation.hasBody).getObject().asResource().getURI();
+			res.setContentTier(ContentTier.valueOf(tierUri.substring(tierUri.lastIndexOf('T'))));
+		}
 		for (Resource proxy : edm.listResourcesWithProperty(Rdf.type, Ore.Proxy).toList()) {
 			Statement europeanaProxySt = proxy.getProperty(Edm.europeanaProxy);
 			boolean isEuropeanaProxy = europeanaProxySt != null	&& europeanaProxySt.getObject().asLiteral().getBoolean();
@@ -52,9 +60,19 @@ public class IdsHandler {
 		}
 		
 		for (Resource webRes : edm.listResourcesWithProperty(Rdf.type, Ore.Aggregation).toList()) {
+			if(res.getDataProvider()==null) {
+				Statement dtProvSt = webRes.getProperty(Edm.dataProvider);
+				if(dtProvSt!=null)
+					res.setDataProvider(RdfUtil.getUriOrLiteralValue(dtProvSt.getObject()));
+				Statement provSt = webRes.getProperty(Edm.provider);
+				if(provSt!=null)
+					res.setProvider(RdfUtil.getUriOrLiteralValue(provSt.getObject()));
+			}
 			for (Statement st : webRes.listProperties(Edm.isShownBy).toList() )  
 				res.addTo(Ore.Aggregation, st.getPredicate(), RdfUtil.getUriOrLiteralValue(st.getObject()));
 			for (Statement st : webRes.listProperties(Edm.isShownAt).toList()) 
+				res.addTo(Ore.Aggregation, st.getPredicate(), RdfUtil.getUriOrLiteralValue(st.getObject()));
+			for (Statement st : webRes.listProperties(Edm.hasView).toList()) 
 				res.addTo(Ore.Aggregation, st.getPredicate(), RdfUtil.getUriOrLiteralValue(st.getObject()));
 		}
 		

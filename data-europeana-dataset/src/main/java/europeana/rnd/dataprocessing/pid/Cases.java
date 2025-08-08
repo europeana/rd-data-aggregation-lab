@@ -4,7 +4,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 
-import inescid.util.MapOfInts;
+import inescid.util.datastruct.MapOfInts;
+import inescid.util.datastruct.MapOfInts.Sort;
+
 
 public class Cases {
 	MapOfInts<String> sample=new MapOfInts<String>();
@@ -19,7 +21,7 @@ public class Cases {
 	}
 
 	public List<Entry<String, Integer>> getCases() {
-		return sample.getSortedEntries();
+		return sample.getSortedEntries(Sort.BY_KEY_ASCENDING);
 	}
 
 	public int getTotalFound() {

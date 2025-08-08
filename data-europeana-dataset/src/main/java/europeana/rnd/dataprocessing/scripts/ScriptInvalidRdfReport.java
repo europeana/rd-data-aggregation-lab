@@ -31,7 +31,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFReader;
+import org.apache.jena.rdf.model.RDFReaderI;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
@@ -204,7 +204,7 @@ public class ScriptInvalidRdfReport {
 	
 	public static Model readRdf(String contentStr, Lang l) throws RiotException{
 		Model model = ModelFactory.createDefaultModel();
-		RDFReader reader = model.getReader(l.getName());
+		RDFReaderI reader = model.getReader(l.getName());
 //		reader.setProperty("allowBadURIs", "true");
 		reader.read(model, new StringReader(contentStr), null);
 		return model;

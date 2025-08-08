@@ -23,21 +23,18 @@ import apiclient.google.GoogleApi;
 import europeana.rnd.dataprocessing.pid.IdsInRecord.DetectedPid;
 import inescid.dataaggregation.data.model.Edm;
 
-public class ScriptIdsReport {
+public class ScriptReliabilityReport {
 
 	File folder;
 	String spreadsheetId;
-	String spreadsheetIdRegistry;
 	boolean includeTier0;
 	
-	IdStats stats=new IdStats();
-	PIdSchemeStats statsSchemes=new PIdSchemeStats();
+	StatsReliability stats=new StatsReliability();
 	
-	public ScriptIdsReport(File folder, String spreadsheetId, String spreadsheetIdRegistry, boolean includeTier0) {
+	public ScriptReliabilityReport(File folder, String spreadsheetId, boolean includeTier0) {
 		super();
 		this.folder = folder;
 		this.spreadsheetId = spreadsheetId;
-		this.spreadsheetIdRegistry=spreadsheetIdRegistry;
 		this.includeTier0 = includeTier0;
 	}
 
@@ -67,8 +64,7 @@ public class ScriptIdsReport {
 			}
 		}
 		System.out.println(stats);
-		new SheetsReportWriter(spreadsheetId).write(stats);
-		new SheetsReportWriter(spreadsheetIdRegistry).write(statsSchemes);
+		new SheetsReportWriter(spreadsheetId).writeReliability(stats);
 	}
 
 	private void processFile(InputStream is) {
@@ -80,37 +76,28 @@ public class ScriptIdsReport {
 			IdsInRecord record=new IdsInRecord(jv);
 			if(!includeTier0 && record.getContentTier()==ContentTier.Tier0)
 				continue;
-			record.remove(Edm.WebResource);//removing because these are handles in the props of teh aggregation isShown...
+			record.remove(Edm.WebResource);//removing because these are handled in the props of teh aggregation isShown...
 			try {
 //				System.out.println(record);
 //				for(Entry<String, String> fieldAndId: record.getAllValues()) 
 //					stats.add(fieldAndId.getValue(), record.getChoUri(), fieldAndId.getKey());
-			  
-			  //Old PidTypes from 2023/24
 				List<DetectedPid> allPids = record.getAllPids();
-				for(DetectedPid pid: allPids) 
-					stats.add(record.getChoUri(), pid);
-				if(!allPids.isEmpty()) {
+				List<DetectedPid> validPids = new ArrayList<IdsInRecord.DetectedPid>();
+				for(DetectedPid pid: allPids) {
+					boolean valid=stats.analise(pid.id, pid.type);
+					if(valid)
+						validPids.add(pid);
+				}
+				if(!validPids.isEmpty()) {
+					stats.incrementRecordWithPid();
 					HashSet<DetectedPid> uniques=new HashSet<IdsInRecord.DetectedPid>(allPids);
-					stats.incrementRecordWithPid(record.getDataProvider(), record.getProvider(), uniques);
 					if(uniques.size()>1)
 						stats.addNonUnique(uniques, record.getChoUri());
-					for(PidType type: record.getAllPidTypes()) 
+					for(PidType type: record.getAllPidTypes()) {
 						stats.incrementType(type);
+					}
 				}else
-					stats.incrementRecordWithoutPid(record.getDataProvider());
-
-				//New PID Schemes from the registry
-				List<DetectedPid> allPidsWithScheme = record.getAllPidsUsingRegistry();
-				for(DetectedPid pid: allPidsWithScheme) 
-				  statsSchemes.add(record.getChoUri(), pid.field, pid);
-				if(!allPidsWithScheme.isEmpty()) {
-				  HashSet<DetectedPid> uniques=new HashSet<IdsInRecord.DetectedPid>(allPidsWithScheme);
-				  statsSchemes.incrementRecordWithPid(record.getDataProvider(), record.getProvider(), uniques);
-				  for(PidScheme type: record.getAllPidShemes()) 
-				    statsSchemes.incrementType(type);
-				}else
-				  statsSchemes.incrementRecordWithoutPid(record.getDataProvider());
+					stats.incrementRecordWithoutPid();
 			} catch (Exception e) {
 				e.printStackTrace();
 				System.exit(0);
@@ -126,17 +113,10 @@ public class ScriptIdsReport {
 		
 //		String sourceFolderStr = "c://users/nfrei/desktop/data/pid";
 		boolean includeTier0=true;
-		String sourceFolderStr = "c://users/nfrei/desktop/data/pid/ids-export-sample.zip";
-//		String sourceFolderStr = "c://users/nfrei/desktop/data/pid/ids_export_20250701.zip";
-
-		//Spreadsheets from 2024
-		//		String spreadsheetId = includeTier0 ?  
-//				"1UIycwKV5Jrhm_tPPhN1cgfi6lZuOEnUg2sWbPsphiGY" : 
-////					"1vSynUDuGJhc7IfXxBMceyw2cYp0skGhmxeCGlSRF574" : old version - inventoru doc / TPDL paper
-//					"1xX4T-RuE9epMoSD76u0urQLfl5MjyReb6g2lZWtyZHk";
-
-		String spreadsheetId = "1OD44RQCYTG-7_9btFwo9-EcZCIohlqHSLhXSVIOO5sc";
-		String spreadsheetIdRegistry = "1QU50HmrAJsN11a9bJDNoZqQ1fjtILDK-Wj3sbvpfOz8";
+		String sourceFolderStr = "c://users/nfrei/desktop/data/pid/ids_export_20230227.zip";
+		String spreadsheetId = includeTier0 ?  
+				"1vSynUDuGJhc7IfXxBMceyw2cYp0skGhmxeCGlSRF574" :
+					"1xX4T-RuE9epMoSD76u0urQLfl5MjyReb6g2lZWtyZHk";
 
 		if (args != null) {
 			if (args.length >= 1) {
@@ -153,7 +133,7 @@ public class ScriptIdsReport {
 		if(!outFolder.exists()) 
 			outFolder.mkdir();
 		
-		ScriptIdsReport processor=new ScriptIdsReport(sourceFolder, spreadsheetId, spreadsheetIdRegistry, includeTier0);
+		ScriptReliabilityReport processor=new ScriptReliabilityReport(sourceFolder, spreadsheetId, includeTier0);
 		processor.process();
 	}
 	

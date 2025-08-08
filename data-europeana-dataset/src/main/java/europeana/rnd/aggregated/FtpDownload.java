@@ -1,12 +1,9 @@
 package europeana.rnd.aggregated;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -54,15 +51,46 @@ public class FtpDownload {
 
 		FtpDownload ftpDown=new FtpDownload(outputFolder, fileFormat);
 		ftpDown.download();
-				
-				
 	}
 
 	public void enableDownloadAllFile() {
 		downloadAll=true;
 	}
 	
-	public void download() {
+	public void download(String... datasetIds) {
+        try {
+        	initConnection();
+            String pathname = "/dataset/"+fileFormat;
+			ftpClient.changeWorkingDirectory(pathname);
+            showServerReply(ftpClient);
+            
+            ftpClient.enterLocalPassiveMode();
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+
+            FTPFile[] listFiles = ftpClient.listFiles();
+            showServerReply(ftpClient);
+            LIST: for(FTPFile f: listFiles) {
+            	System.out.println(f.getName());
+            	if(downloadAll || f.getName().endsWith(".zip")) {
+            		for(String ds: datasetIds) {
+            			if(f.getName().startsWith(ds+".")) {
+            				if(!downloadFile(outputFolder, f))
+            					break LIST;
+            				break;
+            			}
+            		}
+            	}
+            }
+    		System.out.println("downloaded "+listFiles.length+" files");
+        } catch (IOException ex) {
+            System.out.println("Oops! Something wrong happened");
+            ex.printStackTrace();
+        }
+		
+		
+	}
+	
+	protected void initConnection() {
 		ftpClient = new FTPClient();
         try {
             ftpClient.connect(server, port);
@@ -81,6 +109,16 @@ public class FtpDownload {
                 System.out.println("LOGGED IN SERVER");
             }
             
+        } catch (IOException ex) {
+            System.out.println("Oops! Something wrong happened");
+            ex.printStackTrace();
+        }
+	}
+	
+	
+	public void download() {
+        try {
+        	initConnection();
             String pathname = "/dataset/"+fileFormat;
 			ftpClient.changeWorkingDirectory(pathname);
             showServerReply(ftpClient);

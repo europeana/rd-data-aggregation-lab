@@ -1,54 +1,21 @@
 package europeana.rnd.dataprocessing.scripts;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
-import java.text.Normalizer;
-import java.text.Normalizer.Form;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-
-import europeana.rnd.aggregated.FtpDownload;
-import europeana.rnd.dataprocessing.EuropeanaDatasetProcessor;
-import europeana.rnd.dataprocessing.EuropeanaDatasetProcessorHandler;
-import inescid.dataaggregation.data.model.CreativeCommons;
-import inescid.dataaggregation.data.model.Dc;
-import inescid.dataaggregation.data.model.Ore;
-import inescid.util.MapOfInts;
-import inescid.util.RdfUtil;
-import inescid.util.europeana.EdmRdfUtil;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.text.similarity.JaroWinklerDistance;
-import org.apache.commons.text.similarity.JaroWinklerSimilarity;
-import org.apache.commons.text.similarity.LevenshteinDistance;
-import org.apache.commons.text.similarity.LongestCommonSubsequence;
+
+import europeana.rnd.aggregated.FtpDownload;
 
 public class ScriptPrepareVirtuosoImport extends FtpDownload {
 
@@ -77,8 +44,13 @@ public class ScriptPrepareVirtuosoImport extends FtpDownload {
 				aux.mkdir();
 		}
 		
+//		new ScriptPrepareVirtuosoImport(tmpFolder, outputFolder, Integer.parseInt(maxDatasets), Integer.parseInt(maxRecords))
+//		.download();
 		new ScriptPrepareVirtuosoImport(tmpFolder, outputFolder, Integer.parseInt(maxDatasets), Integer.parseInt(maxRecords))
-		.download();
+		.download(
+				"783"
+//				,"709"
+				);
 		
 	}
 	

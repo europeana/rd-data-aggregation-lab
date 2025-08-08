@@ -1,9 +1,10 @@
-package europeana.rnd.dataprocessing.pid;
+package europeana.rnd.dataprocessing.scripts;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
@@ -11,14 +12,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RiotException;
 
@@ -26,34 +34,35 @@ import europeana.rnd.aggregated.RecordIterator;
 import europeana.rnd.aggregated.RecordIterator.Handler;
 import europeana.rnd.aggregated.RecordIterator.Handler.ProceedOption;
 import europeana.rnd.dataprocessing.ProgressTrackerOnFile;
+import europeana.rnd.dataprocessing.scripts.Examples.Example;
+import inescid.dataaggregation.data.model.Ebucore;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.util.RdfUtil;
 import inescid.util.datastruct.MapOfInts;
+import inescid.util.datastruct.MapOfLists;
+import inescid.util.datastruct.MapOfInts.Sort;
 
-public class ScriptSelectIdentifiersFromEuropeanaDataset {
-
+public class ScripGetMediaTypeStatsFromEuropeanaDataset {
+	static MapOfInts<String> statsPerCho=new MapOfInts<String>();
+	static Map<String, Examples> exampleChosPerType=new HashMap<String, Examples>();
+	static MapOfInts<String> statsPerWebResource=new MapOfInts<String>();
+	
 	public static void main(String[] args) throws Exception {
-		String outputFolder = null;
 		String inputFolder = null;
 		String fileFormat ="XML";
 
-		if (args != null && args.length >= 3) {
+		if (args != null && args.length >= 2) {
 			inputFolder = args[0];
-			outputFolder = args[1];
-			fileFormat = args[2];
+			fileFormat = args[1];
 		}else {
 			inputFolder = "c://users/nfrei/desktop/data/europeana_dataset_test";
-			outputFolder = "c://users/nfrei/desktop/data/pid_test";
 			fileFormat ="XML";
-//			europeana.rnd.dataprocessing.dates.DatesJsonWriter.maxFilesPerFolder=10;
-//			europeana.rnd.dataprocessing.dates.DatesJsonWriter.maxRecsPerFile=50;
 		}
 
 		RecordIterator repository=new RecordIterator(new File(inputFolder));
 		
 		// INIT OPERATIONS
-		IdsHandler handler=new IdsHandler(outputFolder);
 		
 		// INIT OPERATIONS - END
 
@@ -89,10 +98,38 @@ public class ScriptSelectIdentifiersFromEuropeanaDataset {
 					Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 					String choUri = choRes.getURI();
 					try {
-						handler.handle(edm, repository.getCurrentRecordIndex());
+						Set<String> typesFound=new HashSet<String>();
+//						Set<Resource> webResources = RdfUtil.findResourcesOfType(edm, Edm.WebResource);
+						Set<Resource> webResources = new HashSet<Resource>();
+						for(Statement st: edm.listStatements((Resource)null, Edm.isShownBy, (RDFNode) null).toList()){
+							if(st.getObject().isResource())
+								webResources.add(st.getObject().asResource());
+						}
+						for(Statement st: edm.listStatements((Resource)null, Edm.hasView, (RDFNode) null).toList()){
+							if(st.getObject().isResource())
+								webResources.add(st.getObject().asResource());
+						}
+						
+						for(Resource webRes: webResources) {
+							Statement mimeSt = webRes.getProperty(Ebucore.hasMimeType);
+							String mime="unknown";
+							if(mimeSt!=null)
+								mime=mimeSt.getObject().asLiteral().getString();
+							statsPerWebResource.incrementTo(mime);
+							typesFound.add(mime);
+						}
+						for(String mime: typesFound) {
+							Examples examples = exampleChosPerType.get(mime);
+							if(examples==null) {
+								examples=new Examples();
+								exampleChosPerType.put(mime, examples);
+							}
+							examples.add(choUri, choUri);
+							statsPerCho.incrementTo(mime);
+						}
 						// CALL OPERATIONS - END
 						okRecs++;
-					  
+						
 						//DEBUG !!!!!!!!!!!!!!
 //							if(okRecs>1000)
 //								return false;
@@ -115,10 +152,26 @@ public class ScriptSelectIdentifiersFromEuropeanaDataset {
 			});
 		} finally {
 			// CLOSE OPERATIONS
-			handler.finalize();
 			// CLOSE OPERATIONS - END
 		}
-//		csvOut.close();
-//		csvBuffer.close();
+		
+		FileWriterWithEncoding fwriter=new FileWriterWithEncoding("mime-type-stats-cho.csv", StandardCharsets.UTF_8);
+		statsPerCho.writeCsv(fwriter, Sort.BY_KEY_ASCENDING);
+		fwriter.close();
+
+		fwriter=new FileWriterWithEncoding("mime-type-example.csv", StandardCharsets.UTF_8);
+		CSVPrinter printer=new CSVPrinter(fwriter, CSVFormat.DEFAULT);
+		for(Entry<String, Examples>  r: exampleChosPerType.entrySet()) {
+			printer.print(r.getKey().toString());
+			for(Example ex: r.getValue().getSample())
+				printer.print(ex.uri);
+			printer.println();
+		}
+		printer.close();
+		
+		fwriter=new FileWriterWithEncoding("mime-type-stats-web-resource.csv", StandardCharsets.UTF_8);
+		statsPerWebResource.writeCsv(fwriter, Sort.BY_KEY_ASCENDING);
+		fwriter.close();
+		
 	}
 }

@@ -1,32 +1,34 @@
 package europeana.rnd.dataprocessing.pid;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
-import javax.json.JsonString;
-import javax.json.JsonValue;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonNumber;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.Resource;
 
+import europeana.rnd.dataprocessing.pid.PidSchemes.PidMatchResult;
 import inescid.dataaggregation.data.model.Dc;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Ore;
-import inescid.util.MapOfInts;
 import inescid.util.RdfUtil;
 import inescid.util.datastruct.MapOfLists;
 
@@ -111,6 +113,9 @@ public class IdsInRecord {
 //		}
 //		
 //	}
+	
+	
+	
 	public static class IdsFromSource {
 		HashMap<Resource, IdsInClass> valuesByClassAndField;
 		public IdsFromSource() {
@@ -197,10 +202,49 @@ public class IdsInRecord {
 		public IdsInClass getValuesFor(Resource cls) {
 			return valuesByClassAndField.get(cls);
 		}
+
+		public void remove(Resource cls) {
+			valuesByClassAndField.remove(cls);
+		}
+	}
+	
+	public class DetectedPid {
+		public DetectedPid(PidType type, PidScheme scheme, String id, String field) {
+			this.type=type;
+			this.scheme=scheme;
+			this.id=id;
+			this.field=field;
+		}
+		public String field;
+		public String id;
+		public PidType type;
+		public PidScheme scheme;
+		
+		@Override
+		public boolean equals(Object obj) {
+			DetectedPid pid = (DetectedPid)obj;
+			if(scheme==null)
+			  return type==pid.type && type.getCanonicalForm(id).equals(type.getCanonicalForm(pid.id));
+			return scheme.equals(pid.scheme) && scheme.getCanonicalForm(id).equals(scheme.getCanonicalForm(pid.id));
+		}
+		
+		@Override
+		public int hashCode() {
+		  if(type!=null)
+		    return type.getCanonicalForm(id).hashCode();
+		  return scheme.getCanonicalForm(id).hashCode();
+		}
+
+		public String getCanonicalForm() {
+			return type.getCanonicalForm(id);
+		}
 	}
 	
 	String choUri;
+	String dataProvider;
+	String provider;
 	IdsFromSource fromProvider=new IdsFromSource();
+	ContentTier contentTier;
 	
 	public IdsInRecord(String choUri) {
 		super();
@@ -210,6 +254,12 @@ public class IdsInRecord {
 
 	public IdsInRecord(JsonObject jv) {
 		this(jv.getString("id"));
+		if(jv.containsKey("dataProvider"))
+			dataProvider=jv.getString("dataProvider");
+		if(jv.containsKey("provider"))
+			provider=jv.getString("provider");
+		if(jv.containsKey("contentTier"))
+			contentTier=ContentTier.valueOf(jv.getString("contentTier"));
 		JsonObject fromProviderJson = jv.getJsonObject("fromProvider");
 		fromProvider.readValuesOfSourceFromJson(fromProviderJson);
 	}
@@ -218,12 +268,14 @@ public class IdsInRecord {
 		fromProvider.addTo(cls, property, value);
 	}
 	
-	public List<String> getAllValues() {
-		List<String> vals=new ArrayList<>();
+	
+	public List<Entry<String, String>> getAllValues() {
+		List<Entry<String, String>> vals=new ArrayList<>();
 		Set<Entry<Resource, IdsInClass>> entrySet = fromProvider.valuesByClassAndField.entrySet();
 		for(Entry<Resource, IdsInClass> inClass: entrySet) {
 			for (Entry<String, ArrayList<String>> fieldResults : inClass.getValue().propertyValuesByField.entrySet()) {
-				vals.addAll(fieldResults.getValue());
+				for(String val: fieldResults.getValue())
+					vals.add(new AbstractMap.SimpleEntry<String, String>(fieldResults.getKey(), val));
 			}
 		}
 		return vals;
@@ -232,12 +284,90 @@ public class IdsInRecord {
 	public JsonObject toJson() {
 		JsonObjectBuilder ret=Json.createObjectBuilder();
 		ret.add("id", Json.createValue(choUri));
+		ret.add("dataProvider", Json.createValue(dataProvider));
+		ret.add("provider", Json.createValue(provider));
+		if(contentTier!=null)
+		  ret.add("contentTier", Json.createValue(contentTier.name()));
 		ret.add("fromProvider", fromProvider.toJson());
 		return ret.build();
 	}
 
 	public String getChoUri() {
 		return choUri;
+	}
+
+	public void remove(Resource cls) {
+		fromProvider.remove(cls);
+	}
+
+	public List<DetectedPid> getAllPids() {
+		List<DetectedPid> ret=new ArrayList<IdsInRecord.DetectedPid>();
+		for(Entry<String, String> fieldAndId: getAllValues()) {
+			String id=fieldAndId.getValue();
+			String field=fieldAndId.getKey();
+			PidType pidType = PidType.getPidType(id);
+			if(pidType!=null) {
+				ret.add(new DetectedPid(pidType, null, id, field));
+			}
+		}
+		return ret;
+	}
+
+	public List<DetectedPid> getAllPidsUsingRegistry() {
+	  List<DetectedPid> ret=new ArrayList<IdsInRecord.DetectedPid>();
+	  for(Entry<String, String> fieldAndId: getAllValues()) {
+	    String id=fieldAndId.getValue();
+	    String field=fieldAndId.getKey();
+      PidMatchResult matchedSchema = PidSchemes.matchPidSchema(id);
+	    if(matchedSchema!=null) 
+	      ret.add(new DetectedPid(null, matchedSchema.schema(),  id, field));
+	  }
+	  return ret;
+	}
+	
+	public Set<PidType> getAllPidTypes() {
+		Set<PidType> ret=new HashSet<PidType>();
+		for(Entry<String, String> fieldAndId: getAllValues()) {
+			String id=fieldAndId.getValue();
+			PidType pidType = PidType.getPidType(id);
+			if(pidType!=null) 
+				ret.add(pidType);
+		}
+		return ret;
+	}
+
+	public Set<PidScheme> getAllPidShemes() {
+	  Set<PidScheme> ret=new HashSet<>();
+	  for(DetectedPid pid: getAllPidsUsingRegistry()) {
+	    String id=pid.id;
+	    if(pid.scheme!=null) 
+	      ret.add(pid.scheme);
+	  }
+	  return ret;
+	}
+
+	public ContentTier getContentTier() {
+		return contentTier;
+	}
+
+	public void setContentTier(ContentTier contentTier) {
+		this.contentTier = contentTier;
+	}
+
+	public String getDataProvider() {
+		return dataProvider;
+	}
+
+	public String getProvider() {
+		return provider;
+	}
+	
+	public void setDataProvider(String dataProvider) {
+		this.dataProvider = dataProvider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
 	}
 
 }

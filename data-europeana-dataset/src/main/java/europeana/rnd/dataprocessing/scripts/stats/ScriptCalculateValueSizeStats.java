@@ -1,4 +1,4 @@
-package europeana.rnd.dataprocessing;
+package europeana.rnd.dataprocessing.scripts.stats;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,41 +24,51 @@ import org.apache.jena.riot.RiotException;
 
 import europeana.rnd.aggregated.RecordIterator;
 import europeana.rnd.aggregated.RecordIterator.Handler;
+import europeana.rnd.aggregated.RecordIterator.Handler.ProceedOption;
 import europeana.rnd.dataprocessing.ProgressTrackerOnFile;
 import inescid.dataaggregation.data.model.Edm;
 import inescid.dataaggregation.data.model.Rdf;
 import inescid.util.RdfUtil;
 import inescid.util.datastruct.MapOfInts;
 
-public class EuropeanaDatasetProcessor {
-	
-	public static void run(String[] args, EuropeanaDatasetProcessorHandler handler) throws Exception {
-		handler.initParameters(args);
-		File inputFolder=handler.getEuropeanaDatasetFolder();
-		
-		RecordIterator repository=new RecordIterator(inputFolder);
-		
-		handler.initProcessing();
+public class ScriptCalculateValueSizeStats {
 
-		File workingFolder=handler.getWorkingFolder();
+	public static void main(String[] args) throws Exception {
+		String outputFolder = null;
+		String inputFolder = null;
+		String fileFormat ="XML";
 
-		final ProgressTrackerOnFile tracker=workingFolder==null ? null : new ProgressTrackerOnFile(new File(workingFolder, EuropeanaDatasetProcessor.class.getSimpleName()+"_progress.txt"));
-		if(tracker!=null) {
-			int offset=tracker.getTokenAsInt();
-			System.out.println("Starting at offset "+offset);
-			repository.setStartRecord(offset);
+		if (args != null && args.length >= 3) {
+				inputFolder = args[0];
+				outputFolder = args[1];
+				fileFormat = args[2];
+		}else {
+			inputFolder = "c://users/nfrei/desktop/data/europeana_dataset_test_small";
+			outputFolder = "c://users/nfrei/desktop/data/metadata-value-size-stats";
+			fileFormat ="XML";
+//			europeana.rnd.dataprocessing.dates.DatesJsonWriter.maxFilesPerFolder=10;
+//			europeana.rnd.dataprocessing.dates.DatesJsonWriter.maxRecsPerFile=50;
 		}
-		repository.setLang(Lang.RDFXML);
-//		repository.setLang(Lang.TURTLE);
+
+		RecordIterator repository=new RecordIterator(new File(inputFolder));
+		
+		// INIT OPERATIONS
+		ValueSizeStatsHandler handler=new ValueSizeStatsHandler(outputFolder);
+		
+		// INIT OPERATIONS - END
+
+		if(fileFormat.equals("XML"))
+			repository.setLang(Lang.RDFXML);
+		else
+			repository.setLang(Lang.TURTLE);
 		
 		try {
 			repository.iterate(new Handler<Model, String>() {
 				Date start = new Date();
 				int okRecs = 0;
-				
+
 				public ProceedOption handle(Model edm, String dataset, String recId) throws Exception {
 //					System.out.println(".");
-					try {
 //						String recId = fb.getAbout().substring(1);
 						if (repository.getCurrentRecordIndex()!=0 && (repository.getCurrentRecordIndex() % 10000 == 0 || repository.getCurrentRecordIndex() == 10)) {
 	//						csvOut.flush();
@@ -73,11 +83,14 @@ public class EuropeanaDatasetProcessor {
 									(int) recsMinute, (int) hoursToEnd, (int) minutesToEnd);
 						}
 						
+						// CHECK PROCESSED ALREADY
+
+						// CHECK PROCESSED ALREADY - END
 						Resource choRes = RdfUtil.findFirstResourceWithProperties(edm, Rdf.type, Edm.ProvidedCHO, null, null);
 						String choUri = choRes.getURI();
 						try {
-							if(!handler.handleRecord(edm, repository.getCurrentRecordIndex()))
-								return ProceedOption.STOP;
+							handler.handle(edm, repository.getCurrentRecordIndex());
+							// CALL OPERATIONS - END
 							okRecs++;
 							
 							//DEBUG !!!!!!!!!!!!!!
@@ -90,15 +103,6 @@ public class EuropeanaDatasetProcessor {
 							System.err.println("Error: " + choUri);
 							e.printStackTrace();
 						}
-					}finally {
-						try {
-							if(tracker!=null)
-								tracker.track(repository.getCurrentRecordIndex());
-						} catch (IOException e) {
-							e.printStackTrace();
-							throw new RuntimeException(e.getMessage(), e);
-						}
-					}
 					return ProceedOption.CONTINUE;
 				}
 
@@ -110,7 +114,11 @@ public class EuropeanaDatasetProcessor {
 				}
 			});
 		} finally {
-			handler.closeProcessing();
+			// CLOSE OPERATIONS
+			handler.finalize();
+			// CLOSE OPERATIONS - END
 		}
+//		csvOut.close();
+//		csvBuffer.close();
 	}
 }

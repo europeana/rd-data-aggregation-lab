@@ -1,30 +1,26 @@
-package europeana.rnd.dataprocessing.pid;
+package europeana.rnd.dataprocessing;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Random;
 
-
-public class Examples {
-	HashSet<String> sample=new HashSet<String>();
+public class Examples<EX> {
+	HashSet<EX> sample=new HashSet<EX>();
 	Random random=new Random();
 	int sampleSize=100;
 	int totalFound=0;
 
-	public Examples() {
-	}
-	
 	public Examples(int sampleSize) {
 		this.sampleSize = sampleSize;
 	}
 
-	public void add(String example) {
+	public void add(EX example) {
 		totalFound++;
 		if(!sample.contains(example)) {
 			if(sample.size()<sampleSize)
 				sample.add(example);
 			else {
-				if(random.nextFloat()<=0.1) { //add 1 every 100
+				if(random.nextFloat()<= 1/totalFound) { 
 					removeRandomExample();
 					sample.add(example);
 				}
@@ -32,20 +28,16 @@ public class Examples {
 		}
 	}
 
-	public HashSet<String> getSample() {
+	public HashSet<EX> getSample() {
 		return sample;
-	}
-
-	public int getTotalFound() {
-		return totalFound;
 	}
 
 	private void removeRandomExample() {
 		int randomNumber = random.nextInt(sample.size());
 	    int currentIndex = 0;
-		Iterator<String> iterator = sample.iterator();
+		Iterator<EX> iterator = sample.iterator();
 		while (iterator.hasNext()) {
-	        String randomElement = iterator.next();
+	        EX randomElement = iterator.next();
 	        if (currentIndex == randomNumber) {
 	            sample.remove(randomElement);
 	            return;
@@ -53,5 +45,4 @@ public class Examples {
 	        currentIndex++;
 	    }
 	}
-	
 }

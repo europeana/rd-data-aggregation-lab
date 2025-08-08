@@ -22,8 +22,8 @@ import europeana.rnd.dataprocessing.EuropeanaDatasetProcessorHandler;
 import inescid.dataaggregation.data.model.CreativeCommons;
 import inescid.dataaggregation.data.model.Dc;
 import inescid.dataaggregation.data.model.Ore;
-import inescid.util.MapOfInts;
 import inescid.util.RdfUtil;
+import inescid.util.datastruct.MapOfInts;
 import inescid.util.europeana.EdmRdfUtil;
 
 import org.apache.commons.csv.CSVFormat;
@@ -263,7 +263,7 @@ public class ScriptExtractSimilarTitleDescription extends EuropeanaDatasetProces
 	
 	@Override
 	public boolean handleRecord(Model edm, int currentRecordIndex) {
-		Resource proxy = EdmRdfUtil.getProxyOfProvider(edm);
+		Resource proxy = EdmRdfUtil.getProxyOfDataProvider(edm);
 		
 		StmtIterator titles = proxy.listProperties(Dc.title);
 		StmtIterator descriptions = proxy.listProperties(Dc.description);

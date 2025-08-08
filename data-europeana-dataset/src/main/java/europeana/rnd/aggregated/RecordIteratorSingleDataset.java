@@ -25,12 +25,12 @@ import org.apache.jena.riot.RDFParser;
 import org.apache.jena.riot.RDFParserBuilder;
 import org.apache.jena.riot.RiotException;
 
-import europeana.rnd.aggregated.RecordIterator.Handler.ProceedOption;
+import europeana.rnd.aggregated.RecordIteratorSingleDataset.Handler.ProceedOption;
 import inescid.util.RdfUtil;
 import inescid.util.europeana.EdmRdfUtil;
 
-public class RecordIterator {
-	public static final int EUROPEANA_DATASET_SIZE=68000000; 
+public class RecordIteratorSingleDataset {
+	public static final int EUROPEANA_DATASET_SIZE=60000000; 
 
 	public interface Handler<TYPE, ERROR_TYPE> {
 		public enum ProceedOption { CONTINUE, STOP, GO_TO_NEXT_DATASET }	
@@ -46,13 +46,13 @@ public class RecordIterator {
 		boolean goToNextDataset=false;
 		Thread prodThread;
 		
-		protected void start(Handler<Model, String> userHandler) {
+		protected void start(String dataset, Handler<Model, String> userHandler) {
 			prodThread=new Thread(
 					new Runnable() {
 						@Override
 						public void run() {
 							try {
-								iterateRecords(new Handler<Model, String>(){
+								iterateRecords(dataset, new Handler<Model, String>(){
 									@Override
 									public ProceedOption handle(Model resource, String dataset, String recId) throws Exception {
 										if(goToNextDataset) {
@@ -127,7 +127,7 @@ public class RecordIterator {
 	Lang lang=Lang.TURTLE;
 	int recIndex=0;
 	
-	public RecordIterator(File repositoryFolder) {
+	public RecordIteratorSingleDataset(File repositoryFolder) {
 		super();
 		this.repositoryFolder = repositoryFolder;
 		if(!repositoryFolder.exists())
@@ -139,9 +139,9 @@ public class RecordIterator {
 	}
 	
 	
-	public void iterate(Handler<Model, String> handler) throws Exception {
+	public void iterate(String dataset, Handler<Model, String> handler) throws Exception {
 		Producer prod=new Producer();
-		prod.start(handler);
+		prod.start(dataset, handler);
 		ProceedOption handlerContinues=ProceedOption.CONTINUE;
 		while(!prod.isFinished()) {
 			if (handlerContinues==ProceedOption.CONTINUE) {
@@ -172,13 +172,14 @@ public class RecordIterator {
 		prod.close();
 	}
 	
-	public void iterateRdfString(Handler<String, String> handler) throws Exception {
+	public void iterateRdfString(String dataset, Handler<String, String> handler) throws Exception {
 		String[] allFiles=repositoryFolder.list();
 		Arrays.sort(allFiles);
 		boolean normalize=lang.equals(Lang.RDFXML);
 		DATASET_FILE: for(String filename: allFiles) {
-			System.out.println(filename);
-			String dataset=filename.substring(0, filename.indexOf('.'));
+			String datasetOfFile=filename.substring(0, filename.indexOf('.'));
+			if(!datasetOfFile.equals(dataset))
+			  continue;
 			FileInputStream zipFileInputStream = new FileInputStream(new File(repositoryFolder, filename));
 			final ZipInputStream zip = new ZipInputStream(zipFileInputStream);
 			ZipEntry entry = zip.getNextEntry();
@@ -229,18 +230,17 @@ public class RecordIterator {
 				recIndex++;
 			}
 			zip.close();
+			break;
 		}
 	}
 	
-	private void iterateRecords(Handler<Model, String> handler) throws IOException {
+	private void iterateRecords(String dataset, Handler<Model, String> handler) throws IOException {
 		String[] allFiles=repositoryFolder.list();
 		Arrays.sort(allFiles);
 
 		boolean normalize=lang.equals(Lang.RDFXML);
 		
-		DATASET_FILE: for(String filename: allFiles) {
-			System.out.println(filename);
-			String dataset=filename.substring(0, filename.indexOf('.'));
+			String filename=dataset+".zip";
 			FileInputStream zipFileInputStream = new FileInputStream(new File(repositoryFolder, filename));
 			final ZipInputStream zip = new ZipInputStream(zipFileInputStream);
 			ZipEntry entry = zip.getNextEntry();
@@ -263,7 +263,7 @@ public class RecordIterator {
 							zip.closeEntry();
 							zip.close();
 							zipFileInputStream.close();
-							continue DATASET_FILE;
+							break;
 						}
 					} catch (Exception e) {
 						ProceedOption handlerResult = handler.handleError(entry.getName() ,e);
@@ -276,7 +276,7 @@ public class RecordIterator {
 							zip.closeEntry();
 							zip.close();
 							zipFileInputStream.close();
-							continue DATASET_FILE;
+							break;
 						}
 					} catch (Throwable e) {
 						zip.closeEntry();
@@ -292,7 +292,6 @@ public class RecordIterator {
 				recIndex++;
 			}
 			zip.close();
-		}	
 		System.out.println("All datasets processed");
 	}
 
